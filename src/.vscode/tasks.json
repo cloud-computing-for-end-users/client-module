@@ -29,7 +29,7 @@
         },
         {
             "label": "BuildAndStart",
-            "dependsOn": ["npm install", "npm build:react", "npm build", "npm start"],
+            "dependsOn": ["npm build:react", "npm build", "npm start"],
             "dependsOrder": "sequence",
             "group": {
                 "kind": "build",

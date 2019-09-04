@@ -25,7 +25,7 @@ const config = {
   node: {
     __dirname: false,
     __filename: false
-  },
+  }
 };
 
 module.exports = (env, argv) => {
