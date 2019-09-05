@@ -11,7 +11,7 @@ namespace Core
                 .WithLogging()
                 .Build();
             
-            connection.On<string, string>("greeting", name => "Hello " + name);
+            connection.On<string, string>("getPathToImage", name => @"C:\repos\client-module\src\core\Core\Bear.jpg");
             
             connection.Listen();    
         }

@@ -1,12 +1,14 @@
 import * as ReactDOM from 'react-dom';
 import * as React from 'react';
-import * as $ from "jquery";
 import 'bootstrap';
-import {App} from "./components/App";
+import {Main} from "./components/Main/Main";
+import {Slave} from "./components/Slave/Slave";
 import '../scss/main.scss';
 
-ReactDOM.render(<App />, document.getElementById('app'));
+if(document.getElementById('main')) {
+    ReactDOM.render(<Main />, document.getElementById('main'));
+}
 
-$(function () {
-    $('[data-toggle="tooltip"]').tooltip()
-})
+if(document.getElementById('slave')) {
+    ReactDOM.render(<Slave />, document.getElementById('slave'));
+}

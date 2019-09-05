@@ -1,9 +1,14 @@
 const path = require("path");
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 
-const htmlPlugin = new HtmlWebPackPlugin({
+const HWPIndex = new HtmlWebPackPlugin({
   template: "./src/index.html",
   filename: "./index.html"
+});
+
+const HWPSlave = new HtmlWebPackPlugin({
+  template: "./src/slave.html",
+  filename: './slave.html'
 });
 
 const config = {
@@ -54,7 +59,7 @@ const config = {
   resolve: {
     extensions: [".ts", ".tsx", ".js"]
   },
-  plugins: [htmlPlugin]
+  plugins: [HWPIndex, HWPSlave]
 };
 
 module.exports = (env, argv) => {

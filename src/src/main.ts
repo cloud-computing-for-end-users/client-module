@@ -4,12 +4,13 @@ const path = require("path");
 import { app, BrowserWindow, ipcMain } from "electron";
 
 let window: BrowserWindow | null;
-let slaveWindow: BrowserWindow[] | null;
 
 const createWindow = () => {
   window = new BrowserWindow({ 
     width: 500, 
     height: 750,
+    frame: false,
+    resizable: false,
     webPreferences: {
       nodeIntegration: true
     }
@@ -29,15 +30,16 @@ const createWindow = () => {
 };
 
 ipcMain.on('create-slave-window', (event, arg) => {
-  createSlaveWindow();
+  createSlaveWindow(arg.width, arg.height);
 });
 
-const createSlaveWindow = () => {
-  // todo remove debugging console.log
-
+const createSlaveWindow = (width: number, height: number) => {
+  // todo resizable shouldn't be false, but it's easier for now
   let newSlaveWindow = new BrowserWindow({
-    width: 300,
-    height: 300,
+    width: width,
+    height: height,
+    frame: false,
+    resizable: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -54,27 +56,6 @@ const createSlaveWindow = () => {
   newSlaveWindow.on("closed", () => {
     newSlaveWindow = null;
   });
-
-  /*
-  slaveWindow.push(newSlaveWindow);
-
-  console.log("2. Count: " + slaveWindow.length);
-
-  slaveWindow[slaveWindow.length - 1].loadURL(
-    url.format({
-      pathname: path.join(__dirname, "slave.html"),
-      protocol: "file:",
-      slashes: true
-    })
-  );
-
-  slaveWindow[slaveWindow.length - 1].on("closed", () => {
-    console.log("3. Count: " + slaveWindow.length);
-    slaveWindow.pop();
-    console.log("4. Count: " + slaveWindow.length);
-  });
-
-  */
 }
 
 app.on("ready", createWindow);
