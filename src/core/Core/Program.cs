@@ -11,7 +11,7 @@ namespace Core
                 .WithLogging()
                 .Build();
             
-            connection.On<string, string>("getPathToImage", name => @"C:\repos\client-module\src\core\Core\Bear.jpg");
+            connection.On<string, string>("getPathToImage", name => @"C:\Users\kryst\Downloads\imagesFromPython\img.jpg");
             
             connection.Listen();    
         }

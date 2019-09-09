@@ -1,7 +1,9 @@
 import * as React from "react";
+import * as $ from "jquery";
 import {Navigation} from "./Navigation/Navigation";
 import {AppView} from "./AppView/AppView";
 import {FileView} from "./FileView/FileView";
+import {WindowControls} from "../Shared/WindowControls";
 
 interface IState {
   content: ContentType
@@ -23,6 +25,19 @@ export class Main extends React.Component<IProps, IState> {
     };
   }
 
+  disableDragging(): void {
+    $('img').prop('draggable', false);
+    $('a').prop('draggable', false);
+  }
+
+  componentDidUpdate(): void {
+    this.disableDragging();
+  }
+
+  componentDidMount(): void {
+    this.disableDragging();
+  }
+
   public handleViewChange(content: ContentType): void {
     this.setState({content});
   }  
@@ -34,13 +49,13 @@ export class Main extends React.Component<IProps, IState> {
       case ContentType.FileView: view = <FileView />; break;
     }
 
-    return (
-      <div>  
-        <Navigation active={this.state.content} onViewChange={this.handleViewChange} />
-        <div className="container">
+    return ( [ 
+        <WindowControls key="WindowControls" />,
+        <Navigation key="Navigation" active={this.state.content} onViewChange={this.handleViewChange} />,
+        <div key="MainView" className="container">
           {view}    
         </div>
-      </div>
+      ]
     );
   }
 }

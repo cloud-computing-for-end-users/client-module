@@ -1,4 +1,6 @@
 import * as React from "react";
+import * as $ from "jquery";
+import {WindowControls} from "../Shared/WindowControls";
 
 const { ConnectionBuilder } = require("electron-cgi");
 
@@ -21,7 +23,17 @@ export class Slave extends React.Component<IProps, IState> {
     };
   }
 
-  public componentDidMount(): void {
+  disableDragging(): void {
+    $('img').prop('draggable', false);
+  }
+
+  componentDidUpdate(): void {
+    this.disableDragging();
+  }
+
+  componentDidMount(): void {
+    this.disableDragging();
+    
     let connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
 
     connection.onDisconnect = () => {
@@ -31,7 +43,7 @@ export class Slave extends React.Component<IProps, IState> {
 
     connection.send("getPathToImage", "from C#", (response: any) => {
       this.setState({ imgPath: response });
-      setInterval(() => this.updateImage(), 1000);
+      setInterval(() => this.updateImage(), 50);
     });
   }
 
@@ -58,14 +70,14 @@ export class Slave extends React.Component<IProps, IState> {
     if(this.state.imgPath == "") {
       toRender = "Initializing";
     } else {
-      toRender = <img draggable={false} src={`${this.state.imgPath}?${this.state.imgHash}`} />
+      toRender = <img src={`${this.state.imgPath}?${this.state.imgHash}`} />
     }
     
-    return (
-      <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
-        <div className="draggable"></div>
+    return ([
+      <WindowControls key="WindowControls" />,
+      <div key="SlaveView" onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
         {toRender}
       </div>
-    );
+    ]);
   }
 }

@@ -1,0 +1,4 @@
+// prevents stuff to be selected (for example with a drag which by default would make the selected items highlighted in blue)
+* {
+    -webkit-user-select: none;
+}

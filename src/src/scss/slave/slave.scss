@@ -1,0 +1,11 @@
+// prevents elements (image in our case) to be selected as in regular browser
+#slave {
+    -webkit-user-select: none;
+}
+
+/* hides horizontal scrollbar
+html.slave, body.slave {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+*/

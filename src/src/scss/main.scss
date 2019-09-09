@@ -1,24 +1,5 @@
+// ONLY IMPORTS
 @import "~bootstrap/scss/bootstrap";
-
-// creates a rectangle on a slave window that is draggable
-.draggable {
-    -webkit-app-region: drag;
-    width: 20px;
-    height: 20px;
-    background-color: black;
-    position: fixed;
-    top: 0;
-    right: 0;
-}
-
-// prevents elements (image in our case) to be selected as in regular browser
-#slave {
-    -webkit-user-select: none;
-}
-
-/*
-html.slave, body.slave {
-    max-width: 100%;
-    overflow-x: hidden;
-}
-*/
+@import "./shared/window-controls.scss";
+@import "./shared/all.scss";
+@import "./slave/slave.scss";

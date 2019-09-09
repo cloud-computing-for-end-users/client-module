@@ -20,7 +20,7 @@ export class Navigation extends React.Component<IProps, IState> {
   public render(): React.ReactNode {
     var values = Object.values(ContentType)
     const items = values.map((value) =>
-      <NavigationItem key={value} active={value == this.props.active} name={value} onViewChange={this.props.onViewChange} />
+      <NavigationItem key={value.toString()} active={value == this.props.active} name={value} onViewChange={this.props.onViewChange} />
     );
     
     return (

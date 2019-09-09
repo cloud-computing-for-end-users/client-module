@@ -5,7 +5,9 @@ const windows = require('../../../../../assets/img/windows.png');
 
 interface IState { }
 
-interface IProps { }
+interface IProps {
+  appName: string;
+}
 
 export class AppListItem extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -22,7 +24,7 @@ export class AppListItem extends React.Component<IProps, IState> {
   public componentDidMount(): void {
     $(function () {
       ($('[data-toggle="tooltip"]') as any).tooltip()
-    })
+    });
   }
 
   public render(): React.ReactNode {
@@ -33,7 +35,7 @@ export class AppListItem extends React.Component<IProps, IState> {
           title={tooltipHtml}
           onClick={this.newWindow}>
         <img src={app} width="30" height="30" className="d-inline-block align-top" alt="" />
-        <span className="ml-2">App Name</span>
+        <span className="ml-2">{this.props.appName}</span>
       </li>
     );
   }

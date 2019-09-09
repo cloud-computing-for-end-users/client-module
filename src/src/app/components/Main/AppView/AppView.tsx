@@ -11,10 +11,13 @@ export class AppView extends React.Component<IProps, IState> {
   }
 
   public render(): React.ReactNode {
-    return (
-      <div className="row">
+    return ([
+      <div key="Heading" className="row mx-2">
+        <h1>List of apps</h1>
+      </div>,
+      <div key="AppList" className="row mx-2">
         <AppList />
       </div>
-    );
+    ]);
   }
 }

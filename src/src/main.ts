@@ -1,16 +1,18 @@
 const url = require("url");
 const path = require("path");
+const os = require('os');
 
 import { app, BrowserWindow, ipcMain } from "electron";
 
 let window: BrowserWindow | null;
 
 const createWindow = () => {
+  // todo resizable set to true only for debugging
   window = new BrowserWindow({ 
     width: 500, 
     height: 750,
     frame: false,
-    resizable: false,
+    resizable: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -58,7 +60,12 @@ const createSlaveWindow = (width: number, height: number) => {
   });
 }
 
-app.on("ready", createWindow);
+app.on("ready", () => {
+  BrowserWindow.addDevToolsExtension(
+    path.join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.0.6_0')
+  );  
+  createWindow();
+});
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {

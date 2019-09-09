@@ -11,9 +11,14 @@ export class AppList extends React.Component<IProps, IState> {
   }
 
   public render(): React.ReactNode {
+    var values = ["App 1", "App 2"];
+    const items = values.map((value) =>
+      <AppListItem key={value.toString()} appName={value} />
+    );
+    
     return (
-      <ul className="list-group mt-3">
-        <AppListItem />
+      <ul className="list-group">
+        {items}
       </ul>
     );
   }
