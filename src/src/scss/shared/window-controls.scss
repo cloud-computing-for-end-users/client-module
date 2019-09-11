@@ -5,8 +5,7 @@
     display: flex;
     opacity: 0.2;
     z-index: 9999;
-    -webkit-transition: opacity 0.2s;
-    transition: opacity 0.2s;
+    transition: opacity 0.15s ease-in-out;
 
     &:hover {
         opacity: 1;
@@ -23,8 +22,7 @@
         border: none;
         z-index: 9999;
         padding: 6px;
-        -webkit-transition: background-image 0.2s, background-color 0.2s;
-        transition: background-image 0.2s, background-color 0.2s;
+        transition: background-image 0.15s ease-in-out, background-color 0.15s ease-in-out;
         background-color: #f8f9fa;
 
         &.close-control {

@@ -2,6 +2,7 @@ import * as React from "react";
 import * as $ from "jquery";
 import {WindowControls} from "../Shared/WindowControls";
 
+const spinner = require('../../../../assets/svg/spinner.svg');
 const { ConnectionBuilder } = require("electron-cgi");
 
 interface IState {
@@ -68,16 +69,23 @@ export class Slave extends React.Component<IProps, IState> {
   public render(): React.ReactNode {
     var toRender;
     if(this.state.imgPath == "") {
-      toRender = "Initializing";
+      toRender = (
+        <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
+          <img src={spinner} />
+          <h1>Initializing</h1>
+        </div>
+      ); 
     } else {
-      toRender = <img src={`${this.state.imgPath}?${this.state.imgHash}`} />
+      toRender = (
+        <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
+          <img src={`${this.state.imgPath}?${this.state.imgHash}`} />
+        </div>
+      )
     }
     
     return ([
       <WindowControls key="WindowControls" />,
-      <div key="SlaveView" onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
-        {toRender}
-      </div>
+      <div key="SlaveView">{toRender}</div>
     ]);
   }
 }

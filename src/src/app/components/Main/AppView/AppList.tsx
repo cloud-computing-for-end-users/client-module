@@ -11,13 +11,14 @@ export class AppList extends React.Component<IProps, IState> {
   }
 
   public render(): React.ReactNode {
+    // todo get real values
     var values = ["App 1", "App 2"];
     const items = values.map((value) =>
-      <AppListItem key={value.toString()} appName={value} />
+      <AppListItem key={value} appName={value} />
     );
     
     return (
-      <ul className="list-group">
+      <ul id="app-list" className="list-group">
         {items}
       </ul>
     );

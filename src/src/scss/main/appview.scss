@@ -1,0 +1,10 @@
+#app-list {
+    li {
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
+
+        &:hover {
+            background-color: #e2e6ea;
+        }
+    }
+}

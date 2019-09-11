@@ -3,6 +3,10 @@
     -webkit-user-select: none;
 }
 
+.vh-100 {
+    height: 100vh!important;
+}
+
 /* hides horizontal scrollbar
 html.slave, body.slave {
     max-width: 100%;
