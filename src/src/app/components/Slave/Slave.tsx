@@ -1,9 +1,8 @@
 import * as React from "react";
-import * as $ from "jquery";
 import {WindowControls} from "../Shared/WindowControls";
+import {BackendMethods} from "../../renderer";
 
 const spinner = require('../../../../assets/svg/spinner.svg');
-const { ConnectionBuilder } = require("electron-cgi");
 
 interface IState {
   imgPath: string;
@@ -24,28 +23,17 @@ export class Slave extends React.Component<IProps, IState> {
     };
   }
 
-  disableDragging(): void {
-    $('img').prop('draggable', false);
-  }
-
-  componentDidUpdate(): void {
-    this.disableDragging();
-  }
-
   componentDidMount(): void {
-    this.disableDragging();
-    
-    let connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
+    const { ipcRenderer } = require('electron');
+    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetPathToImage, argument: ""});
 
-    connection.onDisconnect = () => {
-      alert('Connection lost, restarting...');
-      connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
-    };
-
-    connection.send("getPathToImage", "from C#", (response: any) => {
-      this.setState({ imgPath: response });
+    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetPathToImage, (event, arg) => {
+      console.log(arg);
+      /*
+      this.setState({ imgPath: arg });
       setInterval(() => this.updateImage(), 50);
-    });
+      */
+    })
   }
 
   public updateImage(): void {
@@ -71,7 +59,7 @@ export class Slave extends React.Component<IProps, IState> {
     if(this.state.imgPath == "") {
       toRender = (
         <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
-          <img src={spinner} />
+          <img draggable={false} src={spinner} />
           <h1>Initializing</h1>
         </div>
       ); 

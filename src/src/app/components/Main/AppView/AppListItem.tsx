@@ -18,7 +18,7 @@ export class AppListItem extends React.Component<IProps, IState> {
   public newWindow() {
     const { ipcRenderer } = require('electron');
     // todo width and height
-    ipcRenderer.send('create-slave-window', 800, 600);
+    ipcRenderer.send('create-slave-window', {width: 800, height: 600});
   }
 
   public componentDidMount(): void {

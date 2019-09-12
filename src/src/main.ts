@@ -3,6 +3,8 @@ const path = require("path");
 const os = require('os');
 
 import { app, BrowserWindow, ipcMain } from "electron";
+import { BackendMethods } from "./app/renderer";
+import { METHODS } from "http";
 
 let window: BrowserWindow | null;
 
@@ -34,6 +36,32 @@ const createWindow = () => {
 ipcMain.on('create-slave-window', (event, arg) => {
   createSlaveWindow(arg.width, arg.height);
 });
+
+ipcMain.on('call-backend-method', (event, arg) => {
+  console.log("Calling backend method: " + arg.method + "(" + arg.argument + ")");
+  callBackendMethod(event, arg.method, arg.argument);
+});
+
+let connection : any;
+
+const callBackendMethod = (event: Electron.IpcMainEvent, method: BackendMethods, argument: string) => {
+  const { ConnectionBuilder } = require("electron-cgi");
+  
+  if (typeof connection === 'undefined') {
+    console.log("Creating new backend connection");
+    connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
+
+    connection.onDisconnect = () => {
+      console.log('Backend connection lost, restarting...');
+      connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
+    };
+  } 
+
+  connection.send(method, argument, (response: any) => {
+    console.log("Response received: " + response)
+    event.reply('reply-backend-method-' + method, response);
+  });
+}
 
 const createSlaveWindow = (width: number, height: number) => {
   // todo resizable shouldn't be false, but it's easier for now
