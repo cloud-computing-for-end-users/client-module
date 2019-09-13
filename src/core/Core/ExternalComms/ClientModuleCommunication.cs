@@ -37,8 +37,7 @@ namespace Core
             }
             var toReturn = callbackResult;
             callbackResult = null;
-            return toReturn.ToString();
-
+            return "JSONized result";
         }
 
         private List<ApplicationInfo> callbackResult = null;
