@@ -1,0 +1,22 @@
+#dropdownMenuButton {
+    border: none;
+
+    &:focus {
+        box-shadow: none;
+    }
+}
+
+.dropdown-menu {
+    min-width: 0;
+    padding: 0.25rem 0;
+
+    .dropdown-link {
+        padding: 0.25rem 0.75rem;
+    }
+}
+
+.nav-link {
+    &:focus {
+        outline: none;
+    }
+}

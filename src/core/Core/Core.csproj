@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ElectronCgi.DotNet" Version="0.0.2" />
+    <PackageReference Include="NetMQ" Version="4.0.0.207" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="custom-message-based-implementation">
+      <HintPath>..\..\..\..\utility-netmq-protocol\src\protocol\custom-message-based-implementation\bin\Debug\netcoreapp2.2\custom-message-based-implementation.dll</HintPath>
+    </Reference>
+    <Reference Include="message-based-communication">
+      <HintPath>..\..\..\..\utility-netmq-protocol\src\protocol\custom-message-based-implementation\bin\Debug\netcoreapp2.2\message-based-communication.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="dotnet build-server shutdown" />
+  </Target>
+
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="dotnet build-server shutdown" />
+  </Target>
+
+</Project>

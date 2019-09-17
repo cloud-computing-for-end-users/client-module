@@ -1,0 +1,40 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558 
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "npm install",
+            "type": "npm",
+            "script": "install",
+            "group": "build"
+        },
+        {
+            "label": "npm build:react",
+            "type": "npm",
+            "script": "build:react",
+            "group": "build"
+        },
+        {
+            "label": "npm build",
+            "type": "npm",
+            "script": "build",
+            "group": "build"
+        },
+        {
+            "label": "npm start",
+            "type": "npm",
+            "script": "start",
+            "group": "build"
+        },
+        {
+            "label": "BuildAndStart",
+            "dependsOn": ["npm build:react", "npm build", "npm start"],
+            "dependsOrder": "sequence",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}

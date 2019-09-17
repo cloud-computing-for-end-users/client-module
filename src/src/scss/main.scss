@@ -1,0 +1,15 @@
+// ONLY IMPORTS ALLOWED
+
+// Bootstrap
+@import "~bootstrap/scss/bootstrap";
+
+// Shared
+@import "./shared/all.scss";
+@import "./shared/window-controls.scss";
+
+// Main
+@import "./main/appview.scss";
+@import "./main/navigation.scss";
+
+// Slave
+@import "./slave/slave.scss";
