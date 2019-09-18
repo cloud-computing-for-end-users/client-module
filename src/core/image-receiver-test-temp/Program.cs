@@ -17,7 +17,7 @@ namespace image_receiver_test_temp
                 Port = new Port() { ThePort = 30303 }
             };
 
-            StartImageReceivingThread(connInfo, @"C:\Users\kryst\Downloads\imagesFromPython\");
+            StartImageReceivingThread(connInfo, @"C:\Users\MSI\Downloads\imagesFromPython\");
         }
 
         private static int MAX_REVICE_BUFFER_SIZE = 100000;
@@ -75,18 +75,23 @@ namespace image_receiver_test_temp
 
                         byte[] fileBuffer = new byte[MAX_REVICE_BUFFER_SIZE];
 
-                        imageDataSize -= MAX_REVICE_BUFFER_SIZE;
+                        
                         //read maxReciveSize
-                        reciver.Receive(fileBuffer);
+                        var recivedBytes = reciver.Receive(fileBuffer);
+                        Console.WriteLine("Amount of recived bytes: " + recivedBytes);
+                        imageDataSize -= recivedBytes;
                         fs.Write(fileBuffer);
                     }
 
                     if (imageDataSize > 0)
                     {
-
                         var imageBuffer = new byte[imageDataSize];
-                        reciver.Receive(imageBuffer);
-                        imageDataSize = 0;
+                        
+                        var recivedBytes = reciver.Receive(imageBuffer);
+                        Console.WriteLine("Amount of recived bytes: " + recivedBytes);
+
+                        imageDataSize -= recivedBytes;
+                        //imageDataSize = 0;
                         fs.Write(imageBuffer, 0, imageBuffer.Length);
                     }
 
@@ -97,7 +102,8 @@ namespace image_receiver_test_temp
                 }
 
                 Console.WriteLine("Saved a file that was recived from python");
-                break;
+                //break;
+                //Console.ReadKey();
             }
         }
     }
