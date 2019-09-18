@@ -9,6 +9,7 @@ namespace image_receiver_test_temp
 {
     class Program
     {
+        private static readonly bool DOING_CHUNKING = false;
         static void Main(string[] args)
         {
             var connInfo = new ConnectionInformation()
@@ -69,33 +70,47 @@ namespace image_receiver_test_temp
                 fileName = "img.jpg";
                 using (var fs = new FileStream(filePath + fileName, FileMode.Create, FileAccess.Write))
                 {
-                    while ((imageDataSize - MAX_REVICE_BUFFER_SIZE) > 0)
+
+                    if (false == DOING_CHUNKING)
                     {
                         Console.WriteLine("Remaining data to recive: " + imageDataSize);
-
-                        byte[] fileBuffer = new byte[MAX_REVICE_BUFFER_SIZE];
-
-                        
-                        //read maxReciveSize
+                            byte[] fileBuffer = new byte[imageDataSize];
                         var recivedBytes = reciver.Receive(fileBuffer);
-                        Console.WriteLine("Amount of recived bytes: " + recivedBytes);
-                        imageDataSize -= recivedBytes;
+                        Console.WriteLine("Number of recived bytes: " + recivedBytes);
                         fs.Write(fileBuffer);
-                    }
 
-                    if (imageDataSize > 0)
+                    }
+                    else
                     {
-                        var imageBuffer = new byte[imageDataSize];
-                        
-                        var recivedBytes = reciver.Receive(imageBuffer);
-                        Console.WriteLine("Amount of recived bytes: " + recivedBytes);
+                        while ((imageDataSize - MAX_REVICE_BUFFER_SIZE) > 0)
+                        {
+                            Console.WriteLine("Remaining data to recive: " + imageDataSize);
 
-                        imageDataSize -= recivedBytes;
-                        //imageDataSize = 0;
-                        fs.Write(imageBuffer, 0, imageBuffer.Length);
+                            byte[] fileBuffer = new byte[MAX_REVICE_BUFFER_SIZE];
+
+
+                            //read maxReciveSize
+                            var recivedBytes = reciver.Receive(fileBuffer);
+                            Console.WriteLine("Amount of recived bytes: " + recivedBytes);
+                            imageDataSize -= recivedBytes;
+                            fs.Write(fileBuffer);
+                        }
+
+                        if (imageDataSize > 0)
+                        {
+                            var imageBuffer = new byte[imageDataSize];
+
+                            var recivedBytes = reciver.Receive(imageBuffer);
+                            Console.WriteLine("Amount of recived bytes: " + recivedBytes);
+
+                            imageDataSize -= recivedBytes;
+                            //imageDataSize = 0;
+                            fs.Write(imageBuffer, 0, imageBuffer.Length);
+                        }
+
+                        Console.WriteLine("Remaining data to recive: " + imageDataSize);
                     }
 
-                    Console.WriteLine("Remaining data to recive: " + imageDataSize);
 
                     fs.Flush();
                     fs.Close();
