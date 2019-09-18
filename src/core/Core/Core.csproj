@@ -13,12 +13,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="custom-message-based-implementation">
-      <HintPath>..\..\..\..\utility-netmq-protocol\src\protocol\custom-message-based-implementation\bin\Debug\netcoreapp2.2\custom-message-based-implementation.dll</HintPath>
-    </Reference>
-    <Reference Include="message-based-communication">
-      <HintPath>..\..\..\..\utility-netmq-protocol\src\protocol\custom-message-based-implementation\bin\Debug\netcoreapp2.2\message-based-communication.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\..\..\..\utility-netmq-protocol\src\protocol\client-slave-message-communication\client-slave-message-communication.csproj" />
+    <ProjectReference Include="..\..\..\..\utility-netmq-protocol\src\protocol\custom-message-based-implementation\custom-message-based-implementation.csproj" />
+    <ProjectReference Include="..\..\..\..\utility-netmq-protocol\src\protocol\message-based-communication\message-based-communication.csproj" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

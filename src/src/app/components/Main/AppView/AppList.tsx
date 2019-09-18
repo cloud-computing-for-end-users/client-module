@@ -11,6 +11,9 @@ interface IProps { }
 export class AppList extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
+
+    //console.log(this.state.appListItems);
+
     this.state = {appListItems: <li>Initializing</li>};
 
     const { ipcRenderer } = require('electron');
