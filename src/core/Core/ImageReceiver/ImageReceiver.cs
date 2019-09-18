@@ -1,25 +1,25 @@
-﻿using message_based_communication.model;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
+using message_based_communication.model;
 
-namespace ConsoleApp2
+namespace Core
 {
-    class Program
+    public class ImageReceiver
     {
-        //private const int images_to_recive_before_breakup = 500;
         private static int MAX_REVICE_BUFFER_SIZE = 100000;
-        private const string filePath = @"C:\Users\MSI\Downloads\imagesFromPython\";
-        static void Main(string[] args)
+        public static void StartImageReceivingThread(ConnectionInformation connInfo, string filePath)
         {
-            Console.WriteLine("Should recive images from a python process");
-            StartRecivingImages(new ConnectionInformation() { IP = new IP() { TheIP = "127.0.0.1" }, Port = new Port() { ThePort = 30303 } });
-            Console.WriteLine(DateTime.Now);
+            var t = new Thread(
+                () => { ReceiveImages(connInfo, filePath); }) {IsBackground = true};
+            t.Start();
         }
 
-        public static void StartRecivingImages(ConnectionInformation connInfo)
+        private static void ReceiveImages(ConnectionInformation connInfo, string filePath)
         {
             IPAddress ipAddr = IPAddress.Parse(connInfo.IP.TheIP);
             IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.Port.ThePort);
@@ -30,7 +30,6 @@ namespace ConsoleApp2
 
             //reciver.Listen(10)/*;*/
             //var connection = reciver.Accept();
-            int counter = 0;
             string fileName = string.Empty;
 
             var startTime = DateTime.Now;
@@ -71,6 +70,7 @@ namespace ConsoleApp2
                         reciver.Receive(fileBuffer);
                         fs.Write(fileBuffer);
                     }
+
                     if (imageDataSize > 0)
                     {
 
@@ -79,11 +79,13 @@ namespace ConsoleApp2
                         imageDataSize = 0;
                         fs.Write(imageBuffer, 0, imageBuffer.Length);
                     }
+
                     Console.WriteLine("Remaining data to recive: " + imageDataSize);
 
                     fs.Flush();
                     fs.Close();
                 }
+
                 Console.WriteLine("Saved a file that was recived from python");
             }
         }
