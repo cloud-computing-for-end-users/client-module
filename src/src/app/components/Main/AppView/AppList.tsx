@@ -3,22 +3,21 @@ import {AppListItem} from "./AppListItem";
 import {BackendMethods} from "../../../renderer";
 const { ipcRenderer } = require('electron');
     
-interface IState { 
-  appListItems: any
+interface IState {
+  appListItems : any;
 }
 
 interface IProps { }
+
+var appListItems : any = null;
 
 export class AppList extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
-    console.log(this.state);
-    if(typeof this.state == 'undefined') {
-      console.log("this.state is undefined")
-    }
+    console.log(typeof appListItems)
 
-    this.state = {appListItems: <li>Initializing</li>};
+    appListItems = "<li>Initializing</li>;
 
     ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfApplications, argument: ""});
 
@@ -42,7 +41,7 @@ export class AppList extends React.Component<IProps, IState> {
   public render(): React.ReactNode {    
     return (
       <ul id="app-list" className="list-group">
-        {this.state.appListItems}
+        {this.props.appListItems}
       </ul>
     );
   }

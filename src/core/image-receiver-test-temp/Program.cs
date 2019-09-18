@@ -18,7 +18,7 @@ namespace image_receiver_test_temp
                 Port = new Port() { ThePort = 30303 }
             };
 
-            StartImageReceivingThread(connInfo, @"C:\Users\MSI\Downloads\imagesFromPython\");
+            StartImageReceivingThread(connInfo, @"C:\Users\kryst\Downloads\imagesFromPython\");
         }
 
         private static int MAX_REVICE_BUFFER_SIZE = 100000;
