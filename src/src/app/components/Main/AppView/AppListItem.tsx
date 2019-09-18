@@ -6,7 +6,9 @@ const windows = require('../../../../../assets/img/windows.png');
 interface IState { }
 
 interface IProps {
-  appName: string;
+  appName: string,
+  appVersion: string,
+  appOS: string
 }
 
 export class AppListItem extends React.Component<IProps, IState> {
@@ -26,16 +28,19 @@ export class AppListItem extends React.Component<IProps, IState> {
       ($('[data-toggle="tooltip"]') as any).tooltip()
     });
   }
-
+ 
   public render(): React.ReactNode {
-    var tooltipHtml = "Runs on <img src=\"" + windows + '\" width="16" height="16" className="d-inline-block align-top" alt="" />';
+    var tooltipHtml = "Runs on " + this.props.appOS + " <img src=\"" + windows + '\" width="16" height="16" className="d-inline-block align-top" alt="" />';
 
     return (
       <li className="list-group-item d-flex align-items-center" data-toggle="tooltip" data-placement="bottom" data-html="true" data-delay='{"show":"1000", "hide":"0"}' 
           title={tooltipHtml}
           onClick={this.newWindow}>
-        <img src={app} width="30" height="30" className="d-inline-block align-top" alt="" />
-        <span className="ml-2">{this.props.appName}</span>
+        <img src={app} width="42" height="42" className="d-inline-block align-top" alt="" />
+        <div className="ml-2 d-flex flex-column">
+          <span>{this.props.appName}</span>
+          <span className="app-version">{this.props.appVersion}</span>
+        </div>
       </li>
     );
   }

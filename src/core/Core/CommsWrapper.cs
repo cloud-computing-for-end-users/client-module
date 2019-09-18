@@ -10,7 +10,5 @@
             ExternalComms = new ExternalComms();
             InternalComms = new InternalComms(ExternalComms.comm);
         }
-
-        public void Start() { }
     }
 }

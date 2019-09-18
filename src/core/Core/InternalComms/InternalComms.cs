@@ -12,13 +12,13 @@ namespace Core
             internalConnection = new ConnectionBuilder().WithLogging().Build();
             this.externalCommunication = externalCommunication;
             RegisterMethodsAndCallbacks();
-            internalConnection.Listen();
-            
+            internalConnection.Listen();   
         }
 
         public void RegisterMethodsAndCallbacks()
         {
-            internalConnection.On<string, string>("getPathToImage", name => externalCommunication.GetListOfApplications());
+            internalConnection.On<string, string>("GetPathToImage", name => externalCommunication.GetPathToImage());            
+            internalConnection.On<string, string>("GetListOfApplications", name => externalCommunication.GetListOfApplications());
         }
     }
 }

@@ -3,6 +3,9 @@
 // Bootstrap
 @import "~bootstrap/scss/bootstrap";
 
+// Variables
+@import "./shared/vars.scss";
+
 // Shared
 @import "./shared/all.scss";
 @import "./shared/window-controls.scss";

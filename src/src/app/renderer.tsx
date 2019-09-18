@@ -7,7 +7,8 @@ import '../scss/main.scss';
 
 // this is used in main.ts but exporting enum for some reason failed there but in here
 export enum BackendMethods {
-    GetPathToImage = "getPathToImage"
+    GetPathToImage = "GetPathToImage",
+    GetListOfApplications = "GetListOfApplications"
 }
 
 if(document.getElementById('main')) {

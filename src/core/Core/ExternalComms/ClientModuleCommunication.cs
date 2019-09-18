@@ -5,6 +5,7 @@ using custom_message_based_implementation.model;
 using custom_message_based_implementation.proxy;
 using message_based_communication.model;
 using message_based_communication.module;
+using Newtonsoft.Json;
 
 namespace Core
 {
@@ -12,6 +13,9 @@ namespace Core
     class ClientModuleCommunication : BaseClientModule
     {
         SlaveOwnerServermoduleProxy slaveOwner;
+        private object listOfApplications;
+        private object pathToImage;
+        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ClientModuleCommunication(ModuleType moduleType) : base(moduleType) { }
 
@@ -23,29 +27,40 @@ namespace Core
 
         public string GetListOfApplications()
         {
-            SlaveOwnerServerProxy.GetListOfRunningApplications(callBack);
+            listOfApplications = null;
+            logger.Info("GetListOfApplications initiated, set to null");
+            SlaveOwnerServerProxy.GetListOfRunningApplications(GetListOfApplicationsCallBack);
+            return PollVariableFor10Seconds(ref listOfApplications, true);
+        }
+
+        public string GetPathToImage()
+        {
+            pathToImage = new string(@"C:\Users\kryst\Downloads\imagesFromPython\img.jpg");
+            return PollVariableFor10Seconds(ref pathToImage, false);
+        }
+        
+        private void GetListOfApplicationsCallBack(List<ApplicationInfo> appInfo)
+        {
+            listOfApplications = appInfo;
+            logger.Info("listOfApplications set");
+        }
+
+        private string PollVariableFor10Seconds(ref object obj, bool JSONize) {
             var counter = 0;
-            while (null == callbackResult && counter < 100)
+            while (null == obj && counter < 100)
             {
                 Thread.Sleep(100);
                 counter++;
             }
 
-            if (null == callbackResult)
+            if (null == obj)
             {
+                logger.Info("Polling finished after 10 seconds without result");
                 return "Good luck next time";
             }
-            var toReturn = callbackResult;
-            callbackResult = null;
-            return toReturn.ToString();
 
-        }
-
-        private List<ApplicationInfo> callbackResult = null;
-
-        private void callBack(List<ApplicationInfo> appInfo)
-        {
-            callbackResult = appInfo;
+            logger.Info("Polling finished before 10 seconds ran out, returning " + (JSONize ? "" : "NON-") + "JSONized result");
+            return (JSONize) ? JsonConvert.SerializeObject(obj, Formatting.Indented) : obj.ToString();
         }
     }
 }

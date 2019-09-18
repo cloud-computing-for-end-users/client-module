@@ -28,11 +28,8 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {method: BackendMethods.GetPathToImage, argument: ""});
 
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetPathToImage, (event, arg) => {
-      console.log(arg);
-      /*
       this.setState({ imgPath: arg });
       setInterval(() => this.updateImage(), 50);
-      */
     })
   }
 

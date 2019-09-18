@@ -4,9 +4,9 @@ const os = require('os');
 
 import { app, BrowserWindow, ipcMain } from "electron";
 import { BackendMethods } from "./app/renderer";
-import { METHODS } from "http";
 
 let window: BrowserWindow | null;
+let slaveWindows: BrowserWindow[] = [];
 
 const createWindow = () => {
   // todo resizable set to true only for debugging
@@ -30,6 +30,9 @@ const createWindow = () => {
 
   window.on("closed", () => {
     window = null;
+    for(var i = slaveWindows.length; i > 0; i--) {
+      slaveWindows[0].close();
+    }
   });
 };
 
@@ -42,23 +45,18 @@ ipcMain.on('call-backend-method', (event, arg) => {
   callBackendMethod(event, arg.method, arg.argument);
 });
 
-let connection : any;
+const { ConnectionBuilder } = require("electron-cgi");
+console.log('Creating new backend connection');
+let connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
 
-const callBackendMethod = (event: Electron.IpcMainEvent, method: BackendMethods, argument: string) => {
-  const { ConnectionBuilder } = require("electron-cgi");
-  
-  if (typeof connection === 'undefined') {
-    console.log("Creating new backend connection");
-    connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
+connection.onDisconnect = () => {
+  console.log('Backend connection lost, restarting...');
+  connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
+};
 
-    connection.onDisconnect = () => {
-      console.log('Backend connection lost, restarting...');
-      connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
-    };
-  } 
-
+const callBackendMethod = (event: Electron.IpcMainEvent, method: BackendMethods, argument: string) => {  
   connection.send(method, argument, (response: any) => {
-    console.log("Response received: " + response)
+    console.log("Response received: " + response);
     event.reply('reply-backend-method-' + method, response);
   });
 }
@@ -84,8 +82,13 @@ const createSlaveWindow = (width: number, height: number) => {
   );
 
   newSlaveWindow.on("closed", () => {
+    console.log("Closing window");
+    var index = slaveWindows.indexOf(newSlaveWindow);
+    if (index !== -1) slaveWindows.splice(index, 1);
     newSlaveWindow = null;
   });
+
+  slaveWindows.push(newSlaveWindow);
 }
 
 app.on("ready", () => {
