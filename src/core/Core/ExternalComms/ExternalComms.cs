@@ -9,11 +9,11 @@ namespace Core
     class ExternalComms
     {
         public ClientModuleCommunication comm { get; set; }
-
+        
         public ExternalComms()
         {
             var localhost = true;
-
+            
             comm = new ClientModuleCommunication(new ModuleType() { TypeID = ModuleTypeConst.MODULE_TYPE_CLIENT });
             
             var routerInfo = new ConnectionInformation()
@@ -30,7 +30,7 @@ namespace Core
 
             TextWriter consoleOut = Console.Out;
             Console.SetOut(TextWriter.Null);
-            comm.Setup(routerInfo, new Port() { ThePort = 5523 }, selfConnInfo, new CustomEncoder());
+            comm.Setup(routerInfo, new Port() {ThePort = 5523}, selfConnInfo, new CustomEncoder());
             Console.SetOut(consoleOut);
         }
     }

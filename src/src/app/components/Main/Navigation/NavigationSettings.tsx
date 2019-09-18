@@ -25,7 +25,7 @@ export class NavigationSettings extends React.Component<IProps, IState> {
     return (
         <span className="navbar-text">
             <div className="dropdown">
-                <button className="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button className="btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <img src={settings} width="30" height="30" className="d-inline-block align-top" alt="" />
                 </button>
                 <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">

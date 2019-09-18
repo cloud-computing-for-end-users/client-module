@@ -25,7 +25,7 @@ export class Navigation extends React.Component<IProps, IState> {
     
     return (
       <div className="container-fluid px-0">
-        <nav className="navbar navbar-expand navbar-light bg-light">
+        <nav className="navbar navbar-expand">
           <div className="navbar-brand">
             <img src={logo} width="40" height="40" className="d-inline-block align-top" alt="" />
           </div>
