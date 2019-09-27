@@ -1,8 +1,9 @@
 import * as React from "react";
-import * as $ from "jquery";
 
 interface IState { }
-interface IProps { }
+interface IProps { 
+  showDragControl: Boolean
+}
 
 export class WindowControls extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -24,7 +25,9 @@ export class WindowControls extends React.Component<IProps, IState> {
   public render(): React.ReactNode {
     return ( 
         <div className="window-controls">
-            <a className="drag-control"></a>
+            {this.props.showDragControl && 
+              <a className="drag-control"></a>
+            }
             <a onClick={this.handleMinimizeControl} className="minimize-control"></a>
             <a onClick={this.handleCloseControl} className="close-control"></a>
         </div>

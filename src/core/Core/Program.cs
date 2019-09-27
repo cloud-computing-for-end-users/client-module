@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using NLog;
 
 namespace Core
@@ -11,22 +10,32 @@ namespace Core
 
         static void Main(string[] args)
         {
-            SetupNLog();
-            logger.Info("Starting program");
-            new CommsWrapper();
+            try
+            {
+                SetupNLog();
+                logger.Info("Starting program");
+                new CommsWrapper(true);
+            }
+            catch (Exception e)
+            {
+                logger.Info("Exception from main follows:");
+                logger.Debug(e);
+            }
         }
 
         static void SetupNLog()
         {
             var config = new NLog.Config.LoggingConfiguration();
-            var logFile = "log.txt";
-            var rootFolder = System.AppDomain.CurrentDomain.BaseDirectory;
+            var logFile = "client-module-log.txt";
 
+            /*
+            var rootFolder = System.AppDomain.CurrentDomain.BaseDirectory;
             if (File.Exists(Path.Combine(rootFolder, logFile)))
             {  
                 File.Delete(Path.Combine(rootFolder, logFile));
             }
-        
+            */
+
             // Targets where to log to: File and Console
             var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logFile };
 

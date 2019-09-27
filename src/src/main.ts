@@ -40,9 +40,22 @@ ipcMain.on('create-slave-window', (event, arg) => {
   createSlaveWindow(arg.width, arg.height);
 });
 
+ipcMain.on('resize-slave-window', (event, arg) => {
+  console.log(event);
+  var myWindow = BrowserWindow.fromId(arg.windowID);
+  myWindow.setSize(arg.width, arg.height);
+})
+
 ipcMain.on('call-backend-method', (event, arg) => {
   console.log("Calling backend method: " + arg.method + "(" + arg.argument + ")");
-  callBackendMethod(event, arg.method, arg.argument);
+  connection.send(arg.method, arg.argument, (response: any) => {
+    console.log("Response received: " + response);
+    if(/\(PollingException\)/.test(response)) {
+      const { dialog } = require('electron');
+      dialog.showErrorBox("Polling Exception", response);
+    }
+    event.reply('reply-backend-method-' + arg.method, response);
+  });
 });
 
 const { ConnectionBuilder } = require("electron-cgi");
@@ -54,15 +67,7 @@ connection.onDisconnect = () => {
   connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./core/Core").build();
 };
 
-const callBackendMethod = (event: Electron.IpcMainEvent, method: BackendMethods, argument: string) => {  
-  connection.send(method, argument, (response: any) => {
-    console.log("Response received: " + response);
-    event.reply('reply-backend-method-' + method, response);
-  });
-}
-
 const createSlaveWindow = (width: number, height: number) => {
-  // todo resizable shouldn't be false, but it's easier for now
   let newSlaveWindow = new BrowserWindow({
     width: width,
     height: height,
@@ -92,9 +97,11 @@ const createSlaveWindow = (width: number, height: number) => {
 }
 
 app.on("ready", () => {
+  /*
   BrowserWindow.addDevToolsExtension(
-    path.join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.0.6_0')
-  );  
+    path.join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.1.1_0')
+  );
+  */  
   createWindow();
 });
 

@@ -1,12 +1,12 @@
 import * as React from "react";
 import {WindowControls} from "../Shared/WindowControls";
 import {BackendMethods} from "../../renderer";
-
+const { ipcRenderer } = require('electron');
+    
 const spinner = require('../../../../assets/svg/spinner.svg');
 
 interface IState {
-  imgPath: string;
-  imgHash: number;
+  img: any;
 }
 
 interface IProps { }
@@ -18,24 +18,32 @@ export class Slave extends React.Component<IProps, IState> {
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
     this.handleOnWheel = this.handleOnWheel.bind(this);
     this.state = { 
-      imgPath: "",
-      imgHash: Date.now()
+      img: null
     };
   }
 
   componentDidMount(): void {
-    const { ipcRenderer } = require('electron');
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetPathToImage, argument: ""});
+    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetImagesFromSlave, argument: ""});
 
-    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetPathToImage, (event, arg) => {
-      this.setState({ imgPath: arg });
-      setInterval(() => this.updateImage(), 50);
+    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetImagesFromSlave, (event, arg) => {
+      var json = JSON.parse(arg);
+      ipcRenderer.send('resize-slave-window', {width: json["WindowWidth"], height: json["WindowHeight"], windowID: require('electron').remote.getCurrentWindow().id});
+      setInterval(() => this.updateImage(json["PathToImages"]), 2000);
     })
   }
 
-  public updateImage(): void {
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetImagesFromSlave);
+  }
+
+  public updateImage(imgPath: string): void {
+    let path = imgPath + "?" + Date.now();
+    let newImg = new Image();
+    newImg.onerror=(() => console.log("Error on image occured"));    
+    newImg.src=path;
+    
     this.setState({
-      imgHash: Date.now()
+      img: path
     })
   }
 
@@ -53,7 +61,7 @@ export class Slave extends React.Component<IProps, IState> {
 
   public render(): React.ReactNode {
     var toRender;
-    if(this.state.imgPath == "") {
+    if(this.state.img === null) {
       toRender = (
         <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
           <img draggable={false} src={spinner} />
@@ -63,13 +71,13 @@ export class Slave extends React.Component<IProps, IState> {
     } else {
       toRender = (
         <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
-          <img src={`${this.state.imgPath}?${this.state.imgHash}`} />
+          <img draggable={false} src={this.state.img} />
         </div>
       )
     }
     
     return ([
-      <WindowControls key="WindowControls" />,
+      <WindowControls showDragControl={true} key="WindowControls" />,
       <div key="SlaveView">{toRender}</div>
     ]);
   }

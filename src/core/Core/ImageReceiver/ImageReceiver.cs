@@ -1,92 +1,118 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using message_based_communication.model;
+using NLog.Fluent;
 
-namespace Core
+namespace Core.ImageReceiver
 {
     public class ImageReceiver
     {
-        private static int MAX_REVICE_BUFFER_SIZE = 100000;
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
+
+        public const string ImageFileName = "img.jpg";
+        private const string BufferFileName = "buffer";
+        private const int SleepTime = 1000;
+        public static bool CancelLocal;
+
+        private static FileStream _fs;
+
         public static void StartImageReceivingThread(ConnectionInformation connInfo, string filePath)
         {
+            PrepareFilePath(filePath);
+
             var t = new Thread(
-                () => { ReceiveImages(connInfo, filePath); }) {IsBackground = true};
+                () =>
+                {
+                    try
+                    {
+                        StartReceivingImages(connInfo, filePath);
+                    } catch (Exception e) { Logger.Debug(e); }
+                }) { IsBackground = true};
             t.Start();
         }
 
-        private static void ReceiveImages(ConnectionInformation connInfo, string filePath)
+        private static void PrepareFilePath(string filePath)
+        {
+            foreach (var entry in Directory.GetDirectories(filePath + @"..\"))
+            {
+                Logger.Debug("Removing directory: " + entry);
+                Directory.Delete(entry);
+            }
+
+            Logger.Debug("Creating directory: " + filePath);
+            Directory.CreateDirectory(filePath);
+        }
+
+        private static void StartReceivingImages(ConnectionInformation connInfo, string filePath)
         {
             IPAddress ipAddr = IPAddress.Parse(connInfo.IP.TheIP);
             IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.Port.ThePort);
 
-            var reciver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-            reciver.Connect(endPoint);
-            Console.WriteLine("Connection established with: " + reciver.ToString());
-
-            //reciver.Listen(10)/*;*/
-            //var connection = reciver.Accept();
-            string fileName = string.Empty;
-
-            var startTime = DateTime.Now;
-            Console.WriteLine("Starting to recive images at: " + startTime);
+            var receiver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            receiver.Connect(endPoint);
+            Logger.Info("Connection established with: " + receiver);
+            Logger.Info("Starting to receive images");
 
             while (true)
             {
-                //if(images_to_recive_before_breakup == counter)
-                //{
-                //    Console.WriteLine("Recived " + images_to_recive_before_breakup + " images in : " + DateTime.Now.Subtract(startTime));
-                //    break;
-                //}
-                var imageSizeBuffer = new byte[sizeof(int)];
+                if (CancelLocal)
+                {
+                    receiver.Close();
+                    Logger.Info("Image Receiver cancelled");
+                    return;
+                }
 
-                reciver.Receive(imageSizeBuffer);
+                var imageSizeBuffer = new byte[sizeof(int)];
+                receiver.Receive(imageSizeBuffer);
 
                 var imageDataSize = BitConverter.ToInt32(imageSizeBuffer, 0);
-                Console.WriteLine("Image size in byte from python: " + imageSizeBuffer.ToString());
-                Console.WriteLine("Expecting image of: " + imageDataSize + "bytes");
+                Logger.Debug("Expecting image of: " + imageDataSize + "bytes");
+
                 if (0 == imageDataSize)
                 {
-                    Console.WriteLine("Recived an image size of 0 so am skipping save to file");
+                    Logger.Info("Received an image size of 0 so skipping saving to file");
                     continue;
                 }
 
-                //fileName = ++counter + ".jpg";
-                fileName = "img.jpg";
-                using (var fs = new FileStream(filePath + fileName, FileMode.Create, FileAccess.Write))
+                try
                 {
-                    while ((imageDataSize - MAX_REVICE_BUFFER_SIZE) > 0)
-                    {
-                        Console.WriteLine("Remaining data to recive: " + imageDataSize);
-
-                        byte[] fileBuffer = new byte[MAX_REVICE_BUFFER_SIZE];
-
-                        imageDataSize -= MAX_REVICE_BUFFER_SIZE;
-                        //read maxReciveSize
-                        reciver.Receive(fileBuffer);
-                        fs.Write(fileBuffer);
-                    }
-
-                    if (imageDataSize > 0)
-                    {
-
-                        var imageBuffer = new byte[imageDataSize];
-                        reciver.Receive(imageBuffer);
-                        imageDataSize = 0;
-                        fs.Write(imageBuffer, 0, imageBuffer.Length);
-                    }
-
-                    Console.WriteLine("Remaining data to recive: " + imageDataSize);
-
-                    fs.Flush();
-                    fs.Close();
+                    _fs = new FileStream(filePath + BufferFileName, FileMode.Create, FileAccess.Write);
+                    Logger.Debug("Opened a FileStream");
+                }
+                catch (IOException e)
+                {
+                    Logger.Debug("IO Exception below caught, recovering after " + SleepTime + "ms");
+                    // getting rid of the current received image
+                    receiver.Receive(new byte[imageDataSize]);
+                    Logger.Debug(e);
+                    Thread.Sleep(SleepTime);
+                    continue;
                 }
 
-                Console.WriteLine("Saved a file that was recived from python");
+                byte[] fileBuffer = new byte[imageDataSize];
+                var receivedBytes = receiver.Receive(fileBuffer);
+                Logger.Debug("Data to receive " + imageDataSize + " and data received " + receivedBytes);
+
+                _fs.Write(fileBuffer);
+                _fs.Flush(true);
+                _fs.Close();
+
+                Logger.Info("Saved an image received from Python process to " + BufferFileName);
+                try
+                {
+                    File.Copy(filePath + BufferFileName, filePath + ImageFileName, true);
+                    Logger.Info("Copied buffer to " + ImageFileName);
+                }
+                catch (IOException e)
+                {
+                    Logger.Debug("IO Exception below caught, recovering after " + SleepTime + "ms");
+                    Logger.Debug(e);
+                    Thread.Sleep(SleepTime);
+                }
             }
         }
     }

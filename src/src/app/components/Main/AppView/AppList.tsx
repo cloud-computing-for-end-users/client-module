@@ -21,7 +21,7 @@ export class AppList extends React.Component<IProps, IState> {
       this.state = {appListItems: 
         <div className="container-fluid d-flex justify-content-center align-items-center">
           <img draggable={false} src={spinner} />
-          <h1>Initializing</h1>
+          <span>Initializing</span>
         </div>
       };
       this.getAppListItems();

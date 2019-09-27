@@ -1,14 +1,17 @@
-﻿namespace Core
+﻿using Core.ExternalComms;
+using Core.InternalComms;
+
+namespace Core
 {
     class CommsWrapper
     {
-        public ExternalComms ExternalComms { get; set; }
-        public InternalComms InternalComms { get; set; }
+        public ExternalComm ExternalComms { get; set; }
+        public InternalComm InternalComm { get; set; }
 
-        public CommsWrapper()
+        public CommsWrapper(bool localhost)
         {
-            ExternalComms = new ExternalComms();
-            InternalComms = new InternalComms(ExternalComms.comm);
+            ExternalComms = new ExternalComm(localhost);
+            InternalComm = new InternalComm(ExternalComms.comm);
         }
     }
 }

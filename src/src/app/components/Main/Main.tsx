@@ -50,7 +50,7 @@ export class Main extends React.Component<IProps, IState> {
     }
 
     return ( [ 
-        <WindowControls key="WindowControls" />,
+        <WindowControls showDragControl={true} key="WindowControls" />,
         <Navigation key="Navigation" active={this.state.content} onViewChange={this.handleViewChange} />,
         <div key="MainView" className="container">
           {view}    
