@@ -40,7 +40,7 @@ namespace Core.ImageReceiver
             foreach (var entry in Directory.GetDirectories(filePath + @"..\"))
             {
                 Logger.Debug("Removing directory: " + entry);
-                Directory.Delete(entry);
+                Directory.Delete(entry, true);
             }
 
             Logger.Debug("Creating directory: " + filePath);

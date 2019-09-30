@@ -7,6 +7,7 @@ const spinner = require('../../../../assets/svg/spinner.svg');
 
 interface IState {
   img: any;
+  key: string;
 }
 
 interface IProps { }
@@ -18,7 +19,8 @@ export class Slave extends React.Component<IProps, IState> {
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
     this.handleOnWheel = this.handleOnWheel.bind(this);
     this.state = { 
-      img: null
+      img: null,
+      key: null
     };
   }
 
@@ -28,6 +30,9 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetImagesFromSlave, (event, arg) => {
       var json = JSON.parse(arg);
       ipcRenderer.send('resize-slave-window', {width: json["WindowWidth"], height: json["WindowHeight"], windowID: require('electron').remote.getCurrentWindow().id});
+      this.setState({
+        key: json["SlaveKey"]
+      });
       setInterval(() => this.updateImage(json["PathToImages"]), 2000);
     })
   }
@@ -48,7 +53,16 @@ export class Slave extends React.Component<IProps, IState> {
   }
 
   handleOnMouseDown(e: any): void {
-    console.log("Down ", e.clientX, e.clientY);
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseDown, 
+      argument: {
+        XinPercent: e.clientX / window.innerWidth * 100, 
+        YinPercent: e.clientY / window.innerHeight * 100, 
+        key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Down ", e.clientX / window.innerWidth, e.clientY / window.innerHeight, this.state.key);
   }
   
   handleOnMouseUp(e: any): void {

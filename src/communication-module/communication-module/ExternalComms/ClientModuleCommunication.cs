@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using client_slave_message_communication.encoding;
+using client_slave_message_communication.model.mouse_action;
 using client_slave_message_communication.proxy;
 using Core.ImageReceiver;
 using custom_message_based_implementation.model;
@@ -56,8 +58,9 @@ namespace Core.ExternalComms
 
             StartImageReceiving(key, imagePath);
 
-            return GeneralHandler.ReturnAsJSON(new PathAndWindowDimensionsWrapper
+            return GeneralHandler.ReturnAsJSON(new InitializeSlaveAppWindowWrapper
             {
+                SlaveKey = key,
                 PathToImages = imagePath + ImageReceiver.ImageReceiver.ImageFileName,
                 WindowWidth = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Width,
                 WindowHeight = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Height
@@ -71,11 +74,12 @@ namespace Core.ExternalComms
 
         public string MouseDown(string parametersInJson)
         {
-
-            return "Success";
+            var parameters = JsonConvert.DeserializeObject<MouseDownParamsWrapper>(parametersInJson);
+            Logger.Debug("XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseDown(parameters);
         }
 
-        private void StartImageReceiving(int key, string imagePath)
+        private void StartImageReceiving(string key, string imagePath)
         {
             Logger.Info("StartImageReceivingThread initiated");
 

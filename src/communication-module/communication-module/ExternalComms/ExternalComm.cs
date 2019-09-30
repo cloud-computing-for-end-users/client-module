@@ -29,7 +29,7 @@ namespace Core.ExternalComms
             };
 
             comm = new ClientModuleCommunication(new ModuleType() { TypeID = ModuleTypeConst.MODULE_TYPE_CLIENT }, selfConnInfo);
-
+            
             comm.Setup(routerInfo, new Port() {ThePort = 5523}, selfConnInfo, new CustomEncoder()); // todo set port from constant or config
         }
     }

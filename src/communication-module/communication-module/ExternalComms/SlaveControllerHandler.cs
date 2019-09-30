@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using client_slave_message_communication.encoding;
+using client_slave_message_communication.model;
+using client_slave_message_communication.model.mouse_action;
 using client_slave_message_communication.proxy;
+using Core.ImageReceiver;
 using Core.Model;
 using custom_message_based_implementation.model;
 using message_based_communication.connection;
@@ -16,21 +19,21 @@ namespace Core.ExternalComms
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private Tuple<int, int> _widthHeightTuple;
-        private int _keyForCallback;
+        private string _keyForCallback;
         private Port _port;
 
         // todo figure out the imagePath
         private const string ImagePath = @"C:\Users\kryst\Downloads\imagesFromPython\";
 
-        // todo key
-        internal Dictionary<int, SlaveInfo> SlaveProxies;
+        // todo Key
+        internal Dictionary<string, SlaveInfo> SlaveProxies;
 
         internal SlaveControllerHandler()
         {
-            SlaveProxies = new Dictionary<int, SlaveInfo>();
+            SlaveProxies = new Dictionary<string, SlaveInfo>();
         }
 
-        internal int ConnectToSlave(Tuple<SlaveConnection, Port> slaveOwnerConnectionInfo, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
+        internal string ConnectToSlave(Tuple<SlaveConnection, Port> slaveOwnerConnectionInfo, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
         {
             ProxyHelper proxyHelper = new ProxyHelper();
             proxyHelper.Setup(new ConnectionInformation() { IP = slaveOwnerConnectionInfo.Item1.IP, Port = slaveOwnerConnectionInfo.Item1.Port },
@@ -38,32 +41,72 @@ namespace Core.ExternalComms
             Logger.Info("ProxyHelper setup done");
 
             Logger.Debug("Slave proxy module ID: " + proxyHelper.ModuleID.ID);
-            // todo key?
-            var key = slaveOwnerConnectionInfo.GetHashCode();
+            // todo Key?
+            var key = GetDictionaryKey(slaveOwnerConnectionInfo);
             Logger.Debug("Slave Owner Connection Info Hash: " + key);
             SlaveProxies.Add(key, new SlaveInfo{SlaveProxy = new SlaveProxy(proxyHelper, that)});
             return key;
         }
 
-        internal void Handshake(int SlaveProxyKey, PrimaryKey pk)
+        // todo make type for dictionary key that is a wrapper for string
+        private static string GetDictionaryKey(Tuple<SlaveConnection, Port> slaveOwnerConnectionInfo)
+        {
+            return "" + slaveOwnerConnectionInfo.GetHashCode();
+        }
+
+        internal void Handshake(string slaveProxyKey, PrimaryKey pk)
         {
             _widthHeightTuple = null;
             Logger.Info("Handshake initiated, " + nameof(_widthHeightTuple) + " set to null");
-            Logger.Debug("Slave Proxy Key: " + SlaveProxyKey);
-            _keyForCallback = SlaveProxyKey;
-            SlaveProxies[SlaveProxyKey].SlaveProxy.Handshake(SlaveHandshakeCallback, pk);
+            Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
+            _keyForCallback = slaveProxyKey;
+            SlaveProxies[slaveProxyKey].SlaveProxy.Handshake(SlaveHandshakeCallback, pk);
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
 
-        internal string GetImageProducerConnectionInformation(int SlaveProxyKey)
+        internal string GetImageProducerConnectionInformation(string slaveProxyKey)
         {
             if (_port != null) return ImagePathForCurrentSlave();
             Logger.Info("GetImageProducerConnectionInformation initiated");
-            Logger.Debug("Slave Proxy Key: " + SlaveProxyKey);
-            _keyForCallback = SlaveProxyKey;
-            SlaveProxies[SlaveProxyKey].SlaveProxy.GetImageProducerConnectionInformation(GetImageProducerConnectionInformationCallBack);
+            Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
+            _keyForCallback = slaveProxyKey;
+            SlaveProxies[slaveProxyKey].SlaveProxy.GetImageProducerConnectionInformation(GetImageProducerConnectionInformationCallBack);
             GeneralHandler.PollVariableFor10Seconds(ref _port);
             return ImagePathForCurrentSlave();
+        }
+
+        internal string MouseDown(MouseDownParamsWrapper parameters)
+        {
+            try
+            {
+                // todo null callback
+                // todo left mouse click x,y params
+                
+                SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseMoveAction()
+                {
+                    relativeScreenLocation = new RelativeScreenLocation()
+                    {
+                        FromLeft = new Percent()
+                        {
+                            ThePercentage = parameters.XinPercent
+                        },
+                        FromTop = new Percent()
+                        {
+                            ThePercentage = parameters.YinPercent
+                        }
+                    }
+                });
+                
+                SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseDownAction());
+            }
+            catch (Exception e)
+            {
+                // todo remove this try/catch
+                Logger.Debug("CAUGHT EXCEPTION");
+                Logger.Debug(e);
+;            }
+            // todo better return value; related to using callback
+            return "Sent";
         }
 
         private string ImagePathForCurrentSlave()
