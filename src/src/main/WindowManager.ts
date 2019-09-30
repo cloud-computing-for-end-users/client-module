@@ -29,7 +29,6 @@ export class WindowManager {
 
         this.window.on("closed", () => {
             this.window = null;
-            console.log("SlaveAppWindows count:: " + this.slaveWindows.length)
             for (var i = this.slaveWindows.length; i > 0; i--) {
                 this.slaveWindows[0].close();
             }
@@ -62,7 +61,6 @@ export class WindowManager {
         });
 
         this.slaveWindows.push(newSlaveWindow);
-        console.log("SlaveAppWindows count: " + this.slaveWindows.length)
     }
 
     resizeWindow = (arg: any) => {

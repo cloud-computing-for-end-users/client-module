@@ -58,7 +58,7 @@ export class Slave extends React.Component<IProps, IState> {
       argument: {
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
-        key: this.state.key
+        Key: this.state.key
       }
     });
     // todo remove this logging, used only for debugging
@@ -66,7 +66,16 @@ export class Slave extends React.Component<IProps, IState> {
   }
   
   handleOnMouseUp(e: any): void {
-    console.log("Up ", e.clientX, e.clientY);
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseUp, 
+      argument: {
+        XinPercent: e.clientX / window.innerWidth * 100, 
+        YinPercent: e.clientY / window.innerHeight * 100, 
+        Key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Up ", e.clientX / window.innerWidth, e.clientY / window.innerHeight, this.state.key);
   }
 
   handleOnWheel(e: any): void {

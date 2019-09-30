@@ -81,7 +81,7 @@ namespace Core.ExternalComms
             {
                 // todo null callback
                 // todo left mouse click x,y params
-                
+                /*
                 SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseMoveAction()
                 {
                     relativeScreenLocation = new RelativeScreenLocation()
@@ -96,7 +96,7 @@ namespace Core.ExternalComms
                         }
                     }
                 });
-                
+                */
                 SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseDownAction());
             }
             catch (Exception e)
@@ -105,6 +105,46 @@ namespace Core.ExternalComms
                 Logger.Debug("CAUGHT EXCEPTION");
                 Logger.Debug(e);
 ;            }
+            // todo better return value; related to using callback
+            return "Sent";
+        }
+
+        internal string MouseUp(MouseUpParamsWrapper parameters)
+        {
+            // todo null callback
+            // todo left mouse click x,y params
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseUpAction());
+            // todo better return value; related to using callback
+            return "Sent";
+        }
+
+        internal string MouseMove(MouseMoveParamsWrapper parameters)
+        {
+            // todo null callback
+            // todo left mouse click x,y params
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseMoveAction()
+            {
+                RelativeScreenLocation = new RelativeScreenLocation()
+                {
+                    FromLeft = new Percent()
+                    {
+                        ThePercentage = parameters.XinPercent
+                    },
+                    FromTop = new Percent()
+                    {
+                        ThePercentage = parameters.YinPercent
+                    }
+                }
+            });
+            // todo better return value; related to using callback
+            return "Sent";
+        }
+
+        internal string MouseScroll(MouseScrollParamsWrapper parameters)
+        {
+            // todo null callback
+            // todo left mouse click x,y params
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseScrollAction(){ScrollAmount = new ScrollAmount(){Amount = parameters.ScrollAmount}});
             // todo better return value; related to using callback
             return "Sent";
         }

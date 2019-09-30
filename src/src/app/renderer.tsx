@@ -8,7 +8,10 @@ import '../scss/main.scss';
 export enum BackendMethods {
     GetListOfApplications = "GetListOfApplications",
     GetImagesFromSlave = 'GetImagesFromSlave',
-    MouseDown = 'MouseDown'
+    MouseDown = 'MouseDown',
+    MouseUp = 'MouseUp',
+    MouseMove = 'MouseMove',
+    MouseScroll = 'MouseScroll'
 }
 
 if(document.getElementById('main')) {

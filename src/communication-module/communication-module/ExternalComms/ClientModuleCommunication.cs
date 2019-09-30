@@ -75,8 +75,29 @@ namespace Core.ExternalComms
         public string MouseDown(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<MouseDownParamsWrapper>(parametersInJson);
-            Logger.Debug("XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            Logger.Debug("MouseDown; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
             return SlaveControllerHandler.MouseDown(parameters);
+        }
+        
+        public string MouseUp(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseUpParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseUp; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseUp(parameters);
+        }
+
+        public string MouseMove(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseMoveParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseMove; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseMove(parameters);
+        }
+
+        public string MouseScroll(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseScrollParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseScroll; Scroll amount: " + parameters.ScrollAmount + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseScroll(parameters);
         }
 
         private void StartImageReceiving(string key, string imagePath)
