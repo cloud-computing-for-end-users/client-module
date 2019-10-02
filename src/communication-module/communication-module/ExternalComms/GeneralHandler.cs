@@ -19,7 +19,7 @@ namespace Core.ExternalComms
 
             if (null == obj)
             {
-                var message = "Polling finished after 10 seconds without result";
+                const string message = "Polling finished after 10 seconds without result";
                 Logger.Info(message);
                 throw new PollingException(message, typeof(T).Name);
             }

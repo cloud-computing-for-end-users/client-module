@@ -1,29 +1,28 @@
 ﻿using System;
-using System.IO;
 using NLog;
 
 namespace Core
 {
     class Program
     {
-        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             try
             {
                 SetupNLog();
-                logger.Info("Starting program");
-                new CommsWrapper(true);
+                Logger.Info("Starting program");
+                CommsWrapper.Setup(false);
             }
             catch (Exception e)
             {
-                logger.Info("Exception from main follows:");
-                logger.Debug(e);
+                Logger.Info("Exception from main follows:");
+                Logger.Debug(e);
             }
         }
 
-        static void SetupNLog()
+        private static void SetupNLog()
         {
             var config = new NLog.Config.LoggingConfiguration();
             var logFile = "client-module-log.txt";

@@ -2,7 +2,9 @@
 {
     public class MouseScrollParamsWrapper
     {
-        public double ScrollAmount { get; set; }
+        public double ScrollAmountX { get; set; }
+        public double ScrollAmountY { get; set; }
+
         public string Key { get; set; }
     }
 }

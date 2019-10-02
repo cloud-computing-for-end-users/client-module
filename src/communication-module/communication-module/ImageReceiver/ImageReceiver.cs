@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using message_based_communication.model;
-using NLog.Fluent;
 
 namespace Core.ImageReceiver
 {
@@ -14,8 +12,8 @@ namespace Core.ImageReceiver
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         public const string ImageFileName = "img.jpg";
-        private const string BufferFileName = "buffer";
-        private const int SleepTime = 1000;
+        private const string BUFFER_FILE_NAME = "buffer";
+        private const int SLEEP_TIME = 1000;
         public static bool CancelLocal;
 
         private static FileStream _fs;
@@ -80,16 +78,16 @@ namespace Core.ImageReceiver
 
                 try
                 {
-                    _fs = new FileStream(filePath + BufferFileName, FileMode.Create, FileAccess.Write);
+                    _fs = new FileStream(filePath + BUFFER_FILE_NAME, FileMode.Create, FileAccess.Write);
                     Logger.Debug("Opened a FileStream");
                 }
                 catch (IOException e)
                 {
-                    Logger.Debug("IO Exception below caught, recovering after " + SleepTime + "ms");
+                    Logger.Debug("IO Exception below caught, recovering after " + SLEEP_TIME + "ms");
                     // getting rid of the current received image
                     receiver.Receive(new byte[imageDataSize]);
                     Logger.Debug(e);
-                    Thread.Sleep(SleepTime);
+                    Thread.Sleep(SLEEP_TIME);
                     continue;
                 }
 
@@ -101,17 +99,17 @@ namespace Core.ImageReceiver
                 _fs.Flush(true);
                 _fs.Close();
 
-                Logger.Info("Saved an image received from Python process to " + BufferFileName);
+                Logger.Info("Saved an image received from Python process to " + BUFFER_FILE_NAME);
                 try
                 {
-                    File.Copy(filePath + BufferFileName, filePath + ImageFileName, true);
+                    File.Copy(filePath + BUFFER_FILE_NAME, filePath + ImageFileName, true);
                     Logger.Info("Copied buffer to " + ImageFileName);
                 }
                 catch (IOException e)
                 {
-                    Logger.Debug("IO Exception below caught, recovering after " + SleepTime + "ms");
+                    Logger.Debug("IO Exception below caught, recovering after " + SLEEP_TIME + "ms");
                     Logger.Debug(e);
-                    Thread.Sleep(SleepTime);
+                    Thread.Sleep(SLEEP_TIME);
                 }
             }
         }

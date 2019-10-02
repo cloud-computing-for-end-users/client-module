@@ -1,14 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Threading;
-using client_slave_message_communication.encoding;
-using client_slave_message_communication.model.mouse_action;
-using client_slave_message_communication.proxy;
 using Core.ImageReceiver;
 using custom_message_based_implementation.model;
-using custom_message_based_implementation.proxy;
-using message_based_communication.connection;
 using message_based_communication.encoding;
 using message_based_communication.model;
 using message_based_communication.module;
@@ -47,10 +39,7 @@ namespace Core.ExternalComms
 
             SlaveOwnerHandler.GetSlaveConnectionInfo(pk, appInfo);
 
-            Logger.Debug((null == SlaveOwnerHandler.SlaveConnectionInfo) + " " + (null == base.ModuleType) + " " +
-                         (null == _forSelf) + " " + (null == this));
-            var key = SlaveControllerHandler.ConnectToSlave(SlaveOwnerHandler.SlaveConnectionInfo, base.ModuleType,
-                _forSelf, this);
+            var key = SlaveControllerHandler.ConnectToSlave(SlaveOwnerHandler.SlaveConnectionInfo, ModuleType, _forSelf, this);
 
             SlaveControllerHandler.Handshake(key, pk);
 
@@ -96,7 +85,7 @@ namespace Core.ExternalComms
         public string MouseScroll(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<MouseScrollParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseScroll; Scroll amount: " + parameters.ScrollAmount + "; Key: " + parameters.Key);
+            Logger.Debug("MouseScroll; Scroll amount X: " + parameters.ScrollAmountX + "; Scroll amount Y: " + parameters.ScrollAmountY + "; Key: " + parameters.Key);
             return SlaveControllerHandler.MouseScroll(parameters);
         }
 

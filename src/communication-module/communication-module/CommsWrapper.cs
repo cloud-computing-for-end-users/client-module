@@ -5,13 +5,13 @@ namespace Core
 {
     class CommsWrapper
     {
-        public ExternalComm ExternalComms { get; set; }
-        public InternalComm InternalComm { get; set; }
+        public static ExternalComm ExternalComms { get; set; }
+        public static InternalComm InternalComm { get; set; }
 
-        public CommsWrapper(bool localhost)
+        public static void Setup(bool localhost)
         {
             ExternalComms = new ExternalComm(localhost);
-            InternalComm = new InternalComm(ExternalComms.comm);
+            InternalComm = new InternalComm(ExternalComms.Comm);
         }
     }
 }

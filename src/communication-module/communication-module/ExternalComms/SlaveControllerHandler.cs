@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using client_slave_message_communication.encoding;
 using client_slave_message_communication.model;
 using client_slave_message_communication.model.mouse_action;
@@ -23,7 +22,7 @@ namespace Core.ExternalComms
         private Port _port;
 
         // todo figure out the imagePath
-        private const string ImagePath = @"C:\Users\kryst\Downloads\imagesFromPython\";
+        private const string IMAGE_PATH = @"C:\Users\kryst\Downloads\imagesFromPython\";
 
         // todo Key
         internal Dictionary<string, SlaveInfo> SlaveProxies;
@@ -104,7 +103,7 @@ namespace Core.ExternalComms
                 // todo remove this try/catch
                 Logger.Debug("CAUGHT EXCEPTION");
                 Logger.Debug(e);
-;            }
+            }
             // todo better return value; related to using callback
             return "Sent";
         }
@@ -144,7 +143,11 @@ namespace Core.ExternalComms
         {
             // todo null callback
             // todo left mouse click x,y params
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseScrollAction(){ScrollAmount = new ScrollAmount(){Amount = parameters.ScrollAmount}});
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseScrollAction()
+            {
+                ScrollAmountX = new ScrollAmount() { Amount = parameters.ScrollAmountX }, 
+                ScrollAmountY = new ScrollAmount() { Amount = parameters.ScrollAmountY }
+            });
             // todo better return value; related to using callback
             return "Sent";
         }
@@ -152,7 +155,7 @@ namespace Core.ExternalComms
         private string ImagePathForCurrentSlave()
         {
             // todo figure out the imagePath
-            return ImagePath + _port.ThePort + "\\";
+            return IMAGE_PATH + _port.ThePort + "\\";
         }
 
         // Callbacks

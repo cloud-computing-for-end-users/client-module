@@ -4,7 +4,7 @@ namespace Core.Exceptions
 {
     class PollingException : Exception
     {
-        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
         public string VariablePolled { get; set; }
 
         public PollingException(string variablePolled)
@@ -24,7 +24,7 @@ namespace Core.Exceptions
 
         public string Handle()
         {
-            logger.Debug(this);
+            Logger.Debug(this);
             return "(PollingException) Failed to get " + VariablePolled;
         }
     }

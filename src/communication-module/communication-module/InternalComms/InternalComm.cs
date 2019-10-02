@@ -3,7 +3,6 @@ using Core.Exceptions;
 using Core.ExternalComms;
 using custom_message_based_implementation.model;
 using ElectronCgi.DotNet;
-using NLog;
 
 namespace Core.InternalComms
 {
