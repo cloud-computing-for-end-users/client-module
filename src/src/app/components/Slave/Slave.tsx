@@ -55,27 +55,34 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.MouseDown, 
       argument: {
+        Button: this.GetButton(e.button),
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
         Key: this.state.key
       }
     });
-    // todo remove this logging, used only for debugging
-    console.log("Down ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
-    console.log(e);
   }
   
   handleOnMouseUp(e: any): void {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.MouseUp, 
       argument: {
+        Button: this.GetButton(e.button),
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
         Key: this.state.key
       }
     });
-    // todo remove this logging, used only for debugging
-    console.log("Up ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
+  }
+
+  private GetButton(button: any): string {
+    if(button == 0) {
+      return "Left"; 
+    } else if(button == 2) {
+      return "Right"; 
+    } else {
+      return "Undefined";
+    }
   }
 
   public render(): React.ReactNode {

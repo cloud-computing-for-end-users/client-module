@@ -74,44 +74,46 @@ namespace Core.ExternalComms
             return ImagePathForCurrentSlave();
         }
 
-        internal string MouseDown(MouseDownParamsWrapper parameters)
+        internal string MouseAction(MouseUpAndDownParamsWrapper parameters, bool down)
         {
-            // todo null callback
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseDownAction
+            var location = new RelativeScreenLocation()
             {
-                RelativeScreenLocation = new RelativeScreenLocation()
+                FromLeft = new Percent()
                 {
-                    FromLeft = new Percent()
-                    {
-                        ThePercentage = parameters.XinPercent
-                    },
-                    FromTop = new Percent()
-                    {
-                        ThePercentage = parameters.XinPercent
-                    }
+                    ThePercentage = parameters.XinPercent
+                },
+                FromTop = new Percent()
+                {
+                    ThePercentage = parameters.XinPercent
                 }
-            });
-            // todo better return value; related to using callback
-            return "Sent";
-        }
+            };
 
-        internal string MouseUp(MouseUpParamsWrapper parameters)
-        {
-            // todo null callback
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseUpAction
+            BaseMouseAction action;
+            if (down)
             {
-                RelativeScreenLocation = new RelativeScreenLocation()
+                if (parameters.Button.Equals("Left"))
                 {
-                    FromLeft = new Percent()
-                    {
-                        ThePercentage = parameters.XinPercent
-                    },
-                    FromTop = new Percent()
-                    {
-                        ThePercentage = parameters.XinPercent
-                    }
+                    action = new LeftMouseDownAction() {RelativeScreenLocation = location};
                 }
-            });
+                else
+                {
+                    action = new RightMouseDownAction() { RelativeScreenLocation = location };
+                }
+            }
+            else
+            {
+                if (parameters.Button.Equals("Left"))
+                {
+                    action = new LeftMouseUpAction() { RelativeScreenLocation = location };
+                }
+                else
+                {
+                    action = new RightMouseUpAction() { RelativeScreenLocation = location };
+                }
+            }
+
+            // todo null callback
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, action);
             // todo better return value; related to using callback
             return "Sent";
         }

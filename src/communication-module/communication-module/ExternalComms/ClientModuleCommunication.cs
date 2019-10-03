@@ -63,16 +63,16 @@ namespace Core.ExternalComms
 
         public string MouseDown(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<MouseDownParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseDown; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseDown(parameters);
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseDown; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseAction(parameters, true);
         }
         
         public string MouseUp(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<MouseUpParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseUp; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseUp(parameters);
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseUp; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
+            return SlaveControllerHandler.MouseAction(parameters, false);
         }
 
         private void StartImageReceiving(string key, string imagePath)
