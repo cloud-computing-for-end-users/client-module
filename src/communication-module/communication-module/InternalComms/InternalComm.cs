@@ -41,14 +41,6 @@ namespace Core.InternalComms
             {
                 try { return externalCommunication.MouseUp(param); } catch (Exception e) { return Handle(e); }
             });
-            internalConnection.On<string, string>("MouseMove", param =>
-            {
-                try { return externalCommunication.MouseMove(param); } catch (Exception e) { return Handle(e); }
-            });
-            internalConnection.On<string, string>("MouseScroll", param =>
-            {
-                try { return externalCommunication.MouseScroll(param); } catch (Exception e) { return Handle(e); }
-            });
         }
 
         private string Handle(Exception e)

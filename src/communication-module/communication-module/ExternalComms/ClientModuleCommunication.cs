@@ -75,20 +75,6 @@ namespace Core.ExternalComms
             return SlaveControllerHandler.MouseUp(parameters);
         }
 
-        public string MouseMove(string parametersInJson)
-        {
-            var parameters = JsonConvert.DeserializeObject<MouseMoveParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseMove; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseMove(parameters);
-        }
-
-        public string MouseScroll(string parametersInJson)
-        {
-            var parameters = JsonConvert.DeserializeObject<MouseScrollParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseScroll; Scroll amount X: " + parameters.ScrollAmountX + "; Scroll amount Y: " + parameters.ScrollAmountY + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseScroll(parameters);
-        }
-
         private void StartImageReceiving(string key, string imagePath)
         {
             Logger.Info("StartImageReceivingThread initiated");

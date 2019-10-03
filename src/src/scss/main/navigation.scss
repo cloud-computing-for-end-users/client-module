@@ -1,17 +1,23 @@
 nav.navbar {
     background-color: $header-background;
 
-    .nav-link {
-        color: $normal-text-color;
-        transition: background-color $transition-duration $transition-timing-function;
-        border-radius: 0.25rem;
-
-        &:hover {
-            background-color: $header-background-darker;
+    .nav-item {
+        &.active {
+            text-decoration: underline;
         }
+        
+        .nav-link {
+            color: $normal-text-color;
+            transition: background-color $transition-duration $transition-timing-function;
+            border-radius: 0.25rem;
 
-        &:focus {
-            outline: none;
+            &:hover {
+                background-color: $header-background-darker;
+            }
+
+            &:focus {
+                outline: none;
+            }
         }
     }
 
