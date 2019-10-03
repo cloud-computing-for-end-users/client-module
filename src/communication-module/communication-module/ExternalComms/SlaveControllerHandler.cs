@@ -84,7 +84,7 @@ namespace Core.ExternalComms
                 },
                 FromTop = new Percent()
                 {
-                    ThePercentage = parameters.XinPercent
+                    ThePercentage = parameters.YinPercent
                 }
             };
 
