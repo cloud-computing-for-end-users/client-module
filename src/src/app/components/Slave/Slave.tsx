@@ -17,8 +17,6 @@ export class Slave extends React.Component<IProps, IState> {
     super(props);
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
-    this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
-    this.handleOnWheel = this.handleOnWheel.bind(this);
     this.state = { 
       img: null,
       key: null
@@ -80,32 +78,6 @@ export class Slave extends React.Component<IProps, IState> {
     console.log("Up ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
   }
 
-  handleOnMouseMove(e: any): void {
-    ipcRenderer.send('call-backend-method', {
-      method: BackendMethods.MouseMove, 
-      argument: {
-        XinPercent: e.clientX / window.innerWidth * 100, 
-        YinPercent: e.clientY / window.innerHeight * 100, 
-        Key: this.state.key
-      }
-    });
-    // todo remove this logging, used only for debugging
-    console.log("Move ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
-  }
-
-  handleOnWheel(e: any): void {
-    ipcRenderer.send('call-backend-method', {
-      method: BackendMethods.MouseScroll, 
-      argument: {
-        ScrollAmountX: e.deltaX, 
-        ScrollAmountY: e.deltaY, 
-        Key: this.state.key
-      }
-    });
-    // todo remove this logging, used only for debugging
-    console.log("Scroll ", e.deltaX, e.deltaY);
-  }
-
   public render(): React.ReactNode {
     var toRender;
     if(this.state.img === null) {
@@ -117,10 +89,9 @@ export class Slave extends React.Component<IProps, IState> {
       ); 
     } else {
       toRender = (
-        <div onWheel={this.handleOnWheel} 
+        <div
             onMouseUp={this.handleOnMouseUp} 
             onMouseDown={this.handleOnMouseDown} 
-            onMouseMove={this.handleOnMouseMove} 
             className="container-fluid m-0 p-0">
           <img draggable={false} src={this.state.img} />
         </div>

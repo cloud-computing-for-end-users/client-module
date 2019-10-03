@@ -76,52 +76,8 @@ namespace Core.ExternalComms
 
         internal string MouseDown(MouseDownParamsWrapper parameters)
         {
-            try
-            {
-                // todo null callback
-                // todo left mouse click x,y params
-                /*
-                SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseMoveAction()
-                {
-                    relativeScreenLocation = new RelativeScreenLocation()
-                    {
-                        FromLeft = new Percent()
-                        {
-                            ThePercentage = parameters.XinPercent
-                        },
-                        FromTop = new Percent()
-                        {
-                            ThePercentage = parameters.YinPercent
-                        }
-                    }
-                });
-                */
-                SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseDownAction());
-            }
-            catch (Exception e)
-            {
-                // todo remove this try/catch
-                Logger.Debug("CAUGHT EXCEPTION");
-                Logger.Debug(e);
-            }
-            // todo better return value; related to using callback
-            return "Sent";
-        }
-
-        internal string MouseUp(MouseUpParamsWrapper parameters)
-        {
             // todo null callback
-            // todo left mouse click x,y params
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseUpAction());
-            // todo better return value; related to using callback
-            return "Sent";
-        }
-
-        internal string MouseMove(MouseMoveParamsWrapper parameters)
-        {
-            // todo null callback
-            // todo left mouse click x,y params
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseMoveAction()
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseDownAction
             {
                 RelativeScreenLocation = new RelativeScreenLocation()
                 {
@@ -131,7 +87,7 @@ namespace Core.ExternalComms
                     },
                     FromTop = new Percent()
                     {
-                        ThePercentage = parameters.YinPercent
+                        ThePercentage = parameters.XinPercent
                     }
                 }
             });
@@ -139,14 +95,22 @@ namespace Core.ExternalComms
             return "Sent";
         }
 
-        internal string MouseScroll(MouseScrollParamsWrapper parameters)
+        internal string MouseUp(MouseUpParamsWrapper parameters)
         {
             // todo null callback
-            // todo left mouse click x,y params
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new MouseScrollAction()
+            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, new LeftMouseUpAction
             {
-                ScrollAmountX = new ScrollAmount() { Amount = parameters.ScrollAmountX }, 
-                ScrollAmountY = new ScrollAmount() { Amount = parameters.ScrollAmountY }
+                RelativeScreenLocation = new RelativeScreenLocation()
+                {
+                    FromLeft = new Percent()
+                    {
+                        ThePercentage = parameters.XinPercent
+                    },
+                    FromTop = new Percent()
+                    {
+                        ThePercentage = parameters.XinPercent
+                    }
+                }
             });
             // todo better return value; related to using callback
             return "Sent";
