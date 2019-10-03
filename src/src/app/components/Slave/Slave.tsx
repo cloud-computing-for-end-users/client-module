@@ -64,6 +64,7 @@ export class Slave extends React.Component<IProps, IState> {
     });
     // todo remove this logging, used only for debugging
     console.log("Down ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
+    console.log(e);
   }
   
   handleOnMouseUp(e: any): void {
@@ -116,7 +117,11 @@ export class Slave extends React.Component<IProps, IState> {
       ); 
     } else {
       toRender = (
-        <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} onMouseMove={this.handleOnMouseMove} className="container-fluid m-0 p-0">
+        <div onWheel={this.handleOnWheel} 
+            onMouseUp={this.handleOnMouseUp} 
+            onMouseDown={this.handleOnMouseDown} 
+            onMouseMove={this.handleOnMouseMove} 
+            className="container-fluid m-0 p-0">
           <img draggable={false} src={this.state.img} />
         </div>
       )
