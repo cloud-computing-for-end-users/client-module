@@ -21,7 +21,7 @@ namespace Core.ExternalComms
 
             var selfConnInfo = new ConnectionInformation()
             {
-                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.209.250" }, // Me
+                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.209.28" }, // Me
                 Port = new Port() { ThePort = 5542 } // todo set port from constant or config
             };
 

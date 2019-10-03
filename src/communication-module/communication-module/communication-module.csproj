@@ -18,12 +18,4 @@
     <ProjectReference Include="..\..\..\..\utility-netmq-protocol\src\protocol\message-based-communication\message-based-communication.csproj" />
   </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="dotnet build-server shutdown" />
-  </Target>
-
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet build-server shutdown" />
-  </Target>
-
 </Project>

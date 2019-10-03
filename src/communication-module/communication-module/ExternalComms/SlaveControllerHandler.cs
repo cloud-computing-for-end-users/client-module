@@ -22,7 +22,7 @@ namespace Core.ExternalComms
         private Port _port;
 
         // todo figure out the imagePath
-        private const string IMAGE_PATH = @"C:\Users\kryst\Downloads\imagesFromPython\";
+        private static readonly string IMAGE_PATH = AppContext.BaseDirectory;
 
         // todo Key
         internal Dictionary<string, SlaveInfo> SlaveProxies;

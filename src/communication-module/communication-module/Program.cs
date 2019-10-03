@@ -13,7 +13,7 @@ namespace Core
             {
                 SetupNLog();
                 Logger.Info("Starting program");
-                CommsWrapper.Setup(false);
+                CommsWrapper.Setup(true);
             }
             catch (Exception e)
             {
