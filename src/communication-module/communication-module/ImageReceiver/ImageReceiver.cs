@@ -15,6 +15,7 @@ namespace Core.ImageReceiver
         private const string BUFFER_FILE_NAME = "buffer";
         private const int SLEEP_TIME = 1000;
         public static bool CancelLocal;
+        private const int MAX_REVICE_BUFFER_SIZE = 100000;
 
         private static FileStream _fs;
 
@@ -91,11 +92,25 @@ namespace Core.ImageReceiver
                     continue;
                 }
 
-                byte[] fileBuffer = new byte[imageDataSize];
-                var receivedBytes = receiver.Receive(fileBuffer);
-                Logger.Debug("Data to receive " + imageDataSize + " and data received " + receivedBytes);
+                var totalReceivedBytes = 0;
+                while (imageDataSize > totalReceivedBytes)
+                {
+                    var fileBuffer = new byte[MAX_REVICE_BUFFER_SIZE];
 
-                _fs.Write(fileBuffer);
+                    var bytesToRead = imageDataSize - totalReceivedBytes > MAX_REVICE_BUFFER_SIZE
+                        ? MAX_REVICE_BUFFER_SIZE
+                        : imageDataSize - totalReceivedBytes;
+                    var receivedBytes = receiver.Receive(fileBuffer, 0, bytesToRead, SocketFlags.None);
+                    totalReceivedBytes += receivedBytes;
+                    Logger.Debug("Amount of received bytes so far: " + totalReceivedBytes);
+                    _fs.Write(fileBuffer, 0, receivedBytes);
+                }
+
+
+                //byte[] fileBuffer = new byte[imageDataSize];
+                //var receivedBytes = receiver.Receive(fileBuffer,0, imageDataSize, SocketFlags.None);
+                Logger.Debug("Data to receive " + imageDataSize + " and data received " + totalReceivedBytes);
+
                 _fs.Flush(true);
                 _fs.Close();
 
