@@ -1,12 +1,13 @@
 import * as React from "react";
 import {WindowControls} from "../Shared/WindowControls";
 import {BackendMethods} from "../../renderer";
-
+const { ipcRenderer } = require('electron');
+    
 const spinner = require('../../../../assets/svg/spinner.svg');
 
 interface IState {
-  imgPath: string;
-  imgHash: number;
+  img: any;
+  key: string;
 }
 
 interface IProps { }
@@ -16,44 +17,97 @@ export class Slave extends React.Component<IProps, IState> {
     super(props);
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+    this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
     this.handleOnWheel = this.handleOnWheel.bind(this);
     this.state = { 
-      imgPath: "",
-      imgHash: Date.now()
+      img: null,
+      key: null
     };
   }
 
   componentDidMount(): void {
-    const { ipcRenderer } = require('electron');
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetPathToImage, argument: ""});
+    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetImagesFromSlave, argument: ""});
 
-    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetPathToImage, (event, arg) => {
-      this.setState({ imgPath: arg });
-      setInterval(() => this.updateImage(), 50);
+    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetImagesFromSlave, (event, arg) => {
+      var json = JSON.parse(arg);
+      ipcRenderer.send('resize-slave-window', {width: json["WindowWidth"], height: json["WindowHeight"], windowID: require('electron').remote.getCurrentWindow().id});
+      this.setState({
+        key: json["SlaveKey"]
+      });
+      setInterval(() => this.updateImage(json["PathToImages"]), 2000);
     })
   }
 
-  public updateImage(): void {
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetImagesFromSlave);
+  }
+
+  public updateImage(imgPath: string): void {
+    let path = imgPath + "?" + Date.now();
+    let newImg = new Image();
+    newImg.onerror=(() => console.log("Error on image occured"));    
+    newImg.src=path;
+    
     this.setState({
-      imgHash: Date.now()
+      img: path
     })
   }
 
   handleOnMouseDown(e: any): void {
-    console.log("Down ", e.clientX, e.clientY);
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseDown, 
+      argument: {
+        XinPercent: e.clientX / window.innerWidth * 100, 
+        YinPercent: e.clientY / window.innerHeight * 100, 
+        Key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Down ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
   }
   
   handleOnMouseUp(e: any): void {
-    console.log("Up ", e.clientX, e.clientY);
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseUp, 
+      argument: {
+        XinPercent: e.clientX / window.innerWidth * 100, 
+        YinPercent: e.clientY / window.innerHeight * 100, 
+        Key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Up ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
+  }
+
+  handleOnMouseMove(e: any): void {
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseMove, 
+      argument: {
+        XinPercent: e.clientX / window.innerWidth * 100, 
+        YinPercent: e.clientY / window.innerHeight * 100, 
+        Key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Move ", e.clientX / window.innerWidth * 100, e.clientY / window.innerHeight * 100, this.state.key);
   }
 
   handleOnWheel(e: any): void {
-    console.log(e.deltaX, e.deltaY);
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.MouseScroll, 
+      argument: {
+        ScrollAmountX: e.deltaX, 
+        ScrollAmountY: e.deltaY, 
+        Key: this.state.key
+      }
+    });
+    // todo remove this logging, used only for debugging
+    console.log("Scroll ", e.deltaX, e.deltaY);
   }
 
   public render(): React.ReactNode {
     var toRender;
-    if(this.state.imgPath == "") {
+    if(this.state.img === null) {
       toRender = (
         <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
           <img draggable={false} src={spinner} />
@@ -62,14 +116,14 @@ export class Slave extends React.Component<IProps, IState> {
       ); 
     } else {
       toRender = (
-        <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} className="container-fluid m-0 p-0">
-          <img src={`${this.state.imgPath}?${this.state.imgHash}`} />
+        <div onWheel={this.handleOnWheel} onMouseUp={this.handleOnMouseUp} onMouseDown={this.handleOnMouseDown} onMouseMove={this.handleOnMouseMove} className="container-fluid m-0 p-0">
+          <img draggable={false} src={this.state.img} />
         </div>
       )
     }
     
     return ([
-      <WindowControls key="WindowControls" />,
+      <WindowControls showDragControl={true} key="WindowControls" />,
       <div key="SlaveView">{toRender}</div>
     ]);
   }

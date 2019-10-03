@@ -1,32 +1,40 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.CompilerServices;
 using NLog;
 
 namespace Core
 {
     class Program
     {
-        private static readonly NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            SetupNLog();
-            logger.Info("Starting program");
-            new CommsWrapper();
+            try
+            {
+                SetupNLog();
+                Logger.Info("Starting program");
+                CommsWrapper.Setup(false);
+            }
+            catch (Exception e)
+            {
+                Logger.Info("Exception from main follows:");
+                Logger.Debug(e);
+            }
         }
 
-        static void SetupNLog()
+        private static void SetupNLog()
         {
             var config = new NLog.Config.LoggingConfiguration();
-            var logFile = "log.txt";
-            var rootFolder = System.AppDomain.CurrentDomain.BaseDirectory;
+            var logFile = "client-module-log.txt";
 
+            /*
+            var rootFolder = System.AppDomain.CurrentDomain.BaseDirectory;
             if (File.Exists(Path.Combine(rootFolder, logFile)))
             {  
                 File.Delete(Path.Combine(rootFolder, logFile));
             }
-        
+            */
+
             // Targets where to log to: File and Console
             var logfile = new NLog.Targets.FileTarget("logfile") { FileName = logFile };
 

@@ -3,25 +3,35 @@ import {AppListItem} from "./AppListItem";
 import {BackendMethods} from "../../../renderer";
 const { ipcRenderer } = require('electron');
     
-interface IState { 
-  appListItems: any
+const spinner = require('../../../../../assets/svg/spinner.svg');
+
+interface IState {
+  appListItems : any
 }
 
 interface IProps { }
+
+var savedAppListItems : any = null;
 
 export class AppList extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
-    console.log(this.state);
-    if(typeof this.state == 'undefined') {
-      console.log("this.state is undefined")
+    if(savedAppListItems === null) {
+      this.state = {appListItems: 
+        <div className="container-fluid d-flex justify-content-center align-items-center">
+          <img draggable={false} src={spinner} />
+          <span>Initializing</span>
+        </div>
+      };
+      this.getAppListItems();
+    } else {
+      this.state = {appListItems: savedAppListItems};
     }
+  }
 
-    this.state = {appListItems: <li>Initializing</li>};
-
+  private getAppListItems() {
     ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfApplications, argument: ""});
-
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfApplications, (event, arg) => {
       var json = JSON.parse(arg);
       var items = [];
@@ -29,8 +39,9 @@ export class AppList extends React.Component<IProps, IState> {
         var obj = json[i];
         items.push(<AppListItem key={obj["ApplicationName"]} appName={obj["ApplicationName"]} appVersion={obj["ApplicationVersion"]} appOS={obj["RunningOnOperatingSystem"]} />)
       }
+      savedAppListItems = items;
       this.setState({
-        appListItems: items
+        appListItems: savedAppListItems
       });
     })
   }
