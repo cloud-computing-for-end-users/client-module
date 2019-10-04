@@ -14,7 +14,7 @@ export class CGIConnectionManager {
     }
 
     private newConnection() {
-        this.connection = new ConnectionBuilder().connectTo("dotnet", "run", "--project", "./communication-module/communication-module").build();
+        this.connection = new ConnectionBuilder().connectTo("dotnet", "run", "-nowarn", "--project", "./communication-module/communication-module").build();
     }
 
     callBackendMethod = (arg: any, event: any) => {
