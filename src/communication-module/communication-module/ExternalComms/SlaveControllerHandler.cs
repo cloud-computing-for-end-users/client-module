@@ -129,7 +129,7 @@ namespace Core.ExternalComms
         {
             var (width, height) = widthHeightTuple;
             SlaveProxies[_keyForCallback].AppDimensions = new AppDimensions(){Width = width, Height = height};
-            Logger.Info("AppDimensions set in callback");
+            Logger.Info("AppDimensions (W: " + width + "; H: " + height + ") set in callback");
             // todo remove below if possible, has to be set now for polling check
             _widthHeightTuple = widthHeightTuple;
         }
