@@ -32,7 +32,7 @@ export class Slave extends React.Component<IProps, IState> {
       this.setState({
         key: json["SlaveKey"]
       });
-      setInterval(() => this.updateImage(json["PathToImages"]), 2000);
+      setInterval(() => this.updateImage(json["PathToImages"]), 50);
     })
   }
 

@@ -41,9 +41,17 @@ namespace Core.InternalComms
             {
                 try { return externalCommunication.MouseUp(param); } catch (Exception e) { return Handle(e); }
             });
+            internalConnection.On<string, string>("Login", param =>
+            {
+                try { return externalCommunication.Login(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("CreateAccount", param =>
+            {
+                try { return externalCommunication.CreateAccount(param); } catch (Exception e) { return Handle(e); }
+            });
         }
 
-        private string Handle(Exception e)
+        private static string Handle(Exception e)
         {
             Logger.Debug(e);
             return "(Exception) General exception occured, refer to log";

@@ -1,6 +1,6 @@
 ﻿namespace Core.ImageReceiver
 {
-    class InitializeSlaveAppWindowWrapper
+    internal class InitializeSlaveAppWindowWrapper
     {
         public string SlaveKey { get; set; }
         public string PathToImages { get; set; }

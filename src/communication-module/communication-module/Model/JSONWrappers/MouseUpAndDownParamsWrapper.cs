@@ -1,6 +1,6 @@
 ﻿namespace Core.ImageReceiver
 {
-    public class MouseUpAndDownParamsWrapper
+    internal class MouseUpAndDownParamsWrapper
     {
         public string Button { get; set; }
         public double XinPercent { get; set; }

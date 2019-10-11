@@ -13,6 +13,7 @@ namespace Core.ExternalComms
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private SlaveOwnerHandler SlaveOwnerHandler { get; set; }
+        private DatabaseHandler DatabaseHandler { get; set; }
         private SlaveControllerHandler SlaveControllerHandler { get; set; }
 
         
@@ -31,6 +32,7 @@ namespace Core.ExternalComms
             base.Setup(baseRouterModule, baseRouterRegistrationPort, forSelf, customEncoding);
             SlaveOwnerHandler = new SlaveOwnerHandler(proxyHelper, this);
             SlaveControllerHandler = new SlaveControllerHandler();
+            DatabaseHandler = new DatabaseHandler(proxyHelper, this);
         }
 
         public string GetImagesFromSlave(PrimaryKey pk, ApplicationInfo appInfo)
@@ -73,6 +75,22 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
             Logger.Debug("MouseUp; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
             return SlaveControllerHandler.MouseAction(parameters, false);
+        }
+
+        public string Login(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
+            // todo do not log personal info
+            Logger.Debug("Login; Email: " + parameters.Email + "; Password: " + parameters.Password);
+            return DatabaseHandler.Login(parameters);
+        }
+
+        public string CreateAccount(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
+            // todo do not log personal info
+            Logger.Debug("CreateAccount; Email: " + parameters.Email + "; Password: " + parameters.Password);
+            return DatabaseHandler.CreateAccount(parameters);
         }
 
         private void StartImageReceiving(string key, string imagePath)

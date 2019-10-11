@@ -26,7 +26,6 @@ namespace Core.ExternalComms
             }
         }
 
-
         internal SlaveOwnerHandler(ProxyHelper ph, ClientModuleCommunication cmm)
         {
             this.SlaveOwnerServerProxy = new SlaveOwnerServermoduleProxy(ph, cmm);
@@ -52,7 +51,7 @@ namespace Core.ExternalComms
 
         private void GetSlaveCallBack(Tuple<SlaveConnection, Port> slaveConnectionInfo)
         {
-            this._slaveConnectionInfo = slaveConnectionInfo;
+            _slaveConnectionInfo = slaveConnectionInfo;
             Logger.Info(this._slaveConnectionInfo.GetType().Name + " " + nameof(this._slaveConnectionInfo) + " set");
         }
 
