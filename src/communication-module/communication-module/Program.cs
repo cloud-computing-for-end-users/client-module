@@ -10,10 +10,10 @@ namespace Core
         public static void Main(string[] args)
         {
             try
-            {
+            {   
                 SetupNLog();
                 Logger.Info("Starting program");
-                CommsWrapper.Setup(true);
+                CommsWrapper.Setup(localhost:false);
             }
             catch (Exception e)
             {

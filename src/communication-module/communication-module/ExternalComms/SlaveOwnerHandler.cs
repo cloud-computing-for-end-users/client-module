@@ -13,10 +13,10 @@ namespace Core.ExternalComms
 
         private SlaveOwnerServermoduleProxy SlaveOwnerServerProxy { get; }
 
-        private Tuple<SlaveConnection, Port> _slaveConnectionInfo;
+        private SlaveConnection _slaveConnectionInfo;
         private List<ApplicationInfo> _listOfApplications;
 
-        internal Tuple<SlaveConnection, Port> SlaveConnectionInfo => _slaveConnectionInfo;
+        internal SlaveConnection SlaveConnectionInfo => _slaveConnectionInfo;
         internal List<ApplicationInfo> ListOfApplications
         {
             get
@@ -38,6 +38,13 @@ namespace Core.ExternalComms
             Logger.Info("GetSlave initiated, " + nameof(_slaveConnectionInfo) + " set to null");
             SlaveOwnerServerProxy.GetSlave(pk, appInfo, GetSlaveCallBack);
             GeneralHandler.PollVariableFor10Seconds(ref _slaveConnectionInfo);
+            /*_slaveConnectionInfo = new Tuple<SlaveConnection, Port>(new SlaveConnection()
+            {
+                IP = new IP() { TheIP = "192.168.137.149".Trim() },
+                Port = new Port() { ThePort = 10142 }
+                //IP = new IP(){TheIP = "127.0.0.1"}, Port = new Port() { ThePort = 10142 }
+            }, new Port(){ThePort = 10143}); //TODO DELETE THIS IS ONLY FOR DEBUGGING
+            */
         }
 
         internal void GetListOfApplications()
@@ -50,10 +57,11 @@ namespace Core.ExternalComms
 
         // Callbacks
 
-        private void GetSlaveCallBack(Tuple<SlaveConnection, Port> slaveConnectionInfo)
+        private void GetSlaveCallBack(SlaveConnection slaveConnectionInfo)
         {
             this._slaveConnectionInfo = slaveConnectionInfo;
-            Logger.Info(this._slaveConnectionInfo.GetType().Name + " " + nameof(this._slaveConnectionInfo) + " set");
+            Logger.Info(this._slaveConnectionInfo.GetType().Name + " " + nameof(this._slaveConnectionInfo) + " set: " + _slaveConnectionInfo);
+            Logger.Info("With data: {" + _slaveConnectionInfo.IP + ", " + _slaveConnectionInfo.Port + ", " + _slaveConnectionInfo.RegistrationPort + ", " + _slaveConnectionInfo.ConnectToRecieveImagesPort +" }");
         }
 
         private void GetListOfApplicationsCallBack(List<ApplicationInfo> appInfo)

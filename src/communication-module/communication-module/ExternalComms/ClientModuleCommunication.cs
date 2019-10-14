@@ -80,11 +80,7 @@ namespace Core.ExternalComms
             Logger.Info("StartImageReceivingThread initiated");
 
             ImageReceiver.ImageReceiver.CancelLocal = false;
-            ImageReceiver.ImageReceiver.StartImageReceivingThread(new ConnectionInformation
-            {
-                IP = SlaveOwnerHandler.SlaveConnectionInfo.Item1.IP,
-                Port = SlaveControllerHandler.SlaveProxies[key].Port
-            }, imagePath);
+            ImageReceiver.ImageReceiver.StartImageReceivingThread(SlaveOwnerHandler.SlaveConnectionInfo, imagePath);
         }
 
         private void CancelCurrentImageReceiver()

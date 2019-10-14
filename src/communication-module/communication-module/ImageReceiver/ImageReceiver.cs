@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using custom_message_based_implementation.model;
 using message_based_communication.model;
 
 namespace Core.ImageReceiver
@@ -19,7 +20,7 @@ namespace Core.ImageReceiver
 
         private static FileStream _fs;
 
-        public static void StartImageReceivingThread(ConnectionInformation connInfo, string filePath)
+        public static void StartImageReceivingThread(SlaveConnection connInfo, string filePath)
         {
             PrepareFilePath(filePath);
 
@@ -46,10 +47,10 @@ namespace Core.ImageReceiver
             Directory.CreateDirectory(filePath);
         }
 
-        private static void StartReceivingImages(ConnectionInformation connInfo, string filePath)
+        private static void StartReceivingImages(SlaveConnection connInfo, string filePath)
         {
             IPAddress ipAddr = IPAddress.Parse(connInfo.IP.TheIP);
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.Port.ThePort);
+            IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.ConnectToRecieveImagesPort.ThePort);
 
             var receiver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             receiver.Connect(endPoint);

@@ -32,23 +32,25 @@ namespace Core.ExternalComms
             SlaveProxies = new Dictionary<string, SlaveInfo>();
         }
 
-        internal string ConnectToSlave(Tuple<SlaveConnection, Port> slaveOwnerConnectionInfo, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
+        internal string ConnectToSlave(SlaveConnection slaveConnectionInfo, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
         {
+            Logger.Info("Attempting to connect to slave with network settings: {ip: " + slaveConnectionInfo.IP.TheIP + " comm port: " + slaveConnectionInfo.Port.ThePort + " registration port: " + slaveConnectionInfo.RegistrationPort.ThePort + "}");
+
             ProxyHelper proxyHelper = new ProxyHelper();
-            proxyHelper.Setup(new ConnectionInformation() { IP = slaveOwnerConnectionInfo.Item1.IP, Port = slaveOwnerConnectionInfo.Item1.Port },
-                slaveOwnerConnectionInfo.Item2, moduleType, new ConnectionInformation() { IP = forSelf.IP, Port = new Port() { ThePort = forSelf.Port.ThePort + 69 } }, that, new CustomEncoding());
+            proxyHelper.Setup(new ConnectionInformation() { IP = slaveConnectionInfo.IP, Port = slaveConnectionInfo.Port },
+                slaveConnectionInfo.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP, Port = new Port() { ThePort = forSelf.Port.ThePort + 69 } }, that, new CustomEncoding());
             Logger.Info("ProxyHelper setup done");
 
             Logger.Debug("Slave proxy module ID: " + proxyHelper.ModuleID.ID);
             // todo Key?
-            var key = GetDictionaryKey(slaveOwnerConnectionInfo);
+            var key = GetDictionaryKey(slaveConnectionInfo);
             Logger.Debug("Slave Owner Connection Info Hash: " + key);
             SlaveProxies.Add(key, new SlaveInfo{SlaveProxy = new SlaveProxy(proxyHelper, that)});
             return key;
         }
 
         // todo make type for dictionary key that is a wrapper for string
-        private static string GetDictionaryKey(Tuple<SlaveConnection, Port> slaveOwnerConnectionInfo)
+        private static string GetDictionaryKey(SlaveConnection slaveOwnerConnectionInfo)
         {
             return "" + slaveOwnerConnectionInfo.GetHashCode();
         }
@@ -129,7 +131,7 @@ namespace Core.ExternalComms
         {
             var (width, height) = widthHeightTuple;
             SlaveProxies[_keyForCallback].AppDimensions = new AppDimensions(){Width = width, Height = height};
-            Logger.Info("AppDimensions set in callback");
+            Logger.Info("AppDimensions (W: " + width + "; H: " + height + ") set in callback");
             // todo remove below if possible, has to be set now for polling check
             _widthHeightTuple = widthHeightTuple;
         }
