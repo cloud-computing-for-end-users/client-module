@@ -9,7 +9,8 @@ interface IState { }
 
 interface IProps { 
   active: ContentType,
-  onViewChange: any
+  onViewChange: any,
+  onLoggedInChange: any
 }
 
 export class Navigation extends React.Component<IProps, IState> {
@@ -33,7 +34,7 @@ export class Navigation extends React.Component<IProps, IState> {
             <ul className="navbar-nav mr-auto">
               {items}
             </ul>
-            <NavigationSettings />
+            <NavigationSettings onLoggedInChange={this.props.onLoggedInChange} />
           </div>
         </nav>
       </div>

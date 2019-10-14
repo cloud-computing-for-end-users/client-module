@@ -4,7 +4,9 @@ const settings = require('../../../../../assets/img/settings.png');
 
 interface IState { }
 
-interface IProps { }
+interface IProps {
+  onLoggedInChange: any
+}
 
 export class NavigationSettings extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -13,7 +15,7 @@ export class NavigationSettings extends React.Component<IProps, IState> {
   }
 
   public handleOnClick(e: any) {
-    alert("Logout not implemented");
+    this.props.onLoggedInChange(false, 0);
   }
 
   public render(): React.ReactNode {

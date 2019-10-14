@@ -9,7 +9,9 @@ export enum BackendMethods {
     GetListOfApplications = "GetListOfApplications",
     GetImagesFromSlave = 'GetImagesFromSlave',
     MouseDown = 'MouseDown',
-    MouseUp = 'MouseUp'
+    MouseUp = 'MouseUp',
+    Login = 'Login',
+    CreateAccount = 'CreateAccount'
 }
 
 if(document.getElementById('main')) {
