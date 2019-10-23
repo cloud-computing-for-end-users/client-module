@@ -13,7 +13,7 @@ namespace Core.ExternalComms
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private SlaveOwnerHandler SlaveOwnerHandler { get; set; }
-        private DatabaseHandler DatabaseHandler { get; set; }
+        //private DatabaseHandler DatabaseHandler { get; set; }
         private SlaveControllerHandler SlaveControllerHandler { get; set; }
 
         
@@ -29,10 +29,15 @@ namespace Core.ExternalComms
         public override void Setup(ConnectionInformation baseRouterModule, Port baseRouterRegistrationPort,
             ConnectionInformation forSelf, Encoding customEncoding)
         {
+            Logger.Debug("Setting up handlers");
             base.Setup(baseRouterModule, baseRouterRegistrationPort, forSelf, customEncoding);
+
             SlaveOwnerHandler = new SlaveOwnerHandler(proxyHelper, this);
+            Logger.Debug("Setup of SlaveOwnerHandler done");
             SlaveControllerHandler = new SlaveControllerHandler();
-            DatabaseHandler = new DatabaseHandler(proxyHelper, this);
+            Logger.Debug("Setup of SlaveControllerHandler done");
+            //DatabaseHandler = new DatabaseHandler(proxyHelper, this);
+            //Logger.Debug("Setup of DatabaseHandler done");
         }
 
         public string GetImagesFromSlave(PrimaryKey pk, ApplicationInfo appInfo)
@@ -82,7 +87,8 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
             // todo do not log personal info
             Logger.Debug("Login; Email: " + parameters.Email + "; Password: " + parameters.Password);
-            return DatabaseHandler.Login(parameters);
+            //return DatabaseHandler.Login(parameters);
+            return "Disabled";
         }
 
         public string CreateAccount(string parametersInJson)
@@ -90,7 +96,8 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
             // todo do not log personal info
             Logger.Debug("CreateAccount; Email: " + parameters.Email + "; Password: " + parameters.Password);
-            return DatabaseHandler.CreateAccount(parameters);
+            //return DatabaseHandler.CreateAccount(parameters);
+            return "Disabled";
         }
 
         private void StartImageReceiving(string key, string imagePath)

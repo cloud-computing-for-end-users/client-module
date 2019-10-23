@@ -3,7 +3,7 @@ interface FeatureFlags {
 }
 
 let FeatureFlags: FeatureFlags = {
-    AllowLogin: true
+    AllowLogin: false
 };
 
 export default FeatureFlags;
