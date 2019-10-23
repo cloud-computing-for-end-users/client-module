@@ -19,5 +19,10 @@ if(document.getElementById('main')) {
 }
 
 if(document.getElementById('slave')) {
-    ReactDOM.render(<Slave />, document.getElementById('slave'));
+    var electron = require('electron');
+    var currentWindow: any = electron.remote.getCurrentWindow();
+     
+    console.log(currentWindow.custom);
+
+    //ReactDOM.render(<Slave />, document.getElementById('slave'));
 }

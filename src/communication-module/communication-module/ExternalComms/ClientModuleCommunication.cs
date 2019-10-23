@@ -13,7 +13,7 @@ namespace Core.ExternalComms
         private static readonly NLog.Logger Logger = NLog.LogManager.GetCurrentClassLogger();
 
         private SlaveOwnerHandler SlaveOwnerHandler { get; set; }
-        //private DatabaseHandler DatabaseHandler { get; set; }
+        private DatabaseHandler DatabaseHandler { get; set; }
         private SlaveControllerHandler SlaveControllerHandler { get; set; }
 
         
@@ -36,12 +36,23 @@ namespace Core.ExternalComms
             Logger.Debug("Setup of SlaveOwnerHandler done");
             SlaveControllerHandler = new SlaveControllerHandler();
             Logger.Debug("Setup of SlaveControllerHandler done");
-            //DatabaseHandler = new DatabaseHandler(proxyHelper, this);
-            //Logger.Debug("Setup of DatabaseHandler done");
+            DatabaseHandler = new DatabaseHandler(proxyHelper, this);
+            Logger.Debug("Setup of DatabaseHandler done");
         }
 
-        public string GetImagesFromSlave(PrimaryKey pk, ApplicationInfo appInfo)
+        public string GetImagesFromSlave(string parametersInJson)
         {
+            var parameters = JsonConvert.DeserializeObject<GetImagesFromSlaveWrapper>(parametersInJson);
+            Logger.Debug("GetImagesFromSlave; PrimaryKey: " + parameters.PrimaryKey + "; ApplicationName: " + parameters.ApplicationName + "; ApplicationVersion: " + parameters.ApplicationVersion + "; OS: " + parameters.RunningOnOperatingSystem);
+
+            var pk = new PrimaryKey {TheKey = parameters.PrimaryKey};
+            var appInfo = new ApplicationInfo
+            {
+                ApplicationName = parameters.ApplicationName, 
+                ApplicationVersion = parameters.ApplicationVersion,
+                RunningOnOperatingSystem = parameters.RunningOnOperatingSystem
+            };
+
             CancelCurrentImageReceiver();
 
             SlaveOwnerHandler.GetSlaveConnectionInfo(pk, appInfo);
@@ -87,8 +98,7 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
             // todo do not log personal info
             Logger.Debug("Login; Email: " + parameters.Email + "; Password: " + parameters.Password);
-            //return DatabaseHandler.Login(parameters);
-            return "Disabled";
+            return DatabaseHandler.Login(parameters);
         }
 
         public string CreateAccount(string parametersInJson)
@@ -96,8 +106,7 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
             // todo do not log personal info
             Logger.Debug("CreateAccount; Email: " + parameters.Email + "; Password: " + parameters.Password);
-            //return DatabaseHandler.CreateAccount(parameters);
-            return "Disabled";
+            return DatabaseHandler.CreateAccount(parameters);
         }
 
         private void StartImageReceiving(string key, string imagePath)

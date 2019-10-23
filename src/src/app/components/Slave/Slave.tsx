@@ -10,7 +10,11 @@ interface IState {
   key: string;
 }
 
-interface IProps { }
+interface IProps {
+  appName: string,
+  appVersion: string,
+  appOS: string 
+}
 
 export class Slave extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -24,16 +28,23 @@ export class Slave extends React.Component<IProps, IState> {
   }
 
   componentDidMount(): void {
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetImagesFromSlave, argument: ""});
-
+    ipcRenderer.send('call-backend-method', {
+      method: BackendMethods.GetImagesFromSlave, 
+      argument: {}
+      /*argument: {
+        PrimaryKey: ,
+        ApplicationName: , 
+        ApplicationVersion: , 
+        RunningOnOperatingSystem: 
+      }*/
+    });
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetImagesFromSlave, (event, arg) => {
       var json = JSON.parse(arg);
       ipcRenderer.send('resize-slave-window', {width: json["WindowWidth"], height: json["WindowHeight"], windowID: require('electron').remote.getCurrentWindow().id});
       this.setState({
         key: json["SlaveKey"]
       });
-      setInterval(() => this.updateImage(json["PathToImages"]), 50);
-
+      setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
     })
   }
 

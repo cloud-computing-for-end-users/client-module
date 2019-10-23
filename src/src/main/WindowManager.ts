@@ -36,14 +36,14 @@ export class WindowManager {
     };
 
     createSlaveWindow = (width: number, height: number) => {
-        let newSlaveWindow = new BrowserWindow({
+        let newSlaveWindow: any = new BrowserWindow({
             width: width,
             height: height,
             frame: false,
             resizable: true,
             webPreferences: {
                 nodeIntegration: true
-            }
+            } 
         });
 
         newSlaveWindow.loadURL(
@@ -59,6 +59,8 @@ export class WindowManager {
             if (index !== -1) this.slaveWindows.splice(index, 1);
             newSlaveWindow = null;
         });
+
+        newSlaveWindow.testProp = {'whatever': "I want"};
 
         this.slaveWindows.push(newSlaveWindow);
     }

@@ -51,7 +51,7 @@ export class Main extends React.Component<IProps, IState> {
   }  
 
   public handleLoggedInChange(loggedIn: boolean, loggedInAs: number): void {
-    this.setState({loggedIn});
+    this.setState({loggedIn, loggedInAs});
   }
 
   private GetAfterLoginView() : any {

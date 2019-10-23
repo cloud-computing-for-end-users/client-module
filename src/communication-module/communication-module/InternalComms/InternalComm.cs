@@ -31,7 +31,7 @@ namespace Core.InternalComms
             });
             internalConnection.On<string, string>("GetImagesFromSlave", param =>
             {
-                try { return externalCommunication.GetImagesFromSlave(new PrimaryKey(), new ApplicationInfo()); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.GetImagesFromSlave(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("MouseDown", param =>
             {
