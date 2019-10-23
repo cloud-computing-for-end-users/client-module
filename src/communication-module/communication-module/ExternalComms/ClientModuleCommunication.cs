@@ -41,7 +41,7 @@ namespace Core.ExternalComms
 
             SlaveOwnerHandler.GetSlaveConnectionInfo(pk, appInfo);
 
-            var key = SlaveControllerHandler.ConnectToSlave(SlaveOwnerHandler.SlaveConnectionInfo, ModuleType, _forSelf, this);
+            var key = SlaveControllerHandler.ConnectToSlave(SlaveOwnerHandler.Slave, ModuleType, _forSelf, this);
 
             SlaveControllerHandler.Handshake(key, pk);
 
@@ -98,7 +98,8 @@ namespace Core.ExternalComms
             Logger.Info("StartImageReceivingThread initiated");
 
             ImageReceiver.ImageReceiver.CancelLocal = false;
-            ImageReceiver.ImageReceiver.StartImageReceivingThread(SlaveOwnerHandler.SlaveConnectionInfo, imagePath);
+            
+            ImageReceiver.ImageReceiver.StartImageReceivingThread(SlaveOwnerHandler.Slave.SlaveConnection, imagePath);
         }
 
         private void CancelCurrentImageReceiver()

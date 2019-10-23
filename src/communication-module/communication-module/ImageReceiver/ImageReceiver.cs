@@ -49,7 +49,7 @@ namespace Core.ImageReceiver
 
         private static void StartReceivingImages(SlaveConnection connInfo, string filePath)
         {
-            IPAddress ipAddr = IPAddress.Parse(connInfo.IP.TheIP);
+            IPAddress ipAddr = IPAddress.Parse(connInfo.ConnectionInformation.IP.TheIP);
             IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.ConnectToRecieveImagesPort.ThePort);
 
             var receiver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);

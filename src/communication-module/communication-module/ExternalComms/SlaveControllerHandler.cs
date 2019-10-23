@@ -32,25 +32,26 @@ namespace Core.ExternalComms
             SlaveProxies = new Dictionary<string, SlaveInfo>();
         }
 
-        internal string ConnectToSlave(SlaveConnection slaveConnectionInfo, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
+        internal string ConnectToSlave(Slave slave, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
         {
-            Logger.Info("Attempting to connect to slave with network settings: {ip: " + slaveConnectionInfo.IP.TheIP + " comm port: " + slaveConnectionInfo.Port.ThePort + " registration port: " + slaveConnectionInfo.RegistrationPort.ThePort + "}");
+            Logger.Info("Attempting to connect to slave with network settings: {ip: " + slave.SlaveConnection.ConnectionInformation.IP.TheIP + " comm port: " + slave.SlaveConnection.ConnectionInformation.Port.ThePort + " registration port: " + slave.SlaveConnection.RegistrationPort.ThePort + "}");
+
 
             ProxyHelper proxyHelper = new ProxyHelper();
-            proxyHelper.Setup(new ConnectionInformation() { IP = slaveConnectionInfo.IP, Port = slaveConnectionInfo.Port },
-                slaveConnectionInfo.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP, Port = new Port() { ThePort = forSelf.Port.ThePort + 69 } }, that, new CustomEncoding());
+            proxyHelper.Setup(new ConnectionInformation() { IP = slave.SlaveConnection.ConnectionInformation.IP, Port = slave.SlaveConnection.ConnectionInformation.Port },
+                slave.SlaveConnection.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP , Port = new Port() { ThePort = forSelf.Port.ThePort + 69 } }, that, new CustomEncoding());
             Logger.Info("ProxyHelper setup done");
 
             Logger.Debug("Slave proxy module ID: " + proxyHelper.ModuleID.ID);
             // todo Key?
-            var key = GetDictionaryKey(slaveConnectionInfo);
+            var key = GetDictionaryKey(slave);
             Logger.Debug("Slave Owner Connection Info Hash: " + key);
             SlaveProxies.Add(key, new SlaveInfo{SlaveProxy = new SlaveProxy(proxyHelper, that)});
             return key;
         }
 
         // todo make type for dictionary key that is a wrapper for string
-        private static string GetDictionaryKey(SlaveConnection slaveOwnerConnectionInfo)
+        private static string GetDictionaryKey(Slave slaveOwnerConnectionInfo)
         {
             return "" + slaveOwnerConnectionInfo.GetHashCode();
         }
