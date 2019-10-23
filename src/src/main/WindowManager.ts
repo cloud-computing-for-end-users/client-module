@@ -35,7 +35,7 @@ export class WindowManager {
         });
     };
 
-    createSlaveWindow = (width: number, height: number) => {
+    createSlaveWindow = (width: number, height: number, appName: string, appVersion: string, appOs: string, primaryKey: number) => {
         let newSlaveWindow: any = new BrowserWindow({
             width: width,
             height: height,
@@ -60,7 +60,7 @@ export class WindowManager {
             newSlaveWindow = null;
         });
 
-        newSlaveWindow.testProp = {'whatever': "I want"};
+        newSlaveWindow.slaveWindowProps = {'appName': appName, 'appVersion': appVersion, 'appOs': appOs, 'primaryKey': primaryKey};
 
         this.slaveWindows.push(newSlaveWindow);
     }

@@ -57,7 +57,7 @@ export class Main extends React.Component<IProps, IState> {
   private GetAfterLoginView() : any {
     var view;
     switch(this.state.content) {
-      case ContentType.AppView: view = <AppView />; break;
+      case ContentType.AppView: view = <AppView primaryKey={this.state.loggedInAs} />; break;
       case ContentType.FileView: view = <FileView />; break;
     }
     return [

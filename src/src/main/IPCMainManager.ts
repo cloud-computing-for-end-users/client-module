@@ -5,7 +5,7 @@ import { CGIConnectionManager } from "./CGIConnectionManager";
 export class IPCMainManager {
     constructor(WindowHandler: WindowManager, CGIConnectionHandler: CGIConnectionManager) {
         ipcMain.on('create-slave-window', (event, arg) => {
-            WindowHandler.createSlaveWindow(arg.width, arg.height);
+            WindowHandler.createSlaveWindow(arg.width, arg.height, arg.appName, arg.appVersion, arg.appOs, arg.primaryKey);
         });
 
         ipcMain.on('resize-slave-window', (event, arg) => {

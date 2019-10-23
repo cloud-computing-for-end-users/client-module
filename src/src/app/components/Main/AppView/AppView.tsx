@@ -3,7 +3,9 @@ import {AppList} from "./AppList";
 
 interface IState { }
 
-interface IProps { }
+interface IProps {
+  primaryKey: number
+}
 
 export class AppView extends React.Component<IProps, IState> {
   constructor(props: IProps) {
@@ -16,7 +18,7 @@ export class AppView extends React.Component<IProps, IState> {
         <h1>List of apps</h1>
       </div>,
       <div key="AppList" className="row mx-2">
-        <AppList />
+        <AppList primaryKey={this.props.primaryKey} />
       </div>
     ]);
   }

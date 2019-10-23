@@ -21,8 +21,6 @@ if(document.getElementById('main')) {
 if(document.getElementById('slave')) {
     var electron = require('electron');
     var currentWindow: any = electron.remote.getCurrentWindow();
-     
-    console.log(currentWindow.custom);
-
-    //ReactDOM.render(<Slave />, document.getElementById('slave'));
+    var p: any = currentWindow.slaveWindowProps;
+    ReactDOM.render(<Slave appName={p.appName} appVersion={p.appVersion} appOS={p.appOs} primaryKey={p.primaryKey} />, document.getElementById('slave'));
 }

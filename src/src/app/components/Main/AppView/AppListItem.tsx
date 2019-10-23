@@ -8,7 +8,8 @@ interface IState { }
 interface IProps {
   appName: string,
   appVersion: string,
-  appOS: string
+  appOS: string,
+  primaryKey: number
 }
 
 export class AppListItem extends React.Component<IProps, IState> {
@@ -20,7 +21,14 @@ export class AppListItem extends React.Component<IProps, IState> {
   public newWindow() {
     const { ipcRenderer } = require('electron');
     // todo width and height
-    ipcRenderer.send('create-slave-window', {width: 800, height: 600});
+    ipcRenderer.send('create-slave-window', {
+      width: 800, 
+      height: 600,
+      appName: this.props.appName, 
+      appVersion: this.props.appVersion, 
+      appOs: this.props.appOS, 
+      primaryKey: this.props.primaryKey
+    });
   }
 
   public componentDidMount(): void {

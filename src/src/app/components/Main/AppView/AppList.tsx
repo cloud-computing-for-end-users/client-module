@@ -6,10 +6,12 @@ const { ipcRenderer } = require('electron');
 const spinner = require('../../../../../assets/svg/spinner.svg');
 
 interface IState {
-  appListItems : any
+  appListItems: any
 }
 
-interface IProps { }
+interface IProps {
+  primaryKey: number
+}
 
 var savedAppListItems : any = null;
 
@@ -37,7 +39,7 @@ export class AppList extends React.Component<IProps, IState> {
       var items = [];
       for (var i = 0; i < json.length; i++){
         var obj = json[i];
-        items.push(<AppListItem key={obj["ApplicationName"]} appName={obj["ApplicationName"]} appVersion={obj["ApplicationVersion"]} appOS={obj["RunningOnOperatingSystem"]} />)
+        items.push(<AppListItem key={obj["ApplicationName"]} primaryKey={this.props.primaryKey} appName={obj["ApplicationName"]} appVersion={obj["ApplicationVersion"]} appOS={obj["RunningOnOperatingSystem"]} />)
       }
       savedAppListItems = items;
       this.setState({

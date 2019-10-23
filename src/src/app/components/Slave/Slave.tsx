@@ -13,7 +13,8 @@ interface IState {
 interface IProps {
   appName: string,
   appVersion: string,
-  appOS: string 
+  appOS: string,
+  primaryKey: number 
 }
 
 export class Slave extends React.Component<IProps, IState> {
@@ -30,13 +31,12 @@ export class Slave extends React.Component<IProps, IState> {
   componentDidMount(): void {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.GetImagesFromSlave, 
-      argument: {}
-      /*argument: {
-        PrimaryKey: ,
-        ApplicationName: , 
-        ApplicationVersion: , 
-        RunningOnOperatingSystem: 
-      }*/
+      argument: {
+        PrimaryKey: this.props.primaryKey,
+        ApplicationName: this.props.appName, 
+        ApplicationVersion: this.props.appVersion, 
+        RunningOnOperatingSystem: this.props.appOS
+      }
     });
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetImagesFromSlave, (event, arg) => {
       var json = JSON.parse(arg);
