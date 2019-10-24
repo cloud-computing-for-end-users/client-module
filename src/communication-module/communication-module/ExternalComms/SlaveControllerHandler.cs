@@ -66,16 +66,16 @@ namespace Core.ExternalComms
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
 
-        internal string GetImageProducerConnectionInformation(string slaveProxyKey)
-        {
-            if (_port != null) return ImagePathForCurrentSlave();
-            Logger.Info("GetImageProducerConnectionInformation initiated");
-            Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
-            _keyForCallback = slaveProxyKey;
-            SlaveProxies[slaveProxyKey].SlaveProxy.GetImageProducerConnectionInformation(GetImageProducerConnectionInformationCallBack);
-            GeneralHandler.PollVariableFor10Seconds(ref _port);
-            return ImagePathForCurrentSlave();
-        }
+        //internal string GetImageProducerConnectionInformation(string slaveProxyKey)
+        //{
+        //    if (_port != null) return ImagePathForCurrentSlave();
+        //    Logger.Info("GetImageProducerConnectionInformation initiated");
+        //    Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
+        //    _keyForCallback = slaveProxyKey;
+        //    SlaveProxies[slaveProxyKey].SlaveProxy.GetImageProducerConnectionInformation(GetImageProducerConnectionInformationCallBack);
+        //    GeneralHandler.PollVariableFor10Seconds(ref _port);
+        //    return ImagePathForCurrentSlave();
+        //}
 
         internal string MouseAction(MouseUpAndDownParamsWrapper parameters, bool down)
         {
@@ -121,10 +121,10 @@ namespace Core.ExternalComms
             return "Sent";
         }
 
-        private string ImagePathForCurrentSlave()
+        public static string ImagePathForCurrentSlave(Port port)
         {
             // todo figure out the imagePath
-            return IMAGE_PATH + _port.ThePort + "\\";
+            return IMAGE_PATH + port.ThePort + "\\";
         }
 
         // Callbacks

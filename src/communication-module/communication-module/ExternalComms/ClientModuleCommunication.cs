@@ -16,7 +16,7 @@ namespace Core.ExternalComms
         private DatabaseHandler DatabaseHandler { get; set; }
         private SlaveControllerHandler SlaveControllerHandler { get; set; }
 
-        
+
         private readonly ConnectionInformation _forSelf;
         
         public override string CALL_ID_PREFIX => "ClientModule";
@@ -61,7 +61,7 @@ namespace Core.ExternalComms
 
             SlaveControllerHandler.Handshake(key, pk);
 
-            var imagePath = SlaveControllerHandler.GetImageProducerConnectionInformation(key);
+            var imagePath = SlaveControllerHandler.ImagePathForCurrentSlave(SlaveOwnerHandler.Slave.SlaveConnection.ConnectToRecieveImagesPort);
 
             StartImageReceiving(key, imagePath);
 
