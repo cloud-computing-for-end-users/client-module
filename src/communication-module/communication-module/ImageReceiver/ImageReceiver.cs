@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using custom_message_based_implementation.model;
-using message_based_communication.model;
 
 namespace Core.ImageReceiver
 {
@@ -118,7 +117,7 @@ namespace Core.ImageReceiver
                 Logger.Info("Saved an image received from Python process to " + BUFFER_FILE_NAME);
                 try
                 {
-                    File.Copy(filePath + BUFFER_FILE_NAME, filePath + ImageFileName, true);
+                    System.IO.File.Copy(filePath + BUFFER_FILE_NAME, filePath + ImageFileName, true);
                     Logger.Info("Copied buffer to " + ImageFileName);
                 }
                 catch (IOException e)

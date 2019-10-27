@@ -1,6 +1,8 @@
 import * as React from "react";
 import {EntryForm} from "./EntryForm";
 import {EntrySwitchButton} from "./EntrySwitchButton";
+import { CGIConnectionStatus, StatusTitle } from "../../Shared/CGIConnectionStatus";
+import FeatureFlags from "../../../FeatureFlags";
 
 interface IState {
   entryType: EntryType
@@ -39,6 +41,9 @@ export class Entry extends React.Component<IProps, IState> {
   public render(): React.ReactNode {
     return (
       <div className="container login-container">
+        {FeatureFlags.ShowConnectionStatus && 
+          <CGIConnectionStatus title={StatusTitle.ServerModule} />
+        }
         <EntryForm onLoggedInChange={this.props.onLoggedInChange} entryType={this.state.entryType} />
         <EntrySwitchButton onEntryFormChange={this.handleEntryFormChange} entryType={this.state.entryType} />
       </div>

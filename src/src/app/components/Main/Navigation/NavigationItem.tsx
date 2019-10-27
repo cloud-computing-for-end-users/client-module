@@ -15,7 +15,7 @@ export class NavigationItem extends React.Component<IProps, IState> {
     this.handleChange = this.handleChange.bind(this); 
   }
 
-  public handleChange(e: any) {
+  public handleChange() {
     this.props.onViewChange(this.props.name);
   }
 

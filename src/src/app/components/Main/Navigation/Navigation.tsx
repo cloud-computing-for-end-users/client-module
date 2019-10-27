@@ -2,6 +2,8 @@ import * as React from "react";
 import {ContentType} from "../Main";
 import {NavigationItem} from "./NavigationItem";
 import {NavigationSettings} from "./NavigationSettings";
+import {CGIConnectionStatus, StatusTitle} from "../../Shared/CGIConnectionStatus";
+import FeatureFlags from "../../../FeatureFlags";
 
 const logo = require('../../../../../assets/img/ccfeu.png');
 
@@ -28,12 +30,15 @@ export class Navigation extends React.Component<IProps, IState> {
       <div className="container-fluid px-0">
         <nav className="navbar navbar-expand">
           <div className="navbar-brand">
-            <img src={logo} width="40" height="40" className="d-inline-block align-top" alt="" />
+            <img src={logo} width="40" height="40" className="d-inline-block align-top" />
           </div>
           <div className="navbar-collapse" id="navbarText">
             <ul className="navbar-nav mr-auto">
               {items}
             </ul>
+            {FeatureFlags.ShowConnectionStatus && 
+              <CGIConnectionStatus title={StatusTitle.ServerModule} />
+            }
             <NavigationSettings onLoggedInChange={this.props.onLoggedInChange} />
           </div>
         </nav>

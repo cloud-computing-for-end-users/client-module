@@ -1,7 +1,6 @@
 ﻿using System;
 using Core.Exceptions;
 using Core.ExternalComms;
-using custom_message_based_implementation.model;
 using ElectronCgi.DotNet;
 
 namespace Core.InternalComms
@@ -25,6 +24,7 @@ namespace Core.InternalComms
         public void RegisterMethodsAndCallbacks()
         {
             Logger.Info("Registering callable methods from Electron");
+            internalConnection.On<string, string>("EstablishCGIConnection", param => "Established"); 
             internalConnection.On<string, string>("GetListOfApplications", param =>
             {
                 try { return externalCommunication.GetListOfApplications(); } catch (PollingException e) { return e.Handle(); } catch(Exception e) { return Handle(e); }
@@ -48,6 +48,30 @@ namespace Core.InternalComms
             internalConnection.On<string, string>("CreateAccount", param =>
             {
                 try { return externalCommunication.CreateAccount(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("GetListOfFiles", param =>
+            {
+                try { return externalCommunication.GetListOfFiles(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("UploadFile", param =>
+            {
+                try { return externalCommunication.UploadFile(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("DownloadFile", param =>
+            {
+                try { return externalCommunication.DownloadFile(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("RenameFile", param =>
+            {
+                try { return externalCommunication.RenameFile(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("TellSlaveToFetchFile", param =>
+            {
+                try { return externalCommunication.TellSlaveToFetchFile(param); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("SaveFilesAndTerminate", param =>
+            {
+                try { return externalCommunication.SaveFilesAndTerminate(param); } catch (Exception e) { return Handle(e); }
             });
         }
 

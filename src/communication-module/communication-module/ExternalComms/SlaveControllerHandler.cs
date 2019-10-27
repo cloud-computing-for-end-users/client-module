@@ -118,7 +118,19 @@ namespace Core.ExternalComms
             // todo null callback
             SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, action);
             // todo better return value; related to using callback
-            return "Sent";
+            return "Sent (MouseAction)";
+        }
+
+        internal string TellSlaveToFetchFile(SlaveKeyAndFileWrapper parameters)
+        {
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.FetchRemoteFile(null, parameters.FileName);
+            return "Sent (TellSlaveToFetchFile)";
+        }
+
+        internal string SaveFilesAndTerminate(SlaveKeyWrapper parameters)
+        {
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.SaveFilesAndTerminate(null);
+            return "Sent (SaveFilesAndTerminate)";
         }
 
         public static string ImagePathForCurrentSlave(Port port)

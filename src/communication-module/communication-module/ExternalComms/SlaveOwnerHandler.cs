@@ -17,15 +17,7 @@ namespace Core.ExternalComms
         private List<ApplicationInfo> _listOfApplications;
 
         internal Slave Slave => _slave;
-        internal List<ApplicationInfo> ListOfApplications
-        {
-            get
-            {
-                GetListOfApplications();
-                return _listOfApplications;
-            }
-        }
-
+        
         internal SlaveOwnerHandler(ProxyHelper ph, ClientModuleCommunication cmm)
         {
             this.SlaveOwnerServerProxy = new SlaveOwnerServermoduleProxy(ph, cmm);
@@ -46,12 +38,13 @@ namespace Core.ExternalComms
             */
         }
 
-        internal void GetListOfApplications()
+        internal string GetListOfApplications()
         {
             _listOfApplications = null;
             Logger.Info("GetListOfApplications initiated, set to null");
             SlaveOwnerServerProxy.GetListOfRunningApplications(GetListOfApplicationsCallBack);
             GeneralHandler.PollVariableFor10Seconds(ref _listOfApplications);
+            return GeneralHandler.ReturnAsJSON(_listOfApplications);
         }
 
         // Callbacks

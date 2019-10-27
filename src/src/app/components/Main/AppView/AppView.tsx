@@ -4,7 +4,7 @@ import {AppList} from "./AppList";
 interface IState { }
 
 interface IProps {
-  primaryKey: number
+  loggedInAs: number
 }
 
 export class AppView extends React.Component<IProps, IState> {
@@ -14,11 +14,11 @@ export class AppView extends React.Component<IProps, IState> {
 
   public render(): React.ReactNode {
     return ([
-      <div key="Heading" className="row mx-2">
+      <div key="Heading" className="row">
         <h1>List of apps</h1>
       </div>,
-      <div key="AppList" className="row mx-2">
-        <AppList primaryKey={this.props.primaryKey} />
+      <div key="AppList" className="row">
+        <AppList loggedInAs={this.props.loggedInAs} />
       </div>
     ]);
   }

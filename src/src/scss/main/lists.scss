@@ -1,0 +1,52 @@
+#app-list.list,
+#file-list.list {
+    .list-group-item {
+        cursor: pointer;
+        transition: background-color $transition-duration $transition-timing-function;
+           
+        &:hover {
+            background-color: $listview-background-darker;
+        }
+    }
+}
+
+#app-list {
+    .list-group-item {
+        padding: 0.75rem;
+
+        div span.app-version {
+            font-size: 12px; 
+            color: $gray-text-color;
+        }
+
+        .list-icon {
+            width: 42px;
+            height: 42px;
+        }
+    }
+}
+
+#file-list {
+    .list-group-item {
+        padding: 0.25rem;
+        
+        &.active {
+            background-color: $listview-background-active;
+            
+            &:hover {
+                background-color: $listview-background-active;
+            }
+        }
+
+        .list-icon {
+            width: 21px;
+            height: 21px;
+        }
+    }
+}
+
+#file-list-buttons {
+    button {
+        margin: .5rem .5rem 0 0;
+    }
+}

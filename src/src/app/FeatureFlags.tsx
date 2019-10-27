@@ -1,9 +1,11 @@
 interface FeatureFlags {
     AllowLogin: boolean;
+    ShowConnectionStatus: boolean;
 }
 
 let FeatureFlags: FeatureFlags = {
-    AllowLogin: false
+    AllowLogin: true,
+    ShowConnectionStatus: true
 };
 
 export default FeatureFlags;

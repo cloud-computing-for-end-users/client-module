@@ -14,7 +14,7 @@ interface IProps {
   appName: string,
   appVersion: string,
   appOS: string,
-  primaryKey: number 
+  loggedInAs: number 
 }
 
 export class Slave extends React.Component<IProps, IState> {
@@ -32,7 +32,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.GetImagesFromSlave, 
       argument: {
-        PrimaryKey: this.props.primaryKey,
+        PrimaryKey: this.props.loggedInAs,
         ApplicationName: this.props.appName, 
         ApplicationVersion: this.props.appVersion, 
         RunningOnOperatingSystem: this.props.appOS

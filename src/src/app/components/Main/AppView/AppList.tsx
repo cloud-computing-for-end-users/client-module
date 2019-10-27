@@ -10,7 +10,7 @@ interface IState {
 }
 
 interface IProps {
-  primaryKey: number
+  loggedInAs: number
 }
 
 var savedAppListItems : any = null;
@@ -39,7 +39,7 @@ export class AppList extends React.Component<IProps, IState> {
       var items = [];
       for (var i = 0; i < json.length; i++){
         var obj = json[i];
-        items.push(<AppListItem key={obj["ApplicationName"]} primaryKey={this.props.primaryKey} appName={obj["ApplicationName"]} appVersion={obj["ApplicationVersion"]} appOS={obj["RunningOnOperatingSystem"]} />)
+        items.push(<AppListItem key={obj["ApplicationName"]} loggedInAs={this.props.loggedInAs} appName={obj["ApplicationName"]} appVersion={obj["ApplicationVersion"]} appOS={obj["RunningOnOperatingSystem"]} />)
       }
       savedAppListItems = items;
       this.setState({
@@ -54,7 +54,7 @@ export class AppList extends React.Component<IProps, IState> {
 
   public render(): React.ReactNode {    
     return (
-      <ul id="app-list" className="list-group">
+      <ul id="app-list" className="list-group list">
         {this.state.appListItems}
       </ul>
     );

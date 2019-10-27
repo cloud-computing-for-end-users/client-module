@@ -30,7 +30,7 @@ export class Main extends React.Component<IProps, IState> {
       content: ContentType.AppView, // default Apps tab
       loggedIn: false,
       loggedInAs: 0
-    };
+    };    
   }
 
   disableDragging(): void {
@@ -57,12 +57,12 @@ export class Main extends React.Component<IProps, IState> {
   private GetAfterLoginView() : any {
     var view;
     switch(this.state.content) {
-      case ContentType.AppView: view = <AppView primaryKey={this.state.loggedInAs} />; break;
-      case ContentType.FileView: view = <FileView />; break;
+      case ContentType.AppView: view = <AppView loggedInAs={this.state.loggedInAs} />; break;
+      case ContentType.FileView: view = <FileView loggedInAs={this.state.loggedInAs} />; break;
     }
     return [
       <Navigation key="Navigation" active={this.state.content} onViewChange={this.handleViewChange} onLoggedInChange={this.handleLoggedInChange} />,
-      <div key="MainView" className="container">
+      <div key="MainView" className="container mx-3">
         {view}    
       </div>
     ];

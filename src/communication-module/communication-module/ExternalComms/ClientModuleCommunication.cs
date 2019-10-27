@@ -15,6 +15,7 @@ namespace Core.ExternalComms
         private SlaveOwnerHandler SlaveOwnerHandler { get; set; }
         private DatabaseHandler DatabaseHandler { get; set; }
         private SlaveControllerHandler SlaveControllerHandler { get; set; }
+        private FileHandler FileHandler { get; set; }
 
 
         private readonly ConnectionInformation _forSelf;
@@ -38,6 +39,8 @@ namespace Core.ExternalComms
             Logger.Debug("Setup of SlaveControllerHandler done");
             DatabaseHandler = new DatabaseHandler(proxyHelper, this);
             Logger.Debug("Setup of DatabaseHandler done");
+            FileHandler = new FileHandler(proxyHelper, this);
+            Logger.Debug("Setup of FileHandler done");
         }
 
         public string GetImagesFromSlave(string parametersInJson)
@@ -63,7 +66,7 @@ namespace Core.ExternalComms
 
             var imagePath = SlaveControllerHandler.ImagePathForCurrentSlave(SlaveOwnerHandler.Slave.SlaveConnection.ConnectToRecieveImagesPort);
 
-            StartImageReceiving(key, imagePath);
+            StartImageReceiving(imagePath);
 
             return GeneralHandler.ReturnAsJSON(new InitializeSlaveAppWindowWrapper
             {
@@ -76,7 +79,8 @@ namespace Core.ExternalComms
 
         public string GetListOfApplications()
         {
-            return GeneralHandler.ReturnAsJSON(SlaveOwnerHandler.ListOfApplications);
+            Logger.Debug("GetListOfApplications;");
+            return SlaveOwnerHandler.GetListOfApplications();
         }
 
         public string MouseDown(string parametersInJson)
@@ -109,7 +113,49 @@ namespace Core.ExternalComms
             return DatabaseHandler.CreateAccount(parameters);
         }
 
-        private void StartImageReceiving(string key, string imagePath)
+        public string GetListOfFiles(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<PrimaryKeyWrapper>(parametersInJson);
+            Logger.Debug("GetListOfFiles; Primary key: " + parameters.PrimaryKey);
+            return FileHandler.GetListOfFiles(parameters);
+        }
+
+        public string UploadFile(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<PrimaryKeyAndFileWrapper>(parametersInJson);
+            Logger.Debug("UploadFile; Primary key: " + parameters.PrimaryKey + "; File name: " + parameters.FileName);
+            return FileHandler.UploadFile(parameters);
+        }
+
+        public string DownloadFile(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<PrimaryKeyAndFileWrapper>(parametersInJson);
+            Logger.Debug("DownloadFile; Primary key: " + parameters.PrimaryKey + "; File name: " + parameters.FileName);
+            return FileHandler.DownloadFile(parameters);
+        }
+
+        public string RenameFile(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<RenameFileWrapper>(parametersInJson);
+            Logger.Debug("RenameFile; Primary key: " + parameters.PrimaryKey + "; Old file name: " + parameters.OldFileName + "; Old file name: " + parameters.NewFileName);
+            return FileHandler.RenameFile(parameters);
+        }
+
+        public string TellSlaveToFetchFile(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<SlaveKeyAndFileWrapper>(parametersInJson);
+            Logger.Debug("TellSlaveToFetchFile; Slave key: " + parameters.SlaveKey + "; File name: " + parameters.FileName);
+            return SlaveControllerHandler.TellSlaveToFetchFile(parameters);
+        }
+
+        public string SaveFilesAndTerminate(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<SlaveKeyWrapper>(parametersInJson);
+            Logger.Debug("SaveFilesAndTerminate; Slave key: " + parameters.SlaveKey);
+            return SlaveControllerHandler.SaveFilesAndTerminate(parameters);
+        }
+
+        private void StartImageReceiving(string imagePath)
         {
             Logger.Info("StartImageReceivingThread initiated");
 

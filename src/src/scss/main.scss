@@ -8,10 +8,11 @@
 
 // Shared
 @import "./shared/all.scss";
+@import "./shared/status.scss";
 @import "./shared/window-controls.scss";
 
 // Main
-@import "./main/appview.scss";
+@import "./main/lists.scss";
 @import "./main/navigation.scss";
 
 // Slave
