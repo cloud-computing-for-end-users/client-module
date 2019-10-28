@@ -35,21 +35,21 @@ namespace Core.ExternalComms
             Logger.Info("UploadFile initiated");
             var fileData = System.IO.File.ReadAllBytes(parameters.FileName); // file name is an absolute path of the uploaded file
             FileServermoduleProxy.UploadFile(new File{FileData = fileData, FileName = new FileName{FileNameProp = parameters.FileName}}, new PrimaryKey { TheKey = parameters.PrimaryKey }, false, UploadFileCallback);
-            return "UploadFile done";
+            return "Done (UploadFile)";
         }
 
         internal string DownloadFile(PrimaryKeyAndFileWrapper parameters)
         {
             Logger.Info("DownloadFile initiated");
             FileServermoduleProxy.DownloadFile(new FileName{FileNameProp = parameters.FileName}, new PrimaryKey{TheKey = parameters.PrimaryKey}, DownloadFileCallback);
-            return "DownloadFile done";
+            return "Done (DownloadFile)";
         }
 
         internal string RenameFile(RenameFileWrapper parameters)
         {
             Logger.Info("RenameFile initiated");
             FileServermoduleProxy.RenameFile(new FileName { FileNameProp = parameters.OldFileName }, new FileName { FileNameProp = parameters.NewFileName }, new PrimaryKey { TheKey = parameters.PrimaryKey }, RenameFileCallback);
-            return "RenameFile done";
+            return "Done (RenameFile)";
         }
 
         // Callbacks

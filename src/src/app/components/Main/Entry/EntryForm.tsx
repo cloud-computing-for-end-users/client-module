@@ -73,7 +73,7 @@ export class EntryForm extends React.Component<IProps, IState> {
     });
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     var buttonText, headingText;
     switch(this.props.entryType) {
       case EntryType.Login: 

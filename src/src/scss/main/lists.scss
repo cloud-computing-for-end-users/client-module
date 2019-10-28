@@ -46,7 +46,13 @@
 }
 
 #file-list-buttons {
-    button {
+    button, div {
         margin: .5rem .5rem 0 0;
+    }
+
+    div {
+        button {
+            margin-right: 0;
+        }
     }
 }
