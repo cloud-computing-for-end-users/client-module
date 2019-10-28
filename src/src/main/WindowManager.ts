@@ -43,7 +43,7 @@ export class WindowManager {
         this.CGIConnectionHandler.setMainWindow(this.mainWindow);
     };
 
-    createSlaveWindow = (width: number, height: number, appName: string, appVersion: string, appOs: string, loggedInAs: number) => {
+    createSlaveWindow = (width: number, height: number, appName: string, appVersion: string, appOs: string, loggedInAs: number, appKey: number) => {
         let newSlaveWindow: any = new BrowserWindow({
             width: width,
             height: height,
@@ -68,7 +68,7 @@ export class WindowManager {
             newSlaveWindow = null;
         });
 
-        newSlaveWindow.slaveWindowProps = {'appName': appName, 'appVersion': appVersion, 'appOs': appOs, 'loggedInAs': loggedInAs};
+        newSlaveWindow.slaveWindowProps = {'appName': appName, 'appVersion': appVersion, 'appOs': appOs, 'loggedInAs': loggedInAs, 'appKey': appKey};
 
         this.slaveWindows.push(newSlaveWindow);
     }

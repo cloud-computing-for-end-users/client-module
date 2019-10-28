@@ -14,6 +14,14 @@ interface IState {
   loggedInAs: number
 }
 
+let appsMap = new Map<number, IApp>();
+// todo put model interfaces to a separate file 
+export interface IApp {
+  appName: string
+}
+
+export default appsMap;
+
 interface IProps { }
 
 export enum ContentType {
@@ -46,11 +54,11 @@ export class Main extends React.Component<IProps, IState> {
     this.disableDragging();
   }
 
-  public handleViewChange(content: ContentType): void {
+  handleViewChange(content: ContentType): void {
     this.setState({content});
   }  
 
-  public handleLoggedInChange(loggedIn: boolean, loggedInAs: number): void {
+  handleLoggedInChange(loggedIn: boolean, loggedInAs: number): void {
     this.setState({loggedIn, loggedInAs});
   }
 
@@ -81,7 +89,7 @@ export class Main extends React.Component<IProps, IState> {
     }
     
     return ( [ 
-        <WindowControls showDragControl={true} key="WindowControls" />,
+        <WindowControls slaveAppKey={null} showDragControl={true} key="WindowControls" />,
         toRender
       ]
     );

@@ -1,8 +1,10 @@
 import * as React from "react";
+import appsMap from "../Main/Main";
 
 interface IState { }
 interface IProps { 
-  showDragControl: Boolean
+  showDragControl: boolean,
+  slaveAppKey: number | null 
 }
 
 export class WindowControls extends React.Component<IProps, IState> {
@@ -13,8 +15,12 @@ export class WindowControls extends React.Component<IProps, IState> {
   }
 
   public handleCloseControl(e: any) {
-    const { remote } = require('electron')
-    remote.BrowserWindow.getFocusedWindow().close();
+    if(this.props.slaveAppKey !== null) {
+      appsMap.delete(this.props.slaveAppKey);
+      console.log(appsMap);
+    }
+    //const { remote } = require('electron')
+    //remote.BrowserWindow.getFocusedWindow().close();
   }
 
   public handleMinimizeControl(e: any) {

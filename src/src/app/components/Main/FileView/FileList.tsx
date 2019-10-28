@@ -49,6 +49,7 @@ export class FileList extends React.Component<IProps, IState> {
         var obj = json[i];
         items.push(<FileListItem key={obj["FileNameProp"]} fileName={obj["FileNameProp"]} />)
       }
+      // todo show message when having 0 files
       savedFileListItems = items;
       this.setState({
         fileListItems: savedFileListItems

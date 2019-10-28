@@ -14,7 +14,8 @@ interface IProps {
   appName: string,
   appVersion: string,
   appOS: string,
-  loggedInAs: number 
+  loggedInAs: number,
+  slaveAppKey: number
 }
 
 export class Slave extends React.Component<IProps, IState> {
@@ -118,7 +119,7 @@ export class Slave extends React.Component<IProps, IState> {
     }
     
     return ([
-      <WindowControls showDragControl={true} key="WindowControls" />,
+      <WindowControls slaveAppKey={this.props.slaveAppKey} showDragControl={true} key="WindowControls" />,
       <div key="SlaveView">{toRender}</div>
     ]);
   }
