@@ -11,7 +11,7 @@ export class FileList extends React.Component<IProps, IState> {
     super(props);
   }
 
-  public render(): React.ReactNode {    
+  render(): React.ReactNode {    
     return (
       <ul id="file-list" className="list-group list">
         {this.props.fileListItems}

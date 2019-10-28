@@ -56,7 +56,7 @@ export class CGIConnectionManager {
         }
     }
 
-    public setMainWindow( mainWindow: BrowserWindow) {
+    setMainWindow( mainWindow: BrowserWindow) {
         this.mainWindow = mainWindow;
         this.mainWindow.webContents.on('did-finish-load', () => {
             this.mainWindowLoaded = true;

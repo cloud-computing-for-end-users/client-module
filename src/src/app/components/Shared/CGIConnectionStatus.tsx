@@ -44,7 +44,7 @@ export class CGIConnectionStatus extends React.Component<IProps, IState> {
         });
     }
 
-    public render(): React.ReactNode {
+    render(): React.ReactNode {
         return (
             <div title={this.props.title} className={"status " + this.state.status}></div>
         );

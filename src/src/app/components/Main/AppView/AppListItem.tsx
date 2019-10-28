@@ -20,7 +20,7 @@ export class AppListItem extends React.Component<IProps, IState> {
     this.newWindow = this.newWindow.bind(this);
   }
 
-  public newWindow() {
+  newWindow() {
     const { ipcRenderer } = require('electron');
     // todo width and height
     ipcRenderer.send('create-slave-window', {
@@ -35,7 +35,7 @@ export class AppListItem extends React.Component<IProps, IState> {
     appsMap.set(appsMap.size, {appName: this.props.appName});
   }
 
-  public componentDidMount(): void {
+  componentDidMount(): void {
     $(function () {
       ($('[data-toggle="tooltip"]') as any).tooltip()
     });

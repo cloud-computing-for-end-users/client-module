@@ -15,11 +15,11 @@ export class NavigationItem extends React.Component<IProps, IState> {
     this.handleChange = this.handleChange.bind(this); 
   }
 
-  public handleChange() {
+  handleChange() {
     this.props.onViewChange(this.props.name);
   }
 
-  public render(): React.ReactNode {   
+  render(): React.ReactNode {   
     return (
       <li onClick={this.handleChange} className={"nav-item" + (this.props.active ? " active" : "")} >
         <a className="nav-link" href="#">{this.props.name}</a>

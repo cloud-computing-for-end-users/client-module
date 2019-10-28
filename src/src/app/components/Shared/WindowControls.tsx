@@ -14,7 +14,7 @@ export class WindowControls extends React.Component<IProps, IState> {
     this.handleMinimizeControl = this.handleMinimizeControl.bind(this); 
   }
 
-  public handleCloseControl(e: any) {
+  handleCloseControl(e: any) {
     /* todo
     if(this.props.slaveAppKey !== null) {
       appsMap.delete(this.props.slaveAppKey);
@@ -24,12 +24,12 @@ export class WindowControls extends React.Component<IProps, IState> {
     remote.BrowserWindow.getFocusedWindow().close();
   }
 
-  public handleMinimizeControl(e: any) {
+  handleMinimizeControl(e: any) {
     const { remote } = require('electron')
     remote.BrowserWindow.getFocusedWindow().minimize();
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     return ( 
         <div className="window-controls">
             {this.props.showDragControl && 

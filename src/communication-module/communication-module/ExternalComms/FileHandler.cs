@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using Core.ImageReceiver;
 using custom_message_based_implementation.model;
 using custom_message_based_implementation.proxy;
@@ -66,7 +67,7 @@ namespace Core.ExternalComms
 
         private void DownloadFileCallback(File file)
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            var path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads", file.FileName.FileNameProp);
             Logger.Debug("Overwriting " + path);
             System.IO.File.WriteAllBytes(path, file.FileData);
             Logger.Info("Download of file executed(DownloadFileCallback)");

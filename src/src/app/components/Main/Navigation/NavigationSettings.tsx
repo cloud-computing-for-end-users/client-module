@@ -14,11 +14,11 @@ export class NavigationSettings extends React.Component<IProps, IState> {
     this.handleOnClick = this.handleOnClick.bind(this); 
   }
 
-  public handleOnClick(e: any) {
+  handleOnClick(e: any) {
     this.props.onLoggedInChange(false, 0);
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     var options = ["Logout"];
     const items = options.map((option) =>
       <a key={option} onClick={this.handleOnClick} className="dropdown-item" href="#">{option}</a>

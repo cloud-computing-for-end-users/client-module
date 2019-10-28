@@ -52,7 +52,7 @@ export class AppList extends React.Component<IProps, IState> {
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetListOfApplications);
   }
 
-  public render(): React.ReactNode {    
+  render(): React.ReactNode {    
     return (
       <ul id="app-list" className="list-group list">
         {this.state.appListItems}

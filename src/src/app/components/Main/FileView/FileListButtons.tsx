@@ -32,7 +32,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
       ipcRenderer.send('call-backend-method', {
         method: BackendMethods.DownloadFile, 
         argument: {
-          PrimaryKey: this.props.loggedInAs,
+          PrimaryKey: "123", // todo this.props.loggedInAs
           FileName: fileName
         }
       });
@@ -57,7 +57,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
         ipcRenderer.send('call-backend-method', {
           method: BackendMethods.UploadFile, 
           argument: {
-            PrimaryKey: this.props.loggedInAs,
+            PrimaryKey: "123", // todo this.props.loggedInAs
             FileName:  result.filePaths[0]
           }
         });
@@ -88,7 +88,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
       ipcRenderer.send('call-backend-method', {
         method: BackendMethods.RenameFile, 
         argument: {
-          PrimaryKey: this.props.loggedInAs, // todo specific slave
+          PrimaryKey: "123", // todo this.props.loggedInAs
           OldFileName: fileName,
           NewFileName: this.state.renameFileInput
         }
@@ -103,7 +103,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
       alert("Choose a file - (todo)")
     }
   }
-
 
   private handleOnClickSend() {
     let fileName = this.getActiveFileName();
@@ -133,7 +132,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
 
   render(): React.ReactNode {    
     // todo change buttons to active / non-active if a file is selected
-    
+    // todo make the button layout prettier
     return (
       <div id="file-list-buttons">
         <button onClick={this.handleOnClickDownload} className="btn btn-outline-primary">Download file</button>

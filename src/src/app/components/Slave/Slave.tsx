@@ -33,7 +33,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.GetImagesFromSlave, 
       argument: {
-        PrimaryKey: this.props.loggedInAs,
+        PrimaryKey: this.props.loggedInAs, 
         ApplicationName: this.props.appName, 
         ApplicationVersion: this.props.appVersion, 
         RunningOnOperatingSystem: this.props.appOS
@@ -45,10 +45,9 @@ export class Slave extends React.Component<IProps, IState> {
       this.setState({
         slaveKey: json["SlaveKey"]
       });
-      /* todo
       console.log("TEST; set-slaveKey-for-slaveAppWindow - remove me")
       ipcRenderer.send('set-slaveKey-for-slaveAppWindow', {slaveAppWindowKey: this.props.slaveAppWindowKey, slaveKey: this.state.slaveKey})
-      */
+      
       setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
     })
   }
@@ -57,7 +56,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetImagesFromSlave);
   }
 
-  public updateImage(imgPath: string): void {
+  updateImage(imgPath: string): void {
     let path = imgPath + "?" + Date.now();
     let newImg = new Image();
     newImg.onerror=(() => console.log("Error on image occured"));    
@@ -102,7 +101,7 @@ export class Slave extends React.Component<IProps, IState> {
     }
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     var toRender;
     if(this.state.img === null) {
       toRender = (

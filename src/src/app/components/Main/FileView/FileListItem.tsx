@@ -21,7 +21,7 @@ export class FileListItem extends React.Component<IProps, IState> {
     $(e.currentTarget).toggleClass("active");
   }
  
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     return (
       <li onClick={this.handleOnClick} className="list-group-item d-flex align-items-center">
         <img src={fileIcon} className="d-inline-block align-top list-icon" />

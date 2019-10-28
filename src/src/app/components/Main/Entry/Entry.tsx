@@ -38,7 +38,7 @@ export class Entry extends React.Component<IProps, IState> {
     }
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     return (
       <div className="container login-container">
         {FeatureFlags.ShowConnectionStatus && 

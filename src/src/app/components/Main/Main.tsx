@@ -68,7 +68,7 @@ export class Main extends React.Component<IProps, IState> {
     ];
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     var toRender;
     if(FeatureFlags.AllowLogin) {
       if(this.state.loggedIn) {

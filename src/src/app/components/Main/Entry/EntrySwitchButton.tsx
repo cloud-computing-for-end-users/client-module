@@ -18,7 +18,7 @@ export class EntrySwitchButton extends React.Component<IProps, IState> {
     this.props.onEntryFormChange();
   }
 
-  public render(): React.ReactNode {
+  render(): React.ReactNode {
     var buttonText, helpText;
     switch(this.props.entryType) {
       case EntryType.Login: 

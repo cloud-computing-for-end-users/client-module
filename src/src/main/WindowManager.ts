@@ -12,7 +12,9 @@ export class WindowManager {
     constructor(CGIConnectionHandler: CGIConnectionManager) {
         this.CGIConnectionHandler = CGIConnectionHandler;
         ipcMain.on('set-slaveKey-for-slaveAppWindow', (event, arg) => {  
-            console.log(arg);
+            console.log(arg)
+            console.log(arg.slaveAppWindowKey)
+            console.log(arg.slaveKey)
             this.slaveWindows.forEach(function(entry) {
                 console.log(entry);
                 let entryAny: any = entry;
