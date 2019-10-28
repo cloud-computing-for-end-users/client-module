@@ -33,7 +33,6 @@ export class AppListItem extends React.Component<IProps, IState> {
       appKey: appsMap.size
     });
     appsMap.set(appsMap.size, {appName: this.props.appName});
-    console.log(appsMap);
   }
 
   public componentDidMount(): void {

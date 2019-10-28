@@ -123,7 +123,24 @@ namespace Core.ExternalComms
 
         internal string TellSlaveToFetchFile(SlaveKeyAndFileWrapper parameters)
         {
-            SlaveProxies[parameters.SlaveKey].SlaveProxy.FetchRemoteFile(null, parameters.FileName);
+            // todo temporary solution
+            if (parameters.SlaveKey.Equals("ALL"))
+            {
+                Logger.Debug("Telling all slaves to fetch file");
+                var e = SlaveProxies.GetEnumerator();
+                Logger.Debug("Current enumerator value is: " + e.Current);
+                while (e.MoveNext())
+                {
+                    Logger.Debug("Current enumerator value is: " + e.Current);
+                    e.Current.Value.SlaveProxy.FetchRemoteFile(null, parameters.FileName);
+                }
+                e.Dispose();
+            } 
+            else
+            {
+                Logger.Debug("Telling slave with key " + parameters.SlaveKey + " to fetch file");
+                SlaveProxies[parameters.SlaveKey].SlaveProxy.FetchRemoteFile(null, parameters.FileName);
+            }
             return "Sent (TellSlaveToFetchFile)";
         }
 

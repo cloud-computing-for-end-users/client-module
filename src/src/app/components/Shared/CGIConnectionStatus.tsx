@@ -35,7 +35,6 @@ export class CGIConnectionStatus extends React.Component<IProps, IState> {
             });
             ipcRenderer.send('call-backend-method', { method: BackendMethods.EstablishCGIConnection, argument: "" });
             ipcRenderer.on('reply-backend-method-' + BackendMethods.EstablishCGIConnection, (event, arg) => {
-                console.log(arg);
                 if(arg == "Established") {
                     this.setState({
                         status: StatusColor.Green

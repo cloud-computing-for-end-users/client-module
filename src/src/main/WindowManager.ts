@@ -2,7 +2,7 @@ const url = require("url");
 const path = require("path");
 import { CGIConnectionManager } from "./CGIConnectionManager";
 
-import { BrowserWindow } from "electron";
+import { BrowserWindow, ipcMain } from "electron";
 
 export class WindowManager {
     slaveWindows: BrowserWindow[] = [];
@@ -11,6 +11,14 @@ export class WindowManager {
 
     constructor(CGIConnectionHandler: CGIConnectionManager) {
         this.CGIConnectionHandler = CGIConnectionHandler;
+        ipcMain.on('set-slaveKey-for-slaveAppWindow', (event, arg) => {  
+            console.log(arg);
+            this.slaveWindows.forEach(function(entry) {
+                console.log(entry);
+                let entryAny: any = entry;
+                console.log(entryAny.slaveWindowProps);
+            });
+        });
     }
 
     createWindow = () => {
@@ -43,7 +51,7 @@ export class WindowManager {
         this.CGIConnectionHandler.setMainWindow(this.mainWindow);
     };
 
-    createSlaveWindow = (width: number, height: number, appName: string, appVersion: string, appOs: string, loggedInAs: number, appKey: number) => {
+    createSlaveWindow = (width: number, height: number, appName: string, appVersion: string, appOs: string, loggedInAs: number, slaveAppWindowKey: number) => {
         let newSlaveWindow: any = new BrowserWindow({
             width: width,
             height: height,
@@ -68,7 +76,7 @@ export class WindowManager {
             newSlaveWindow = null;
         });
 
-        newSlaveWindow.slaveWindowProps = {'appName': appName, 'appVersion': appVersion, 'appOs': appOs, 'loggedInAs': loggedInAs, 'appKey': appKey};
+        newSlaveWindow.slaveWindowProps = {'appName': appName, 'appVersion': appVersion, 'appOs': appOs, 'loggedInAs': loggedInAs, 'slaveAppWindowKey': slaveAppWindowKey};
 
         this.slaveWindows.push(newSlaveWindow);
     }

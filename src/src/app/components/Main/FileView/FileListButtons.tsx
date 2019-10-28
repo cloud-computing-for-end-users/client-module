@@ -1,5 +1,8 @@
 import * as React from "react";
-    
+import * as $ from "jquery";
+import {BackendMethods} from "../../../renderer";
+const { ipcRenderer } = require('electron');
+
 interface IState {}
 
 interface IProps {
@@ -28,33 +31,25 @@ export class FileListButtons extends React.Component<IProps, IState> {
   }
 
   private handleOnClickSend() {
-    const { BrowserWindow, remote } = require('electron')
-    const url = require("url");
-    const path = require("path");
-
-    console.log(path.join(__dirname, "modal.html"));
-    alert(path.join(__dirname, "modal.html"));
-    /*
-    var currentWindow: any = remote.getCurrentWindow();
-    let modal = new BrowserWindow({ parent: currentWindow, modal: true, show: false })
-    modal.loadURL(
-      url.format({
-          pathname: path.join(__dirname, "modal.html"),
-          protocol: "file:",
-          slashes: true
+    let span = $("#file-list li.active div span");
+    if(span.length === 1) {
+      ipcRenderer.send('call-backend-method', {
+        method: BackendMethods.TellSlaveToFetchFile, 
+        argument: {
+          SlaveKey: "ALL", // todo specific slave
+          FileName: span[0].innerText
+        }
+      });
+      ipcRenderer.on('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile, (event, arg) => {
+        console.log(arg);
+        // Sent (TellSlaveToFetchFile)
       })
-    );
-    
-    child.loadURL('https://github.com')
-    child.once('ready-to-show', () => {
-      child.show()
-    })
-
-    alert("Not implemented send");
-    */
+    }
   }
 
   public render(): React.ReactNode {    
+    // todo change buttons to active / non-active if a file is selected
+    
     return (
       <div id="file-list-buttons">
         <button onClick={this.handleOnClickDownload} className="btn btn-outline-primary">Download file</button>

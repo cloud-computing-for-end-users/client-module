@@ -15,12 +15,13 @@ export class WindowControls extends React.Component<IProps, IState> {
   }
 
   public handleCloseControl(e: any) {
+    /* todo
     if(this.props.slaveAppKey !== null) {
       appsMap.delete(this.props.slaveAppKey);
       console.log(appsMap);
-    }
-    //const { remote } = require('electron')
-    //remote.BrowserWindow.getFocusedWindow().close();
+    } */
+    const { remote } = require('electron')
+    remote.BrowserWindow.getFocusedWindow().close();
   }
 
   public handleMinimizeControl(e: any) {

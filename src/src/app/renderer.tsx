@@ -28,5 +28,5 @@ if(document.getElementById('slave')) {
     var electron = require('electron');
     var currentWindow: any = electron.remote.getCurrentWindow();
     var p: any = currentWindow.slaveWindowProps;
-    ReactDOM.render(<Slave appName={p.appName} appVersion={p.appVersion} appOS={p.appOs} loggedInAs={p.loggedInAs} slaveAppKey={p.appKey} />, document.getElementById('slave'));
+    ReactDOM.render(<Slave appName={p.appName} appVersion={p.appVersion} appOS={p.appOs} loggedInAs={p.loggedInAs} slaveAppWindowKey={p.slaveAppWindowKey} />, document.getElementById('slave'));
 }

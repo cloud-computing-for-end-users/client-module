@@ -14,14 +14,6 @@ interface IState {
   loggedInAs: number
 }
 
-let appsMap = new Map<number, IApp>();
-// todo put model interfaces to a separate file 
-export interface IApp {
-  appName: string
-}
-
-export default appsMap;
-
 interface IProps { }
 
 export enum ContentType {

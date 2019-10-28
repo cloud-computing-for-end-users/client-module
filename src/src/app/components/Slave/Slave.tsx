@@ -7,7 +7,7 @@ const spinner = require('../../../../assets/svg/spinner.svg');
 
 interface IState {
   img: any;
-  key: string;
+  slaveKey: string;
 }
 
 interface IProps {
@@ -15,7 +15,7 @@ interface IProps {
   appVersion: string,
   appOS: string,
   loggedInAs: number,
-  slaveAppKey: number
+  slaveAppWindowKey: number
 }
 
 export class Slave extends React.Component<IProps, IState> {
@@ -25,7 +25,7 @@ export class Slave extends React.Component<IProps, IState> {
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
     this.state = { 
       img: null,
-      key: null
+      slaveKey: null
     };
   }
 
@@ -43,8 +43,12 @@ export class Slave extends React.Component<IProps, IState> {
       var json = JSON.parse(arg);
       ipcRenderer.send('resize-slave-window', {width: json["WindowWidth"], height: json["WindowHeight"], windowID: require('electron').remote.getCurrentWindow().id});
       this.setState({
-        key: json["SlaveKey"]
+        slaveKey: json["SlaveKey"]
       });
+      /* todo
+      console.log("TEST; set-slaveKey-for-slaveAppWindow - remove me")
+      ipcRenderer.send('set-slaveKey-for-slaveAppWindow', {slaveAppWindowKey: this.props.slaveAppWindowKey, slaveKey: this.state.slaveKey})
+      */
       setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
     })
   }
@@ -71,7 +75,7 @@ export class Slave extends React.Component<IProps, IState> {
         Button: this.GetButton(e.button),
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
-        Key: this.state.key
+        Key: this.state.slaveKey
       }
     });
   }
@@ -83,7 +87,7 @@ export class Slave extends React.Component<IProps, IState> {
         Button: this.GetButton(e.button),
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
-        Key: this.state.key
+        Key: this.state.slaveKey
       }
     });
   }
@@ -119,7 +123,7 @@ export class Slave extends React.Component<IProps, IState> {
     }
     
     return ([
-      <WindowControls slaveAppKey={this.props.slaveAppKey} showDragControl={true} key="WindowControls" />,
+      <WindowControls slaveAppKey={this.props.slaveAppWindowKey} showDragControl={true} key="WindowControls" />,
       <div key="SlaveView">{toRender}</div>
     ]);
   }
