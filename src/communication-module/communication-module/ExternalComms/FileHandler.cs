@@ -35,7 +35,8 @@ namespace Core.ExternalComms
         {
             Logger.Info("UploadFile initiated");
             var fileData = System.IO.File.ReadAllBytes(parameters.FileName); // file name is an absolute path of the uploaded file
-            FileServermoduleProxy.UploadFile(new File{FileData = fileData, FileName = new FileName{FileNameProp = parameters.FileName}}, new PrimaryKey { TheKey = parameters.PrimaryKey }, false, UploadFileCallback);
+            var actualFileName = Path.GetFileName(parameters.FileName);
+            FileServermoduleProxy.UploadFile(new File{FileData = fileData, FileName = new FileName{FileNameProp = actualFileName}}, new PrimaryKey { TheKey = parameters.PrimaryKey }, false, UploadFileCallback);
             return "Done (UploadFile)";
         }
 

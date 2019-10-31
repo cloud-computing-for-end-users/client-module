@@ -2,3 +2,9 @@
 * {
     -webkit-user-select: none;
 }
+
+// Bootstrap modification - can be possibly done in a better way
+.btn:focus,
+.btn:not(:disabled):not(.disabled):active:focus {
+    box-shadow: none;
+}

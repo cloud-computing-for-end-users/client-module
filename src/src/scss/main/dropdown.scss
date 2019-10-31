@@ -1,0 +1,13 @@
+.dropdown-menu {
+    min-width: 0;
+    padding: 0;
+
+    .dropdown-item {
+        padding: 0.25rem 0.75rem;
+        transition: background-color $transition-duration $transition-timing-function;
+    
+        &:hover {
+            background-color: $header-background-darker; 
+        }
+    }
+}

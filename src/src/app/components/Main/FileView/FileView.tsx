@@ -21,6 +21,9 @@ export class FileView extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
 
+    this.getFileListItems = this.getFileListItems.bind(this);
+    
+
     if(savedFileListItems === null) {
       this.state = {fileListItems: 
         <div className="container-fluid d-flex justify-content-center align-items-center">
@@ -38,14 +41,6 @@ export class FileView extends React.Component<IProps, IState> {
     console.log("getFileListItems triggered - remove me");
     ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: "123"}}); // todo this.props.loggedInAs
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
-      arg = `[
-        {
-          "FileNameProp": "renamed.txt"
-        },
-        {
-          "FileNameProp": "testUpload2.txt"
-        }
-      ]`
       var json = JSON.parse(arg);
       var items = [];
       for (var i = 0; i < json.length; i++){

@@ -1,7 +1,5 @@
 import * as React from "react";
 import * as $ from "jquery";
-import appsMap from "../Main";
-import IApp from "../Main";
 const appIcon = require('../../../../../assets/img/app.png');
 const windowsIcon = require('../../../../../assets/img/windows.png');
 
@@ -30,9 +28,8 @@ export class AppListItem extends React.Component<IProps, IState> {
       appVersion: this.props.appVersion, 
       appOs: this.props.appOS, 
       loggedInAs: this.props.loggedInAs,
-      appKey: appsMap.size
+      appKey: 0 // todo real app key
     });
-    appsMap.set(appsMap.size, {appName: this.props.appName});
   }
 
   componentDidMount(): void {

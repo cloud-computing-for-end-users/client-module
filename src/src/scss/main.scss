@@ -6,17 +6,16 @@
 // Variables
 @import "./shared/vars.scss";
 
-// Shared
-@import "./shared/all.scss";
-@import "./shared/status.scss";
+// Shared - Both Main and Slave
+@import "./shared/general.scss";
 @import "./shared/window-controls.scss";
 
 // Main
+@import "./main/dropdown.scss";
 @import "./main/lists.scss";
+@import "./main/login.scss";
 @import "./main/navigation.scss";
+@import "./main/status.scss";
 
 // Slave
 @import "./slave/slave.scss";
-
-// Login
-@import "./login/login.scss";

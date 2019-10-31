@@ -35,43 +35,43 @@ namespace Core.InternalComms
             });
             internalConnection.On<string, string>("MouseDown", param =>
             {
-                try { return externalCommunication.MouseDown(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.MouseDown(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("MouseUp", param =>
             {
-                try { return externalCommunication.MouseUp(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.MouseUp(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("Login", param =>
             {
-                try { return externalCommunication.Login(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.Login(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("CreateAccount", param =>
             {
-                try { return externalCommunication.CreateAccount(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.CreateAccount(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("GetListOfFiles", param =>
             {
-                try { return externalCommunication.GetListOfFiles(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.GetListOfFiles(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("UploadFile", param =>
             {
-                try { return externalCommunication.UploadFile(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.UploadFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("DownloadFile", param =>
             {
-                try { return externalCommunication.DownloadFile(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.DownloadFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("RenameFile", param =>
             {
-                try { return externalCommunication.RenameFile(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.RenameFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("TellSlaveToFetchFile", param =>
             {
-                try { return externalCommunication.TellSlaveToFetchFile(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.TellSlaveToFetchFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
             internalConnection.On<string, string>("SaveFilesAndTerminate", param =>
             {
-                try { return externalCommunication.SaveFilesAndTerminate(param); } catch (Exception e) { return Handle(e); }
+                try { return externalCommunication.SaveFilesAndTerminate(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
         }
 

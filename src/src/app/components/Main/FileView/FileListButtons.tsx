@@ -62,9 +62,10 @@ export class FileListButtons extends React.Component<IProps, IState> {
           }
         });
         ipcRenderer.on('reply-backend-method-' + BackendMethods.UploadFile, (event, arg) => {
-          console.log(arg + " - remove me (todo)");
-          // todo check that arg is "Done (UploadFile)" and show it in some way; update the files view
-          this.props.getFileListItems();
+          if(arg === "Done (UploadFile)") {
+            this.props.getFileListItems();
+            // todo show successful upload in some way, updating list might be enough though
+          }
         })
       } else {
         // todo figure what else could possibly happen?
@@ -141,7 +142,14 @@ export class FileListButtons extends React.Component<IProps, IState> {
           <input value={this.state.renameFileInput} onChange={this.handleRenameFileInputChange} type="text" className="form-control" placeholder="New file name" />
           <button onClick={this.handleOnClickRename} className="btn btn-outline-primary">Rename file</button>
         </div>
-        <button onClick={this.handleOnClickSend} className="btn btn-outline-primary">Send file to an application</button>
+        <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Send file to an application
+        </button>
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Action</a>
+          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Another action</a>
+          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Something else here</a>
+        </div>
       </div>
     );
   }
