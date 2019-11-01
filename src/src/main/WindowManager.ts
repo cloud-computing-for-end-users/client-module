@@ -6,21 +6,29 @@ import { BrowserWindow, ipcMain } from "electron";
 
 export class WindowManager {
     slaveWindows: BrowserWindow[] = [];
-    mainWindow: BrowserWindow | null;
+    mainWindow: BrowserWindow;
     CGIConnectionHandler: CGIConnectionManager;
 
     constructor(CGIConnectionHandler: CGIConnectionManager) {
         this.CGIConnectionHandler = CGIConnectionHandler;
-        ipcMain.on('set-slaveKey-for-slaveAppWindow', (event, arg) => {  
-            console.log(arg)
-            console.log(arg.slaveAppWindowKey)
-            console.log(arg.slaveKey)
-            this.slaveWindows.forEach(function(entry) {
-                console.log(entry);
-                let entryAny: any = entry;
-                console.log(entryAny.slaveWindowProps);
-            });
+
+        ipcMain.on('setSlaveKeyForSlaveAppWindow', (event, arg) => {  
+            this.slaveWindows.forEach(function(entry : any) {
+                if(arg.slaveAppWindowKey === entry.slaveWindowProps.slaveAppWindowKey) {
+                    entry.slaveWindowProps.slaveKey = arg.slaveKey;
+                }
+            });    
         });
+
+        ipcMain.on('getRunningApps', (event, arg) => {
+            let runningApps : any = [];
+            console.log(this.slaveWindows.length)
+            this.slaveWindows.forEach(function(entry : any) {
+                let p = entry.slaveWindowProps;
+                runningApps.push({'appName': p.appName, 'appVersion': p.appVersion, 'appOs': p.appOs, 'slaveAppWindowKey': p.slaveAppWindowKey, 'slaveKey': p.slaveKey})
+            })
+            event.reply('replyGetRunningApps', runningApps);
+        })
     }
 
     createWindow = () => {

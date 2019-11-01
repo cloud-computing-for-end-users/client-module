@@ -28,8 +28,16 @@ export class AppListItem extends React.Component<IProps, IState> {
       appVersion: this.props.appVersion, 
       appOs: this.props.appOS, 
       loggedInAs: this.props.loggedInAs,
-      appKey: 0 // todo real app key
+      slaveAppWindowKey: this.guidGenerator()
     });
+  }
+
+  // todo move to some util class
+  private guidGenerator() {
+    var S4 = function() {
+       return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+    };
+    return (S4()+"-"+S4()+"-"+S4()+"-"+S4());
   }
 
   componentDidMount(): void {

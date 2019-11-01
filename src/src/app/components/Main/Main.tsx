@@ -7,7 +7,6 @@ import {Entry} from "./Entry/Entry";
 import {WindowControls} from "../Shared/WindowControls";
 import FeatureFlags from "../../FeatureFlags";
 
-
 interface IState {
   content: ContentType,
   loggedIn: boolean,
@@ -81,7 +80,7 @@ export class Main extends React.Component<IProps, IState> {
     }
     
     return ( [ 
-        <WindowControls slaveAppKey={null} showDragControl={true} key="WindowControls" />,
+        <WindowControls onCloseSlaveAppWindow={null} showDragControl={true} key="WindowControls" />,
         toRender
       ]
     );

@@ -38,7 +38,6 @@ export class FileView extends React.Component<IProps, IState> {
   }
 
   getFileListItems() {    
-    console.log("getFileListItems triggered - remove me");
     ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: "123"}}); // todo this.props.loggedInAs
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
       var json = JSON.parse(arg);

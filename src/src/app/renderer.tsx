@@ -17,7 +17,8 @@ export enum BackendMethods {
     UploadFile = 'UploadFile',
     DownloadFile = 'DownloadFile',
     RenameFile = 'RenameFile',
-    TellSlaveToFetchFile = 'TellSlaveToFetchFile'
+    TellSlaveToFetchFile = 'TellSlaveToFetchFile',
+    SaveFilesAndTerminate = 'SaveFilesAndTerminate'
 }
 
 if(document.getElementById('main')) {

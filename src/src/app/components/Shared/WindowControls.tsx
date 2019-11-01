@@ -1,10 +1,11 @@
 import * as React from "react";
-import appsMap from "../Main/Main";
+import { ipcRenderer } from "electron";
+import { BackendMethods } from "../../renderer";
 
 interface IState { }
 interface IProps { 
   showDragControl: boolean,
-  slaveAppKey: number | null 
+  onCloseSlaveAppWindow: any | null 
 }
 
 export class WindowControls extends React.Component<IProps, IState> {
@@ -15,13 +16,16 @@ export class WindowControls extends React.Component<IProps, IState> {
   }
 
   handleCloseControl(e: any) {
-    /* todo
-    if(this.props.slaveAppKey !== null) {
-      appsMap.delete(this.props.slaveAppKey);
-      console.log(appsMap);
-    } */
     const { remote } = require('electron')
-    remote.BrowserWindow.getFocusedWindow().close();
+    if(this.props.onCloseSlaveAppWindow !== null) {
+      this.props.onCloseSlaveAppWindow[0](true);
+      ipcRenderer.send('call-backend-method', {method: BackendMethods.SaveFilesAndTerminate, argument: {SlaveKey: this.props.onCloseSlaveAppWindow[1]}});
+      ipcRenderer.on('reply-backend-method-' + BackendMethods.SaveFilesAndTerminate, (event, arg) => {
+        remote.BrowserWindow.getFocusedWindow().close();
+      })
+    } else {
+      remote.BrowserWindow.getFocusedWindow().close();
+    }
   }
 
   handleMinimizeControl(e: any) {

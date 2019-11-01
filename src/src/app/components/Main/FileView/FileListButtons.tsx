@@ -5,6 +5,7 @@ const { ipcRenderer } = require('electron');
 
 interface IState {
   renameFileInput: string
+  runningApps: any
 }
 
 interface IProps {
@@ -20,10 +21,20 @@ export class FileListButtons extends React.Component<IProps, IState> {
     this.handleOnClickRename = this.handleOnClickRename.bind(this);
     this.handleOnClickSend = this.handleOnClickSend.bind(this);
     this.handleRenameFileInputChange = this.handleRenameFileInputChange.bind(this);
+    this.handleOnClickUpdateSendDropdown = this.handleOnClickUpdateSendDropdown.bind(this);
 
     this.state = {
-      renameFileInput: ""
+      renameFileInput: "",
+      runningApps: null
     }
+  }
+
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.DownloadFile);
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.UploadFile);
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.RenameFile);
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile);
+    ipcRenderer.removeAllListeners('replyGetRunningApps');
   }
 
   private handleOnClickDownload() {
@@ -105,13 +116,13 @@ export class FileListButtons extends React.Component<IProps, IState> {
     }
   }
 
-  private handleOnClickSend() {
+  private handleOnClickSend(event: any) {
     let fileName = this.getActiveFileName();
     if(fileName !== "") {
       ipcRenderer.send('call-backend-method', {
         method: BackendMethods.TellSlaveToFetchFile, 
         argument: {
-          SlaveKey: "ALL", // todo specific slave
+          SlaveKey: event.target.getAttribute('data-slavekey'),
           FileName: fileName
         }
       });
@@ -125,6 +136,26 @@ export class FileListButtons extends React.Component<IProps, IState> {
     }
   }
 
+  private handleOnClickUpdateSendDropdown(event: any) {
+    
+    console.log("Hello?");
+    
+    ipcRenderer.send('getRunningApps', {});
+    ipcRenderer.on('replyGetRunningApps', (event, arg) => {
+      if(arg.length === 0) {
+        this.setState({
+          runningApps: <h6 className="dropdown-header">No running apps</h6>
+        })
+      } else {
+        let runningApps: JSX.Element[] = [];
+        arg.forEach((element: any) => {
+          runningApps.push(<button key={element.slaveKey} className="dropdown-item" onClick={this.handleOnClickSend} data-slavekey={element.slaveKey}>{element.appName}</button>)
+        });
+        this.setState({runningApps})
+      }
+    })
+  }
+
   private getActiveFileName() {
     let span = $("#file-list li.active div span");
     if(span.length === 1) { return span[0].innerText }
@@ -134,6 +165,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
   render(): React.ReactNode {    
     // todo change buttons to active / non-active if a file is selected
     // todo make the button layout prettier
+
     return (
       <div id="file-list-buttons">
         <button onClick={this.handleOnClickDownload} className="btn btn-outline-primary">Download file</button>
@@ -142,13 +174,11 @@ export class FileListButtons extends React.Component<IProps, IState> {
           <input value={this.state.renameFileInput} onChange={this.handleRenameFileInputChange} type="text" className="form-control" placeholder="New file name" />
           <button onClick={this.handleOnClickRename} className="btn btn-outline-primary">Rename file</button>
         </div>
-        <button className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button onMouseDown={this.handleOnClickUpdateSendDropdown} className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Send file to an application
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Action</a>
-          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Another action</a>
-          <a className="dropdown-item" onClick={this.handleOnClickSend} href="#">Something else here</a>
+          {this.state.runningApps}
         </div>
       </div>
     );

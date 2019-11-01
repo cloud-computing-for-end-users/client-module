@@ -6,8 +6,9 @@ const { ipcRenderer } = require('electron');
 const spinner = require('../../../../assets/svg/spinner.svg');
 
 interface IState {
-  img: any;
-  slaveKey: string;
+  img: any,
+  slaveKey: string,
+  closing: boolean
 }
 
 interface IProps {
@@ -23,9 +24,11 @@ export class Slave extends React.Component<IProps, IState> {
     super(props);
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+    this.onCloseSlaveAppWindow = this.onCloseSlaveAppWindow.bind(this);
     this.state = { 
       img: null,
-      slaveKey: null
+      slaveKey: null,
+      closing: false
     };
   }
 
@@ -45,8 +48,8 @@ export class Slave extends React.Component<IProps, IState> {
       this.setState({
         slaveKey: json["SlaveKey"]
       });
-      console.log("TEST; set-slaveKey-for-slaveAppWindow - remove me")
-      ipcRenderer.send('set-slaveKey-for-slaveAppWindow', {slaveAppWindowKey: this.props.slaveAppWindowKey, slaveKey: this.state.slaveKey})
+      
+      ipcRenderer.send('setSlaveKeyForSlaveAppWindow', {slaveAppWindowKey: this.props.slaveAppWindowKey, slaveKey: this.state.slaveKey})
       
       setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
     })
@@ -56,7 +59,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetImagesFromSlave);
   }
 
-  updateImage(imgPath: string): void {
+  private updateImage(imgPath: string): void {
     let path = imgPath + "?" + Date.now();
     let newImg = new Image();
     newImg.onerror=(() => console.log("Error on image occured"));    
@@ -67,7 +70,7 @@ export class Slave extends React.Component<IProps, IState> {
     })
   }
 
-  handleOnMouseDown(e: any): void {
+  private handleOnMouseDown(e: any): void {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.MouseDown, 
       argument: {
@@ -79,7 +82,7 @@ export class Slave extends React.Component<IProps, IState> {
     });
   }
   
-  handleOnMouseUp(e: any): void {
+  private handleOnMouseUp(e: any): void {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.MouseUp, 
       argument: {
@@ -89,6 +92,10 @@ export class Slave extends React.Component<IProps, IState> {
         Key: this.state.slaveKey
       }
     });
+  }
+
+  private onCloseSlaveAppWindow(closing: boolean) {
+    this.setState({closing});
   }
 
   private GetButton(button: any): string {
@@ -103,7 +110,14 @@ export class Slave extends React.Component<IProps, IState> {
 
   render(): React.ReactNode {
     var toRender;
-    if(this.state.img === null) {
+    if(this.state.closing) {
+      toRender = (
+        <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
+          <img draggable={false} src={spinner} />
+          <h1>Saving files and closing</h1>
+        </div>
+      );
+    } else if(this.state.img === null) {
       toRender = (
         <div className="container-fluid vh-100 d-flex justify-content-center align-items-center">
           <img draggable={false} src={spinner} />
@@ -122,7 +136,7 @@ export class Slave extends React.Component<IProps, IState> {
     }
     
     return ([
-      <WindowControls slaveAppKey={this.props.slaveAppWindowKey} showDragControl={true} key="WindowControls" />,
+      <WindowControls onCloseSlaveAppWindow={[this.onCloseSlaveAppWindow, this.state.slaveKey]} showDragControl={true} key="WindowControls" />,
       <div key="SlaveView">{toRender}</div>
     ]);
   }
