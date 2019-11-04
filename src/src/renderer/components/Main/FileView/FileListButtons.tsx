@@ -63,9 +63,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
     dialog.showOpenDialog({
       properties: ['openFile']
     }).then(result => {
-      if(result.filePaths.length === 0){
-        console.log("Empty, do nothing")
-      } else if(result.filePaths.length === 1) {
+      if(result.filePaths.length === 1) {
         ipcRenderer.send('call-backend-method', {
           method: BackendMethods.UploadFile, 
           argument: {
@@ -80,12 +78,17 @@ export class FileListButtons extends React.Component<IProps, IState> {
           }
         })
       } else {
-        // todo figure what else could possibly happen?
-        alert("Something weird happened; file paths length: " + result.filePaths.length)
+        if(result.filePaths.length === 0){
+          // OK
+        } else {
+          // todo figure what else could possibly happen?
+          alert("Something weird happened; file paths length: " + result.filePaths.length)
+        }
       }
     }).catch(err => {
       // todo figure out when this happens?
       console.log(err)
+      alert(err)
     });
   }
 
@@ -120,17 +123,22 @@ export class FileListButtons extends React.Component<IProps, IState> {
   private handleOnClickSend(event: any) {
     let fileName = this.getActiveFileName();
     if(fileName !== "") {
-      ipcRenderer.send('call-backend-method', {
-        method: BackendMethods.TellSlaveToFetchFile, 
-        argument: {
-          SlaveKey: event.target.getAttribute('data-slavekey'),
-          FileName: fileName
-        }
-      });
-      ipcRenderer.on('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile, (event, arg) => {
-        console.log(arg + " - remove me (todo)");
-        // todo check that arg is "Sent (TellSlaveToFetchFile)" and show it in some way
-      })
+      let slaveKey = event.target.getAttribute('data-slavekey');
+      if(slaveKey === "") {
+        alert("Enter a new file name including extension");
+      } else {
+        ipcRenderer.send('call-backend-method', {
+          method: BackendMethods.TellSlaveToFetchFile, 
+          argument: {
+            SlaveKey: slaveKey,
+            FileName: fileName
+          }
+        });
+        ipcRenderer.on('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile, (event, arg) => {
+          console.log(arg + " - remove me (todo)");
+          // todo check that arg is "Sent (TellSlaveToFetchFile)" and show it in some way
+        })
+      }
     } else {
       // todo nicer error message instead of alert
       alert("Choose a file - (todo)")
@@ -138,9 +146,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
   }
 
   private handleOnClickUpdateSendDropdown(event: any) {
-    
-    console.log("Hello?");
-    
     ipcRenderer.send('getRunningApps', {});
     ipcRenderer.on('replyGetRunningApps', (event, arg) => {
       if(arg.length === 0) {
