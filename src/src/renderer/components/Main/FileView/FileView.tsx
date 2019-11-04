@@ -3,6 +3,7 @@ import {FileList} from "./FileList";
 import {FileListButtons} from "./FileListButtons";
 import {FileListItem} from "./FileListItem";
 import {BackendMethods} from "../../../renderer";
+import { Utils } from "../../../../utils/Utils";
 const { ipcRenderer } = require('electron');
     
 const spinner = require('../../../../../assets/svg/spinner.svg');
@@ -38,7 +39,7 @@ export class FileView extends React.Component<IProps, IState> {
   }
 
   getFileListItems() {    
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: "123"}}); // todo this.props.loggedInAs
+    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs)}});
     ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
       var json = JSON.parse(arg);
       var items = [];

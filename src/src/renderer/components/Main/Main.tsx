@@ -5,7 +5,7 @@ import {AppView} from "./AppView/AppView";
 import {FileView} from "./FileView/FileView";
 import {Entry} from "./Entry/Entry";
 import {WindowControls} from "../Shared/WindowControls";
-import FeatureFlags from "../../FeatureFlags";
+import FeatureFlags from "../../../utils/FeatureFlags";
 
 interface IState {
   content: ContentType,

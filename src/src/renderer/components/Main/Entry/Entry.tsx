@@ -2,7 +2,7 @@ import * as React from "react";
 import {EntryForm} from "./EntryForm";
 import {EntrySwitchButton} from "./EntrySwitchButton";
 import { CGIConnectionStatus, StatusTitle } from "../../Shared/CGIConnectionStatus";
-import FeatureFlags from "../../../FeatureFlags";
+import FeatureFlags from "../../../../utils/FeatureFlags";
 
 interface IState {
   entryType: EntryType

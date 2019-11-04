@@ -14,7 +14,7 @@ const HWPSlave = new HtmlWebPackPlugin({
 const config = {
   target: "electron-renderer",
   devtool: "source-map",
-  entry: "./src/app/renderer.tsx",
+  entry: "./src/renderer/renderer.tsx",
   output: {
     filename: "renderer.js",
     path: path.resolve(__dirname, "dist")

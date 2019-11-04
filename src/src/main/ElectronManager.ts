@@ -4,11 +4,13 @@ import { WindowManager } from "./windowManager";
 export class ElectronManager {
     constructor(WindowHandler: WindowManager) {
         app.on("ready", () => {
+            /*
             const path = require("path");
             const os = require('os');
             BrowserWindow.addDevToolsExtension(
                 path.join(os.homedir(), 'AppData/Local/Google/Chrome/User Data/Default/Extensions/fmkadmapgofadopljbjfkapdkoienihi/4.2.0_0')
             );
+            */
             WindowHandler.createWindow();
         });
 
