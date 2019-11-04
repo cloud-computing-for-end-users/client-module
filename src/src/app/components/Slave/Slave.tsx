@@ -33,7 +33,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.GetImagesFromSlave, 
       argument: {
-        PrimaryKey: this.props.loggedInAs, 
+        PrimaryKey: "123",// this.props.loggedInAs, 
         ApplicationName: this.props.appName, 
         ApplicationVersion: this.props.appVersion, 
         RunningOnOperatingSystem: this.props.appOS

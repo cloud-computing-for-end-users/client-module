@@ -61,6 +61,7 @@ namespace Core.ExternalComms
             _widthHeightTuple = null;
             Logger.Info("Handshake initiated, " + nameof(_widthHeightTuple) + " set to null");
             Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
+            Logger.Debug("Calling handshake on slave proxy, with primary key: " + pk?.TheKey);
             _keyForCallback = slaveProxyKey;
             SlaveProxies[slaveProxyKey].SlaveProxy.Handshake(SlaveHandshakeCallback, pk);
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
