@@ -20,6 +20,8 @@ namespace Core.ExternalComms
         private Tuple<int, int> _widthHeightTuple;
         private string _keyForCallback;
         private Port _port;
+        private string _stateOfTerminate;
+        private string _stateOfTellSlaveToFetchFile;
 
         // todo figure out the imagePath
         private static readonly string IMAGE_PATH = AppContext.BaseDirectory;
@@ -124,31 +126,18 @@ namespace Core.ExternalComms
 
         internal string TellSlaveToFetchFile(SlaveKeyAndFileWrapper parameters)
         {
-            // todo temporary solution
-            if (parameters.SlaveKey.Equals("ALL"))
-            {
-                Logger.Debug("Telling all slaves to fetch file");
-                var e = SlaveProxies.GetEnumerator();
-                Logger.Debug("Current enumerator value is: " + e.Current);
-                while (e.MoveNext())
-                {
-                    Logger.Debug("Current enumerator value is: " + e.Current);
-                    e.Current.Value.SlaveProxy.FetchRemoteFile(null, parameters.FileName);
-                }
-                e.Dispose();
-            } 
-            else
-            {
-                Logger.Debug("Telling slave with key " + parameters.SlaveKey + " to fetch file");
-                SlaveProxies[parameters.SlaveKey].SlaveProxy.FetchRemoteFile(null, parameters.FileName);
-            }
-            return "Sent (TellSlaveToFetchFile)";
+            _stateOfTellSlaveToFetchFile = null;
+            Logger.Debug("Telling slave with key " + parameters.SlaveKey + " to fetch file");
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.FetchRemoteFile(TellSlaveToFetchFileCallBack, parameters.FileName);
+            return GeneralHandler.PollVariableFor10Seconds(ref _stateOfTellSlaveToFetchFile);
         }
 
         internal string SaveFilesAndTerminate(SlaveKeyWrapper parameters)
         {
-            SlaveProxies[parameters.SlaveKey].SlaveProxy.SaveFilesAndTerminate(null);
-            return "Sent (SaveFilesAndTerminate)";
+            _stateOfTerminate = null;
+            Logger.Info("SaveFilesAndTerminate initiated");
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.SaveFilesAndTerminate(SaveFilesAndTerminateCallBack);
+            return GeneralHandler.PollVariableFor10Seconds(ref _stateOfTerminate);
         }
 
         public static string ImagePathForCurrentSlave(Port port)
@@ -173,6 +162,20 @@ namespace Core.ExternalComms
             Logger.Info("Port set in callback");
             // todo remove below if possible, has to be set now for polling check
             _port = port;
+        }
+
+        private void SaveFilesAndTerminateCallBack()
+        {
+            Logger.Info("(SaveFilesAndTerminateCallBack)");
+
+            _stateOfTerminate = "Sent (SaveFilesAndTerminate)";
+        }
+
+        private void TellSlaveToFetchFileCallBack()
+        {
+            Logger.Info("(TellSlaveToFetchFileCallBack)");
+
+            _stateOfTellSlaveToFetchFile = "Sent (TellSlaveToFetchFile)";
         }
     }
 }
