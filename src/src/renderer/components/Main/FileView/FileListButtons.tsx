@@ -1,6 +1,7 @@
 import * as React from "react";
 import * as $ from "jquery";
 import {BackendMethods} from "../../../renderer";
+import { Utils } from "../../../../utils/Utils";
 const { ipcRenderer } = require('electron');
 
 interface IState {
@@ -43,7 +44,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
       ipcRenderer.send('call-backend-method', {
         method: BackendMethods.DownloadFile, 
         argument: {
-          PrimaryKey: "123", // todo this.props.loggedInAs
+          PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs),
           FileName: fileName
         }
       });
@@ -68,7 +69,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
         ipcRenderer.send('call-backend-method', {
           method: BackendMethods.UploadFile, 
           argument: {
-            PrimaryKey: "123", // todo this.props.loggedInAs
+            PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs),
             FileName:  result.filePaths[0]
           }
         });
@@ -100,7 +101,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
       ipcRenderer.send('call-backend-method', {
         method: BackendMethods.RenameFile, 
         argument: {
-          PrimaryKey: "123", // todo this.props.loggedInAs
+          PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs),
           OldFileName: fileName,
           NewFileName: this.state.renameFileInput
         }

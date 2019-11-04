@@ -3,7 +3,7 @@ import {ContentType} from "../Main";
 import {NavigationItem} from "./NavigationItem";
 import {NavigationSettings} from "./NavigationSettings";
 import {CGIConnectionStatus, StatusTitle} from "../../Shared/CGIConnectionStatus";
-import FeatureFlags from "../../../FeatureFlags";
+import FeatureFlags from "../../../../utils/FeatureFlags";
 
 const logo = require('../../../../../assets/img/ccfeu.png');
 
