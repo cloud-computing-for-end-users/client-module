@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using client_slave_message_communication.encoding;
 using client_slave_message_communication.model;
 using client_slave_message_communication.model.mouse_action;
@@ -39,16 +41,26 @@ namespace Core.ExternalComms
             Logger.Info("Attempting to connect to slave with network settings: {ip: " + slave.SlaveConnection.ConnectionInformation.IP.TheIP + " comm port: " + slave.SlaveConnection.ConnectionInformation.Port.ThePort + " registration port: " + slave.SlaveConnection.RegistrationPort.ThePort + "}");
 
 
+            Port selfPort = new Port();
+
+            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            l.Start();
+            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            l.Stop();
+
+            selfPort.ThePort = port;
+
+
             ProxyHelper proxyHelper = new ProxyHelper();
             proxyHelper.Setup(new ConnectionInformation() { IP = slave.SlaveConnection.ConnectionInformation.IP, Port = slave.SlaveConnection.ConnectionInformation.Port },
-                slave.SlaveConnection.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP , Port = new Port() { ThePort = forSelf.Port.ThePort + 69 } }, that, new CustomEncoding());
+                slave.SlaveConnection.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP, Port = selfPort /*{ ThePort = 0  *//* TODO does this work forSelf.Port.ThePort + 69 }*/ }, that, new CustomEncoding());
             Logger.Info("ProxyHelper setup done");
 
             Logger.Debug("Slave proxy module ID: " + proxyHelper.ModuleID.ID);
             // todo Key?
             var key = GetDictionaryKey(slave);
             Logger.Debug("Slave Owner Connection Info Hash: " + key);
-            SlaveProxies.Add(key, new SlaveInfo{SlaveProxy = new SlaveProxy(proxyHelper, that)});
+            SlaveProxies.Add(key, new SlaveInfo { SlaveProxy = new SlaveProxy(proxyHelper, that) });
             return key;
         }
 
@@ -66,6 +78,7 @@ namespace Core.ExternalComms
             Logger.Debug("Calling handshake on slave proxy, with primary key: " + pk?.TheKey);
             _keyForCallback = slaveProxyKey;
             SlaveProxies[slaveProxyKey].SlaveProxy.Handshake(SlaveHandshakeCallback, pk);
+
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
 
@@ -99,7 +112,7 @@ namespace Core.ExternalComms
             {
                 if (parameters.Button.Equals("Left"))
                 {
-                    action = new LeftMouseDownAction() {RelativeScreenLocation = location};
+                    action = new LeftMouseDownAction() { RelativeScreenLocation = location };
                 }
                 else
                 {
@@ -150,7 +163,7 @@ namespace Core.ExternalComms
         private void SlaveHandshakeCallback(Tuple<int, int> widthHeightTuple)
         {
             var (width, height) = widthHeightTuple;
-            SlaveProxies[_keyForCallback].AppDimensions = new AppDimensions(){Width = width, Height = height};
+            SlaveProxies[_keyForCallback].AppDimensions = new AppDimensions() { Width = width, Height = height };
             Logger.Info("AppDimensions (W: " + width + "; H: " + height + ") set in callback");
             // todo remove below if possible, has to be set now for polling check
             _widthHeightTuple = widthHeightTuple;
