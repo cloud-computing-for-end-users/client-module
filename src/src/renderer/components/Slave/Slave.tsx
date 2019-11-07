@@ -1,6 +1,7 @@
 import * as React from "react";
 import {WindowControls} from "../Shared/WindowControls";
 import {BackendMethods} from "../../renderer";
+import { Utils } from "../../../utils/Utils";
 const { ipcRenderer } = require('electron');
     
 const spinner = require('../../../../assets/svg/spinner.svg');
@@ -36,7 +37,7 @@ export class Slave extends React.Component<IProps, IState> {
     ipcRenderer.send('call-backend-method', {
       method: BackendMethods.GetImagesFromSlave, 
       argument: {
-        PrimaryKey: "123",// this.props.loggedInAs, 
+        PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs),
         ApplicationName: this.props.appName, 
         ApplicationVersion: this.props.appVersion, 
         RunningOnOperatingSystem: this.props.appOS

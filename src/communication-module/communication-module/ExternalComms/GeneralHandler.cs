@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using Core.Exceptions;
 using Newtonsoft.Json;
 
@@ -10,22 +11,32 @@ namespace Core.ExternalComms
 
         internal static T PollVariableFor10Seconds<T>(ref T obj)
         {
-            var counter = 0;
-            while (null == obj && counter < 100)
+            try
             {
-                Thread.Sleep(100);
-                counter++;
-            }
+                Logger.Info("Start of polling, polling for object type: " + typeof(T));
+                var counter = 0;
+                while (null == obj && counter < 100)
+                {
+                    Thread.Sleep(100);
+                    counter++;
+                }
 
-            if (null == obj)
+                if (null == obj)
+                {
+                    const string message = "Polling finished after 10 seconds without result";
+                    Logger.Info(message);
+                    throw new PollingException(message, typeof(T).Name);
+                }
+
+                Logger.Info("Polling finished before 10 seconds ran out, returning " + typeof(T).Name);
+                return obj;
+            }
+            catch (Exception e)
             {
-                const string message = "Polling finished after 10 seconds without result";
-                Logger.Info(message);
-                throw new PollingException(message, typeof(T).Name);
+                Logger.Debug("Got exception in PollVariableFor10Seconds");
+                Logger.Debug(e);
+                throw new Exception("Exception my man");
             }
-
-            Logger.Info("Polling finished before 10 seconds ran out, returning " + typeof(T).Name);
-            return obj;
         }
 
         internal static string ReturnAsJSON<T>(T obj)
