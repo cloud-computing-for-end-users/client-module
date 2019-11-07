@@ -15,12 +15,17 @@ export class WindowControls extends React.Component<IProps, IState> {
     this.handleMinimizeControl = this.handleMinimizeControl.bind(this); 
   }
 
+  componentWillUnmount() {
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.SaveFilesAndTerminate);
+  }
+
   handleCloseControl(e: any) {
     const { remote } = require('electron')
     if(this.props.onCloseSlaveAppWindow !== null) {
       this.props.onCloseSlaveAppWindow[0](true);
       ipcRenderer.send('call-backend-method', {method: BackendMethods.SaveFilesAndTerminate, argument: {SlaveKey: this.props.onCloseSlaveAppWindow[1]}});
       ipcRenderer.on('reply-backend-method-' + BackendMethods.SaveFilesAndTerminate, (event, arg) => {
+        ipcRenderer.send('updateListOfFiles');
         remote.BrowserWindow.getFocusedWindow().close();
       })
     } else {

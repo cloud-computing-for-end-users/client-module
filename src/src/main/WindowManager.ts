@@ -22,12 +22,16 @@ export class WindowManager {
 
         ipcMain.on('getRunningApps', (event, arg) => {
             let runningApps : any = [];
-            console.log(this.slaveWindows.length)
             this.slaveWindows.forEach(function(entry : any) {
                 let p = entry.slaveWindowProps;
                 runningApps.push({'appName': p.appName, 'appVersion': p.appVersion, 'appOs': p.appOs, 'slaveAppWindowKey': p.slaveAppWindowKey, 'slaveKey': p.slaveKey})
             })
             event.reply('replyGetRunningApps', runningApps);
+        })
+
+        ipcMain.on('updateListOfFiles', (event, arg) => {
+            console.log("ipcMain - updateListOfFiles")
+            this.mainWindow.webContents.send('updateListOfFiles');
         })
     }
 

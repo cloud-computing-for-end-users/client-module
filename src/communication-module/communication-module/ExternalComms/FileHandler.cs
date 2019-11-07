@@ -19,6 +19,7 @@ namespace Core.ExternalComms
         private string _stateOfUpload;
         private string _stateOfDownload;
         private string _stateOfRename;
+        private string _stateOfRemove;
 
         internal FileHandler(ProxyHelper ph, ClientModuleCommunication cmm)
         {
@@ -60,6 +61,14 @@ namespace Core.ExternalComms
             return GeneralHandler.PollVariableFor10Seconds(ref _stateOfRename);
         }
 
+        internal string RemoveFile(PrimaryKeyAndFileWrapper parameters)
+        {
+            _stateOfRemove = null;
+            Logger.Info("RemoveFile initiated");
+            FileServermoduleProxy.RemoveFile(new FileName { FileNameProp = parameters.FileName }, new PrimaryKey { TheKey = parameters.PrimaryKey }, RemoveFileCallback);
+            return GeneralHandler.PollVariableFor10Seconds(ref _stateOfRemove);
+        }
+
         // Callbacks
         private void GetListOfFilesCallback(List<FileName> fileNames)
         {
@@ -89,6 +98,13 @@ namespace Core.ExternalComms
             Logger.Info("Rename of file executed (RenameFileCallback)");
 
             _stateOfRename = "Done (RenameFile)";
+        }
+
+        private void RemoveFileCallback()
+        {
+            Logger.Info("Remove of file executed (RemoveFileCallback)");
+
+            _stateOfRemove = "Done (RemoveFile)";
         }
     }
 }

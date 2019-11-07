@@ -1,6 +1,8 @@
 import * as React from "react";
 import {BackendMethods} from "../../renderer";
 
+const { ipcRenderer } = require('electron');
+        
 interface IState {
     status: StatusColor
 }
@@ -28,7 +30,6 @@ export class CGIConnectionStatus extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-        const { ipcRenderer } = require('electron');
         ipcRenderer.on('CGIConnection', (event, message) => {
             this.setState({
                 status: StatusColor.Yellow
@@ -42,6 +43,11 @@ export class CGIConnectionStatus extends React.Component<IProps, IState> {
                 }
             })
         });
+    }
+
+    componentWillUnmount() {
+        ipcRenderer.removeAllListeners('CGIConnection');
+        ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.EstablishCGIConnection);
     }
 
     render(): React.ReactNode {

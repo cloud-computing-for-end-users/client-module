@@ -141,6 +141,13 @@ namespace Core.ExternalComms
             return FileHandler.RenameFile(parameters);
         }
 
+        public string RemoveFile(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<PrimaryKeyAndFileWrapper>(parametersInJson);
+            Logger.Debug("RemoveFile; Primary key: " + parameters.PrimaryKey + "; File name: " + parameters.FileName);
+            return FileHandler.RemoveFile(parameters);
+        }
+
         public string TellSlaveToFetchFile(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<SlaveKeyAndFileWrapper>(parametersInJson);

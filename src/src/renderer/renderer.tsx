@@ -17,6 +17,7 @@ export enum BackendMethods {
     UploadFile = 'UploadFile',
     DownloadFile = 'DownloadFile',
     RenameFile = 'RenameFile',
+    RemoveFile = 'RemoveFile',
     TellSlaveToFetchFile = 'TellSlaveToFetchFile',
     SaveFilesAndTerminate = 'SaveFilesAndTerminate'
 }

@@ -65,6 +65,10 @@ namespace Core.InternalComms
             {
                 try { return externalCommunication.RenameFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
+            internalConnection.On<string, string>("RemoveFile", param =>
+            {
+                try { return externalCommunication.RemoveFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            }); 
             internalConnection.On<string, string>("TellSlaveToFetchFile", param =>
             {
                 try { return externalCommunication.TellSlaveToFetchFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }

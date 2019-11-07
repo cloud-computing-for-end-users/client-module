@@ -23,6 +23,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
     this.handleOnClickSend = this.handleOnClickSend.bind(this);
     this.handleRenameFileInputChange = this.handleRenameFileInputChange.bind(this);
     this.handleOnClickUpdateSendDropdown = this.handleOnClickUpdateSendDropdown.bind(this);
+    this.handleOnClickRemove = this.handleOnClickRemove.bind(this);
 
     this.state = {
       renameFileInput: "",
@@ -35,6 +36,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.UploadFile);
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.RenameFile);
     ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile);
+    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.RemoveFile);
     ipcRenderer.removeAllListeners('replyGetRunningApps');
   }
 
@@ -145,7 +147,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
     }
   }
 
-  private handleOnClickUpdateSendDropdown(event: any) {
+  private handleOnClickUpdateSendDropdown() {
     ipcRenderer.send('getRunningApps', {});
     ipcRenderer.on('replyGetRunningApps', (event, arg) => {
       if(arg.length === 0) {
@@ -162,6 +164,27 @@ export class FileListButtons extends React.Component<IProps, IState> {
     })
   }
 
+  private handleOnClickRemove() {
+    let fileName = this.getActiveFileName();
+    if(fileName !== "") {
+      ipcRenderer.send('call-backend-method', {
+        method: BackendMethods.RemoveFile, 
+        argument: {
+          PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs),
+          FileName: fileName
+        }
+      });
+      ipcRenderer.on('reply-backend-method-' + BackendMethods.RemoveFile, (event, arg) => {
+        console.log(arg + " - remove me (todo)");
+        // todo check that arg is "Done (RemoveFile)" and show it in some way
+        this.props.getFileListItems();
+      })
+    } else {
+      // todo nicer error message instead of alert
+      alert("Choose a file - (todo)")
+    }
+  }
+
   private getActiveFileName() {
     let span = $("#file-list li.active div span");
     if(span.length === 1) { return span[0].innerText }
@@ -176,10 +199,11 @@ export class FileListButtons extends React.Component<IProps, IState> {
       <div id="file-list-buttons">
         <button onClick={this.handleOnClickDownload} className="btn btn-outline-primary">Download file</button>
         <button onClick={this.handleOnClickUpload} className="btn btn-outline-primary">Upload new file</button>
-        <div className="d-flex flex-column">
+        <div className="d-flex">
           <input value={this.state.renameFileInput} onChange={this.handleRenameFileInputChange} type="text" className="form-control" placeholder="New file name" />
           <button onClick={this.handleOnClickRename} className="btn btn-outline-primary">Rename file</button>
         </div>
+        <button onClick={this.handleOnClickRemove} className="btn btn-outline-primary">Remove file</button>
         <button onMouseDown={this.handleOnClickUpdateSendDropdown} className="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Send file to an application
         </button>
@@ -187,6 +211,7 @@ export class FileListButtons extends React.Component<IProps, IState> {
           {this.state.runningApps}
         </div>
       </div>
+      
     );
   }
 }

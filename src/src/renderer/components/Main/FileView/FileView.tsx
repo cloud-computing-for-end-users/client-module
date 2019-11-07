@@ -1,75 +1,49 @@
 import * as React from "react";
 import {FileList} from "./FileList";
 import {FileListButtons} from "./FileListButtons";
-import {FileListItem} from "./FileListItem";
-import {BackendMethods} from "../../../renderer";
-import { Utils } from "../../../../utils/Utils";
-const { ipcRenderer } = require('electron');
     
 const spinner = require('../../../../../assets/svg/spinner.svg');
 
-interface IState {
-  fileListItems: any
-}
+interface IState {}
 
 interface IProps { 
-  loggedInAs: number
+  loggedInAs: number,
+  fileListItems: any,
+  getFileListItems: any
 }
-
-var savedFileListItems : any = null;
 
 export class FileView extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
+  }
 
-    this.getFileListItems = this.getFileListItems.bind(this);
-    
-
-    if(savedFileListItems === null) {
-      this.state = {fileListItems: 
+  render(): React.ReactNode {
+    var toRender;
+    if(this.props.fileListItems === null) {
+      // todo spinner as component
+      toRender = ([
         <div className="container-fluid d-flex justify-content-center align-items-center">
           <img draggable={false} src={spinner} />
           <span>Initializing</span>
         </div>
-      };
-      this.getFileListItems();
+      ]);
     } else {
-      this.state = {fileListItems: savedFileListItems};
+      toRender = ([
+        <div key="FileList" className="row">
+          <FileList fileListItems={this.props.fileListItems} />
+        </div>,
+        <div key="FileListButtons" className="row">
+          <FileListButtons getFileListItems={this.props.getFileListItems} loggedInAs={this.props.loggedInAs} />
+        </div>
+      ]);
     }
-  }
-
-  getFileListItems() {    
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: Utils.getLoggedInAs(this.props.loggedInAs)}});
-    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
-      var json = JSON.parse(arg);
-      var items = [];
-      for (var i = 0; i < json.length; i++){
-        var obj = json[i];
-        items.push(<FileListItem key={obj["FileNameProp"]} fileName={obj["FileNameProp"]} />)
-      }
-      // todo show message when having 0 files
-      savedFileListItems = items;
-      this.setState({
-        fileListItems: savedFileListItems
-      });
-    })
-  }
-
-  componentWillUnmount() {
-    ipcRenderer.removeAllListeners('reply-backend-method-' + BackendMethods.GetListOfFiles);
-  }
-
-
-  render(): React.ReactNode {
+    
     return ([
       <div key="Heading" className="row">
         <h1>List of files</h1>
       </div>,
-      <div key="FileList" className="row">
-        <FileList fileListItems={this.state.fileListItems} />
-      </div>,
-      <div key="FileListButtons" className="row">
-        <FileListButtons getFileListItems={this.getFileListItems} loggedInAs={this.props.loggedInAs} />
+      <div key="Content">
+        {toRender}
       </div>
     ]);
   }
