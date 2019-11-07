@@ -21,6 +21,7 @@ namespace Core.ImageReceiver
 
         private readonly SlaveConnection connInfo;
         private readonly string filePath;
+        private Socket receiver;
 
         public ImageReceiver(SlaveConnection connInfo, string filePath)
         {
@@ -41,7 +42,21 @@ namespace Core.ImageReceiver
                     try
                     {
                         StartReceivingImages();
-                    } catch (Exception e) { Logger.Debug(e); }
+                    }
+                    catch (Exception e)
+                    {
+                        receiver.Close();
+                        if (CancelLocal)
+                        {
+                            Logger.Info("Image Receiver thread cancelled properly, socket closed");
+                        }
+                        else
+                        {
+                            // todo
+                            Logger.Error("Something bad happened");
+                            Logger.Debug(e);
+                        }
+                    }
                 }) { IsBackground = true};
             t.Start();
         }
@@ -60,23 +75,16 @@ namespace Core.ImageReceiver
 
         private void StartReceivingImages()
         {
-            var ipAddr = IPAddress.Parse(connInfo.ConnectionInformation.IP.TheIP);
-            var endPoint = new IPEndPoint(ipAddr, connInfo.ConnectToRecieveImagesPort.ThePort);
+            var ipAddress = IPAddress.Parse(connInfo.ConnectionInformation.IP.TheIP);
+            var endPoint = new IPEndPoint(ipAddress, connInfo.ConnectToRecieveImagesPort.ThePort);
 
-            var receiver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            receiver = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             receiver.Connect(endPoint);
             Logger.Info("Connection established with: " + receiver);
             Logger.Info("Starting to receive images");
 
             while (true)
             {
-                if (CancelLocal)
-                {
-                    receiver.Close();
-                    Logger.Info("Image Receiver cancelled");
-                    return;
-                }
-
                 var imageSizeBuffer = new byte[sizeof(int)];
                 receiver.Receive(imageSizeBuffer);
 
@@ -118,9 +126,6 @@ namespace Core.ImageReceiver
                     _fs.Write(fileBuffer, 0, receivedBytes);
                 }
 
-
-                //byte[] fileBuffer = new byte[imageDataSize];
-                //var receivedBytes = receiver.Receive(fileBuffer,0, imageDataSize, SocketFlags.None);
                 Logger.Debug("Data to receive " + imageDataSize + " and data received " + totalReceivedBytes);
 
                 _fs.Flush(true);
