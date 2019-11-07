@@ -1,4 +1,3 @@
-using System.Threading;
 using Core.ImageReceiver;
 using custom_message_based_implementation.model;
 using message_based_communication.encoding;
@@ -19,7 +18,7 @@ namespace Core.ExternalComms
 
 
         private readonly ConnectionInformation _forSelf;
-        
+
         public override string CALL_ID_PREFIX => "ClientModule";
 
         public ClientModuleCommunication(ModuleType moduleType, ConnectionInformation forSelf) : base(moduleType)
@@ -49,24 +48,14 @@ namespace Core.ExternalComms
             Logger.Debug("GetImagesFromSlave; PrimaryKey: " + parameters.PrimaryKey + "; ApplicationName: " + parameters.ApplicationName + "; ApplicationVersion: " + parameters.ApplicationVersion + "; OS: " + parameters.RunningOnOperatingSystem);
 
             var pk = new PrimaryKey {TheKey = parameters.PrimaryKey};
-            var appInfo = new ApplicationInfo
+            var slave = SlaveOwnerHandler.GetSlaveConnectionInfo(pk, new ApplicationInfo
             {
-                ApplicationName = parameters.ApplicationName, 
+                ApplicationName = parameters.ApplicationName,
                 ApplicationVersion = parameters.ApplicationVersion,
                 RunningOnOperatingSystem = parameters.RunningOnOperatingSystem
-            };
+            });
 
-            CancelCurrentImageReceiver();
-
-            SlaveOwnerHandler.GetSlaveConnectionInfo(pk, appInfo);
-
-            var key = SlaveControllerHandler.ConnectToSlave(SlaveOwnerHandler.Slave, ModuleType, _forSelf, this);
-
-            SlaveControllerHandler.Handshake(key, pk);
-
-            var imagePath = SlaveControllerHandler.ImagePathForCurrentSlave(SlaveOwnerHandler.Slave.SlaveConnection.ConnectToRecieveImagesPort);
-
-            StartImageReceiving(imagePath);
+            var (key, imagePath) = SlaveControllerHandler.ConnectToSlave(slave, pk, ModuleType, _forSelf, this);
 
             return GeneralHandler.ReturnAsJSON(new InitializeSlaveAppWindowWrapper
             {
@@ -89,7 +78,7 @@ namespace Core.ExternalComms
             Logger.Debug("MouseDown; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
             return SlaveControllerHandler.MouseAction(parameters, true);
         }
-        
+
         public string MouseUp(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
@@ -160,22 +149,6 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<SlaveKeyWrapper>(parametersInJson);
             Logger.Debug("SaveFilesAndTerminate; Slave key: " + parameters.SlaveKey);
             return SlaveControllerHandler.SaveFilesAndTerminate(parameters);
-        }
-
-        private void StartImageReceiving(string imagePath)
-        {
-            Logger.Info("StartImageReceivingThread initiated");
-
-            ImageReceiver.ImageReceiver.CancelLocal = false;
-            
-            ImageReceiver.ImageReceiver.StartImageReceivingThread(SlaveOwnerHandler.Slave.SlaveConnection, imagePath);
-        }
-
-        private void CancelCurrentImageReceiver()
-        {
-            ImageReceiver.ImageReceiver.CancelLocal = true;
-            Thread.Sleep(5000); // todo give up instead
-            Logger.Info("Gave up time to cancel thread; line above should say \"Image Receiver cancelled\"");
         }
     }
 }

@@ -21,12 +21,11 @@ namespace Core.ExternalComms
 
         private Tuple<int, int> _widthHeightTuple;
         private string _keyForCallback;
-        private Port _port;
         private string _stateOfTerminate;
         private string _stateOfTellSlaveToFetchFile;
 
         // todo figure out the imagePath
-        private static readonly string IMAGE_PATH = AppContext.BaseDirectory;
+        private static readonly string ImagePath = AppContext.BaseDirectory;
 
         // todo Key
         internal Dictionary<string, SlaveInfo> SlaveProxies;
@@ -36,22 +35,18 @@ namespace Core.ExternalComms
             SlaveProxies = new Dictionary<string, SlaveInfo>();
         }
 
-        internal string ConnectToSlave(Slave slave, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
+        internal (string key, string imagePath) ConnectToSlave(Slave slave, PrimaryKey pk, ModuleType moduleType, ConnectionInformation forSelf, BaseCommunicationModule that)
         {
             Logger.Info("Attempting to connect to slave with network settings: {ip: " + slave.SlaveConnection.ConnectionInformation.IP.TheIP + " comm port: " + slave.SlaveConnection.ConnectionInformation.Port.ThePort + " registration port: " + slave.SlaveConnection.RegistrationPort.ThePort + "}");
 
-
-            Port selfPort = new Port();
-
-            TcpListener l = new TcpListener(IPAddress.Loopback, 0);
+            var selfPort = new Port();
+            var l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
-            int port = ((IPEndPoint)l.LocalEndpoint).Port;
+            var port = ((IPEndPoint)l.LocalEndpoint).Port;
             l.Stop();
-
             selfPort.ThePort = port;
 
-
-            ProxyHelper proxyHelper = new ProxyHelper();
+            var proxyHelper = new ProxyHelper();
             proxyHelper.Setup(new ConnectionInformation() { IP = slave.SlaveConnection.ConnectionInformation.IP, Port = slave.SlaveConnection.ConnectionInformation.Port },
                 slave.SlaveConnection.RegistrationPort, moduleType, new ConnectionInformation() { IP = forSelf.IP, Port = selfPort /*{ ThePort = 0  *//* TODO does this work forSelf.Port.ThePort + 69 }*/ }, that, new CustomEncoding());
             Logger.Info("ProxyHelper setup done");
@@ -61,7 +56,15 @@ namespace Core.ExternalComms
             var key = GetDictionaryKey(slave);
             Logger.Debug("Slave Owner Connection Info Hash: " + key);
             SlaveProxies.Add(key, new SlaveInfo { SlaveProxy = new SlaveProxy(proxyHelper, that) });
-            return key;
+
+            Handshake(key, pk);
+
+            var imagePath = ImagePathForCurrentSlave(slave.SlaveConnection.ConnectToRecieveImagesPort);
+
+            SlaveProxies[key].ImageReceiver = new ImageReceiver.ImageReceiver(slave.SlaveConnection, imagePath);
+            SlaveProxies[key].ImageReceiver.StartImageReceivingThread();
+
+            return (key, imagePath);
         }
 
         // todo make type for dictionary key that is a wrapper for string
@@ -81,17 +84,6 @@ namespace Core.ExternalComms
 
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
-
-        //internal string GetImageProducerConnectionInformation(string slaveProxyKey)
-        //{
-        //    if (_port != null) return ImagePathForCurrentSlave();
-        //    Logger.Info("GetImageProducerConnectionInformation initiated");
-        //    Logger.Debug("Slave Proxy Key: " + slaveProxyKey);
-        //    _keyForCallback = slaveProxyKey;
-        //    SlaveProxies[slaveProxyKey].SlaveProxy.GetImageProducerConnectionInformation(GetImageProducerConnectionInformationCallBack);
-        //    GeneralHandler.PollVariableFor10Seconds(ref _port);
-        //    return ImagePathForCurrentSlave();
-        //}
 
         internal string MouseAction(MouseUpAndDownParamsWrapper parameters, bool down)
         {
@@ -149,14 +141,18 @@ namespace Core.ExternalComms
         {
             _stateOfTerminate = null;
             Logger.Info("SaveFilesAndTerminate initiated");
+            
+            Logger.Info("Cancelled image received thread; there should be \"Image Receiver cancelled\" somewhere after this log");
+            SlaveProxies[parameters.SlaveKey].ImageReceiver.CancelLocal = true;
+            
             SlaveProxies[parameters.SlaveKey].SlaveProxy.SaveFilesAndTerminate(SaveFilesAndTerminateCallBack);
             return GeneralHandler.PollVariableFor10Seconds(ref _stateOfTerminate);
         }
 
-        public static string ImagePathForCurrentSlave(Port port)
+        public string ImagePathForCurrentSlave(Port port)
         {
             // todo figure out the imagePath
-            return IMAGE_PATH + port.ThePort + "\\";
+            return ImagePath + port.ThePort + "\\";
         }
 
         // Callbacks
@@ -167,14 +163,6 @@ namespace Core.ExternalComms
             Logger.Info("AppDimensions (W: " + width + "; H: " + height + ") set in callback");
             // todo remove below if possible, has to be set now for polling check
             _widthHeightTuple = widthHeightTuple;
-        }
-
-        private void GetImageProducerConnectionInformationCallBack(Port port)
-        {
-            SlaveProxies[_keyForCallback].Port = port;
-            Logger.Info("Port set in callback");
-            // todo remove below if possible, has to be set now for polling check
-            _port = port;
         }
 
         private void SaveFilesAndTerminateCallBack()

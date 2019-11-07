@@ -14,27 +14,39 @@ namespace Core.ImageReceiver
         public const string ImageFileName = "img.jpg";
         private const string BUFFER_FILE_NAME = "buffer";
         private const int SLEEP_TIME = 1000;
-        public static bool CancelLocal;
+        public bool CancelLocal;
         private const int MAX_REVICE_BUFFER_SIZE = 100000;
 
         private static FileStream _fs;
 
-        public static void StartImageReceivingThread(SlaveConnection connInfo, string filePath)
+        private readonly SlaveConnection connInfo;
+        private readonly string filePath;
+
+        public ImageReceiver(SlaveConnection connInfo, string filePath)
         {
-            PrepareFilePath(filePath);
+            this.connInfo = connInfo;
+            this.filePath = filePath;
+            CancelLocal = false;
+
+            PrepareFilePath();
+        }
+
+        public void StartImageReceivingThread()
+        {
+            Logger.Info("StartImageReceivingThread initiated");
 
             var t = new Thread(
                 () =>
                 {
                     try
                     {
-                        StartReceivingImages(connInfo, filePath);
+                        StartReceivingImages();
                     } catch (Exception e) { Logger.Debug(e); }
                 }) { IsBackground = true};
             t.Start();
         }
 
-        private static void PrepareFilePath(string filePath)
+        private void PrepareFilePath()
         {
             foreach (var entry in Directory.GetDirectories(filePath + @"..\"))
             {
@@ -46,10 +58,10 @@ namespace Core.ImageReceiver
             Directory.CreateDirectory(filePath);
         }
 
-        private static void StartReceivingImages(SlaveConnection connInfo, string filePath)
+        private void StartReceivingImages()
         {
-            IPAddress ipAddr = IPAddress.Parse(connInfo.ConnectionInformation.IP.TheIP);
-            IPEndPoint endPoint = new IPEndPoint(ipAddr, connInfo.ConnectToRecieveImagesPort.ThePort);
+            var ipAddr = IPAddress.Parse(connInfo.ConnectionInformation.IP.TheIP);
+            var endPoint = new IPEndPoint(ipAddr, connInfo.ConnectToRecieveImagesPort.ThePort);
 
             var receiver = new Socket(ipAddr.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             receiver.Connect(endPoint);
