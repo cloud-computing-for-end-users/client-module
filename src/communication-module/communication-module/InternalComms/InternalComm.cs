@@ -24,23 +24,9 @@ namespace Core.InternalComms
         public void RegisterMethodsAndCallbacks()
         {
             Logger.Info("Registering callable methods from Electron");
-            internalConnection.On<string, string>("EstablishCGIConnection", param => "Established"); 
-            internalConnection.On<string, string>("GetListOfApplications", param =>
-            {
-                try { return externalCommunication.GetListOfApplications(); } catch (PollingException e) { return e.Handle(); } catch(Exception e) { return Handle(e); }
-            });
-            internalConnection.On<string, string>("GetImagesFromSlave", param =>
-            {
-                try { return externalCommunication.GetImagesFromSlave(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
-            });
-            internalConnection.On<string, string>("MouseDown", param =>
-            {
-                try { return externalCommunication.MouseDown(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
-            });
-            internalConnection.On<string, string>("MouseUp", param =>
-            {
-                try { return externalCommunication.MouseUp(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
-            });
+            // DevUtils
+            internalConnection.On<string, string>("EstablishCGIConnection", param => "Established");
+            // EntryView
             internalConnection.On<string, string>("Login", param =>
             {
                 try { return externalCommunication.Login(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
@@ -49,6 +35,12 @@ namespace Core.InternalComms
             {
                 try { return externalCommunication.CreateAccount(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
+            // AppView
+            internalConnection.On<string, string>("GetListOfApplications", param =>
+            {
+                try { return externalCommunication.GetListOfApplications(); } catch (PollingException e) { return e.Handle(); } catch(Exception e) { return Handle(e); }
+            });
+            // FileView
             internalConnection.On<string, string>("GetListOfFiles", param =>
             {
                 try { return externalCommunication.GetListOfFiles(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
@@ -68,7 +60,7 @@ namespace Core.InternalComms
             internalConnection.On<string, string>("RemoveFile", param =>
             {
                 try { return externalCommunication.RemoveFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
-            }); 
+            });
             internalConnection.On<string, string>("TellSlaveToFetchFile", param =>
             {
                 try { return externalCommunication.TellSlaveToFetchFile(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
@@ -76,6 +68,27 @@ namespace Core.InternalComms
             internalConnection.On<string, string>("SaveFilesAndTerminate", param =>
             {
                 try { return externalCommunication.SaveFilesAndTerminate(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
+            // Slave
+            internalConnection.On<string, string>("GetImagesFromSlave", param =>
+            {
+                try { return externalCommunication.GetImagesFromSlave(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("MouseDown", param =>
+            {
+                try { return externalCommunication.MouseDown(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("MouseUp", param =>
+            {
+                try { return externalCommunication.MouseUp(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("KeyDown", param =>
+            {
+                try { return externalCommunication.KeyDown(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
+            internalConnection.On<string, string>("KeyUp", param =>
+            {
+                try { return externalCommunication.KeyUp(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
         }
 

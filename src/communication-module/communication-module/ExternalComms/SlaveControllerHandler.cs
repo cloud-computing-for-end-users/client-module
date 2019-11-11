@@ -125,9 +125,17 @@ namespace Core.ExternalComms
             }
 
             // todo null callback
-            SlaveProxies[parameters.Key].SlaveProxy.DoMouseAction(null, action);
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.DoMouseAction(null, action);
             // todo better return value; related to using callback
             return "Sent (MouseAction)";
+        }
+
+        internal string KeyAction(KeyUpAndDownParamsWrapper parameters, bool down)
+        {
+            // todo null callback
+            SlaveProxies[parameters.SlaveKey].SlaveProxy.DoKeyboardAction(null, parameters.Key, down);
+            // todo better return value; related to using callback
+            return "Sent (KeyAction)";
         }
 
         internal string TellSlaveToFetchFile(SlaveKeyAndFileWrapper parameters)
