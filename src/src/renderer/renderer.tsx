@@ -6,20 +6,27 @@ import {Slave} from "./components/Slave/Slave";
 import '../scss/main.scss';
 
 export enum BackendMethods {
+    // DevUtils
     EstablishCGIConnection = "EstablishCGIConnection",
-    GetListOfApplications = "GetListOfApplications",
-    GetImagesFromSlave = 'GetImagesFromSlave',
-    MouseDown = 'MouseDown',
-    MouseUp = 'MouseUp',
+    // EntryView
     Login = 'Login',
     CreateAccount = 'CreateAccount',
+    // AppView
+    GetListOfApplications = "GetListOfApplications",
+    // FileView
     GetListOfFiles = 'GetListOfFiles',
     UploadFile = 'UploadFile',
     DownloadFile = 'DownloadFile',
     RenameFile = 'RenameFile',
     RemoveFile = 'RemoveFile',
     TellSlaveToFetchFile = 'TellSlaveToFetchFile',
-    SaveFilesAndTerminate = 'SaveFilesAndTerminate'
+    SaveFilesAndTerminate = 'SaveFilesAndTerminate',
+    // Slave
+    GetImagesFromSlave = 'GetImagesFromSlave',
+    MouseDown = 'MouseDown',
+    MouseUp = 'MouseUp',
+    KeyDown = 'KeyDown',
+    KeyUp = 'KeyUp'
 }
 
 if(document.getElementById('main')) {

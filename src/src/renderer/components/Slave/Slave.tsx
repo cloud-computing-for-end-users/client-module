@@ -52,6 +52,9 @@ export class Slave extends React.Component<IProps, IState> {
       
       ipcRenderer.send('setSlaveKeyForSlaveAppWindow', {slaveAppWindowKey: this.props.slaveAppWindowKey, slaveKey: this.state.slaveKey})
       
+      document.addEventListener("keydown", this.handleOnKeyDown.bind(this));
+      document.addEventListener("keyup", this.handleOnKeyUp.bind(this));
+
       setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
     })
   }
@@ -72,25 +75,39 @@ export class Slave extends React.Component<IProps, IState> {
   }
 
   private handleOnMouseDown(e: any): void {
-    ipcRenderer.send('call-backend-method', {
-      method: BackendMethods.MouseDown, 
-      argument: {
-        Button: this.GetButton(e.button),
-        XinPercent: e.clientX / window.innerWidth * 100, 
-        YinPercent: e.clientY / window.innerHeight * 100, 
-        Key: this.state.slaveKey
-      }
-    });
+    this.handleOnMouse(true, e);
   }
   
   private handleOnMouseUp(e: any): void {
+    this.handleOnMouse(false, e);
+  }
+
+  private handleOnMouse(isMouseDown: boolean, e: any) {
     ipcRenderer.send('call-backend-method', {
-      method: BackendMethods.MouseUp, 
+      method: isMouseDown ? BackendMethods.MouseDown : BackendMethods.MouseUp, 
       argument: {
         Button: this.GetButton(e.button),
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
-        Key: this.state.slaveKey
+        SlaveKey: this.state.slaveKey
+      }
+    });
+  }
+
+  private handleOnKeyDown(e: any): void {
+    this.handleOnKey(true, e.key)
+  }
+
+  private handleOnKeyUp(e: any): void {
+    this.handleOnKey(false, e.key)
+  }
+
+  private handleOnKey(isKeyDown: boolean, keyCode: string): void {
+    ipcRenderer.send('call-backend-method', {
+      method: isKeyDown ? BackendMethods.KeyDown : BackendMethods.KeyUp, 
+      argument: {
+        Key: keyCode, 
+        SlaveKey: this.state.slaveKey
       }
     });
   }
@@ -130,6 +147,7 @@ export class Slave extends React.Component<IProps, IState> {
         <div
             onMouseUp={this.handleOnMouseUp} 
             onMouseDown={this.handleOnMouseDown} 
+            onKeyDown={this.handleOnKeyDown}
             className="container-fluid m-0 p-0">
           <img draggable={false} src={this.state.img} />
         </div>

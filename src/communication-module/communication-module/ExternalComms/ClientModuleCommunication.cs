@@ -42,50 +42,7 @@ namespace Core.ExternalComms
             Logger.Debug("Setup of FileHandler done");
         }
 
-        public string GetImagesFromSlave(string parametersInJson)
-        {
-            var parameters = JsonConvert.DeserializeObject<GetImagesFromSlaveWrapper>(parametersInJson);
-            Logger.Debug("GetImagesFromSlave; PrimaryKey: " + parameters.PrimaryKey + "; ApplicationName: " + parameters.ApplicationName + "; ApplicationVersion: " + parameters.ApplicationVersion + "; OS: " + parameters.RunningOnOperatingSystem);
-
-            var pk = new PrimaryKey {TheKey = parameters.PrimaryKey};
-            var slave = SlaveOwnerHandler.GetSlaveConnectionInfo(pk, new ApplicationInfo
-            {
-                ApplicationName = parameters.ApplicationName,
-                ApplicationVersion = parameters.ApplicationVersion,
-                RunningOnOperatingSystem = parameters.RunningOnOperatingSystem
-            });
-
-            var (key, imagePath) = SlaveControllerHandler.ConnectToSlave(slave, pk, ModuleType, _forSelf, this);
-
-            return GeneralHandler.ReturnAsJSON(new InitializeSlaveAppWindowWrapper
-            {
-                SlaveKey = key,
-                PathToImages = imagePath + ImageReceiver.ImageReceiver.ImageFileName,
-                WindowWidth = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Width,
-                WindowHeight = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Height
-            });
-        }
-
-        public string GetListOfApplications()
-        {
-            Logger.Debug("GetListOfApplications;");
-            return SlaveOwnerHandler.GetListOfApplications();
-        }
-
-        public string MouseDown(string parametersInJson)
-        {
-            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseDown; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseAction(parameters, true);
-        }
-
-        public string MouseUp(string parametersInJson)
-        {
-            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
-            Logger.Debug("MouseUp; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.Key);
-            return SlaveControllerHandler.MouseAction(parameters, false);
-        }
-
+        // EntryView
         public string Login(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<EmailAndPasswordWrapper>(parametersInJson);
@@ -102,6 +59,14 @@ namespace Core.ExternalComms
             return DatabaseHandler.CreateAccount(parameters);
         }
 
+        // AppView
+        public string GetListOfApplications()
+        {
+            Logger.Debug("GetListOfApplications;");
+            return SlaveOwnerHandler.GetListOfApplications();
+        }
+
+        // FileView
         public string GetListOfFiles(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<PrimaryKeyWrapper>(parametersInJson);
@@ -149,6 +114,59 @@ namespace Core.ExternalComms
             var parameters = JsonConvert.DeserializeObject<SlaveKeyWrapper>(parametersInJson);
             Logger.Debug("SaveFilesAndTerminate; Slave key: " + parameters.SlaveKey);
             return SlaveControllerHandler.SaveFilesAndTerminate(parameters);
+        }
+
+        // Slave
+        public string GetImagesFromSlave(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<GetImagesFromSlaveWrapper>(parametersInJson);
+            Logger.Debug("GetImagesFromSlave; PrimaryKey: " + parameters.PrimaryKey + "; ApplicationName: " + parameters.ApplicationName + "; ApplicationVersion: " + parameters.ApplicationVersion + "; OS: " + parameters.RunningOnOperatingSystem);
+
+            var pk = new PrimaryKey {TheKey = parameters.PrimaryKey};
+            var slave = SlaveOwnerHandler.GetSlaveConnectionInfo(pk, new ApplicationInfo
+            {
+                ApplicationName = parameters.ApplicationName,
+                ApplicationVersion = parameters.ApplicationVersion,
+                RunningOnOperatingSystem = parameters.RunningOnOperatingSystem
+            });
+
+            var (key, imagePath) = SlaveControllerHandler.ConnectToSlave(slave, pk, ModuleType, _forSelf, this);
+
+            return GeneralHandler.ReturnAsJSON(new InitializeSlaveAppWindowWrapper
+            {
+                SlaveKey = key,
+                PathToImages = imagePath + ImageReceiver.ImageReceiver.ImageFileName,
+                WindowWidth = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Width,
+                WindowHeight = SlaveControllerHandler.SlaveProxies[key].AppDimensions.Height
+            });
+        }
+
+        public string MouseDown(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseDown; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.SlaveKey);
+            return SlaveControllerHandler.MouseAction(parameters, true);
+        }
+
+        public string MouseUp(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("MouseUp; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.SlaveKey);
+            return SlaveControllerHandler.MouseAction(parameters, false);
+        }
+
+        public string KeyDown(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("KeyDown; Key: " + parameters.Key + "; SlaveKey: " + parameters.SlaveKey);
+            return SlaveControllerHandler.KeyAction(parameters, true);
+        }
+
+        public string KeyUp(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownParamsWrapper>(parametersInJson);
+            Logger.Debug("KeyUp; Key: " + parameters.Key + "; SlaveKey: " + parameters.SlaveKey);
+            return SlaveControllerHandler.KeyAction(parameters, false);
         }
     }
 }
