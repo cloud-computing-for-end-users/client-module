@@ -147,7 +147,7 @@ namespace Core.ExternalComms
         public string SaveFilesAndTerminate(string parametersInJson)
         {
             var parameters = JsonConvert.DeserializeObject<SlaveKeyWrapper>(parametersInJson);
-            Logger.Debug("SaveFilesAndTerminate; Slave key: " + parameters.SlaveKey);
+            
             return SlaveControllerHandler.SaveFilesAndTerminate(parameters);
         }
     }

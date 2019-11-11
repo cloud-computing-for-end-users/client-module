@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using custom_message_based_implementation.model;
+using File = System.IO.File;
 
 namespace Core.ImageReceiver
 {
@@ -13,11 +14,11 @@ namespace Core.ImageReceiver
 
         public const string ImageFileName = "img.jpg";
         private const string BUFFER_FILE_NAME = "buffer";
-        private const int SLEEP_TIME = 1000;
+        private const int SLEEP_TIME = 10;
         public bool CancelLocal;
         private const int MAX_REVICE_BUFFER_SIZE = 100000;
 
-        private static FileStream _fs;
+        
 
         private readonly SlaveConnection connInfo;
         private readonly string filePath;
@@ -63,10 +64,9 @@ namespace Core.ImageReceiver
 
         private void PrepareFilePath()
         {
-            foreach (var entry in Directory.GetDirectories(filePath + @"..\"))
+            if (Directory.Exists(filePath))
             {
-                Logger.Debug("Removing directory: " + entry);
-                Directory.Delete(entry, true);
+                Directory.Delete(filePath, true);
             }
 
             Logger.Debug("Creating directory: " + filePath);
@@ -85,6 +85,12 @@ namespace Core.ImageReceiver
 
             while (true)
             {
+                FileStream _fs;
+
+                if (CancelLocal)
+                {
+                    throw new Exception("CalcelLocal:true, throwing exception to stop image receiver");
+                }
                 var imageSizeBuffer = new byte[sizeof(int)];
                 receiver.Receive(imageSizeBuffer);
 

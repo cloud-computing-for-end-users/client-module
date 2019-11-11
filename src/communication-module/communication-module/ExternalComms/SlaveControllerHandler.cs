@@ -39,6 +39,7 @@ namespace Core.ExternalComms
         {
             Logger.Info("Attempting to connect to slave with network settings: {ip: " + slave.SlaveConnection.ConnectionInformation.IP.TheIP + " comm port: " + slave.SlaveConnection.ConnectionInformation.Port.ThePort + " registration port: " + slave.SlaveConnection.RegistrationPort.ThePort + "}");
 
+            //dynamically getting an available TCP port
             var selfPort = new Port();
             var l = new TcpListener(IPAddress.Loopback, 0);
             l.Start();
