@@ -130,8 +130,31 @@ namespace Core.ExternalComms
             return "Sent (MouseAction)";
         }
 
+        private string FormatKeySpelling(KeyUpAndDownParamsWrapper param){
+            switch(param.Key){
+                case "Control":
+                    return "ctrl";
+                case "ArrowUp":
+                    return "up";
+                case "ArrowDown":
+                    return "down";
+                case "ArrowLeft":
+                    return "left";
+                case "ArrowRight":
+                    return "Right";
+                default:
+                    return param.Key;
+            }
+        }
         internal string KeyAction(KeyUpAndDownParamsWrapper parameters, bool down)
         {
+            if(parameters.Key ==  "Unidentified"){
+                Logger.Debug("Skipping sending Unidentified key action");
+                return "Skipped sending (KeyAction)";
+            }
+                
+            parameters.Key = FormatKeySpelling(parameters);
+            
             // todo null callback
             SlaveProxies[parameters.SlaveKey].SlaveProxy.DoKeyboardAction(null, parameters.Key, down);
             // todo better return value; related to using callback
