@@ -74,6 +74,10 @@ namespace Core.InternalComms
             {
                 try { return externalCommunication.GetImagesFromSlave(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
             });
+            internalConnection.On<string, string>("MouseMove", param =>
+            {
+                try { return externalCommunication.MouseMove(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }
+            });
             internalConnection.On<string, string>("MouseDown", param =>
             {
                 try { return externalCommunication.MouseDown(param); } catch (PollingException e) { return e.Handle(); } catch (Exception e) { return Handle(e); }

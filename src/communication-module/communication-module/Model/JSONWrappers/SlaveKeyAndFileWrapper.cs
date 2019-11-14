@@ -1,8 +1,7 @@
 ﻿namespace Core.ImageReceiver
 {
-    public class SlaveKeyAndFileWrapper
+    internal class SlaveKeyAndFileWrapper : SlaveKeyWrapper
     {
-        public string SlaveKey { get; set; }
         public string FileName { get; set; }
     }
 }

@@ -1,10 +1,8 @@
 ﻿namespace Core.ImageReceiver
 {
-    internal class MouseUpAndDownParamsWrapper
+    internal class MouseMoveWrapper : SlaveKeyWrapper
     {
-        public string Button { get; set; }
         public double XinPercent { get; set; }
         public double YinPercent { get; set; }
-        public string SlaveKey { get; set; }
     }
 }

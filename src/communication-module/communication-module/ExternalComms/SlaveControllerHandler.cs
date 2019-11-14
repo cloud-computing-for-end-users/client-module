@@ -86,7 +86,7 @@ namespace Core.ExternalComms
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
 
-        internal string MouseAction(MouseUpAndDownParamsWrapper parameters, bool down)
+        internal string MouseAction(MouseMoveWrapper parameters, bool down)
         {
             var location = new RelativeScreenLocation()
             {
@@ -101,27 +101,34 @@ namespace Core.ExternalComms
             };
 
             BaseMouseAction action;
-            if (down)
+            if(parameters is MouseUpAndDownWrapper mouseUpAndDownParameters)
             {
-                if (parameters.Button.Equals("Left"))
+                if (mouseUpAndDownParameters.Down)
                 {
-                    action = new LeftMouseDownAction() { RelativeScreenLocation = location };
+                    if (mouseUpAndDownParameters.Button.Equals("Left"))
+                    {
+                        action = new LeftMouseDownAction { RelativeScreenLocation = location };
+                    }
+                    else
+                    {
+                        action = new RightMouseDownAction { RelativeScreenLocation = location };
+                    }
                 }
                 else
                 {
-                    action = new RightMouseDownAction() { RelativeScreenLocation = location };
+                    if (mouseUpAndDownParameters.Button.Equals("Left"))
+                    {
+                        action = new LeftMouseUpAction { RelativeScreenLocation = location };
+                    }
+                    else
+                    {
+                        action = new RightMouseUpAction { RelativeScreenLocation = location };
+                    }
                 }
             }
             else
             {
-                if (parameters.Button.Equals("Left"))
-                {
-                    action = new LeftMouseUpAction() { RelativeScreenLocation = location };
-                }
-                else
-                {
-                    action = new RightMouseUpAction() { RelativeScreenLocation = location };
-                }
+                action = new MouseMoveAction { RelativeScreenLocation = location };
             }
 
             // todo null callback
@@ -130,7 +137,7 @@ namespace Core.ExternalComms
             return "Sent (MouseAction)";
         }
 
-        private string FormatKeySpelling(KeyUpAndDownParamsWrapper param){
+        private string FormatKeySpelling(KeyUpAndDownWrapper param){
             switch(param.Key){
                 case "Control":
                     return "ctrl";
@@ -146,7 +153,7 @@ namespace Core.ExternalComms
                     return param.Key;
             }
         }
-        internal string KeyAction(KeyUpAndDownParamsWrapper parameters, bool down)
+        internal string KeyAction(KeyUpAndDownWrapper parameters, bool down)
         {
             if(parameters.Key ==  "Unidentified"){
                 Logger.Debug("Skipping sending Unidentified key action");

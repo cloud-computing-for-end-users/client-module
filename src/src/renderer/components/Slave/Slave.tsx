@@ -9,7 +9,7 @@ const spinner = require('../../../../assets/svg/spinner.svg');
 interface IState {
   img: any,
   slaveKey: string,
-  closing: boolean
+  closing: boolean,
 }
 
 interface IProps {
@@ -21,11 +21,19 @@ interface IProps {
 }
 
 export class Slave extends React.Component<IProps, IState> {
+  
+  mousePositionX: number = 0;
+  mousePositionY: number = 0;
+  lastSentMousePositionX: number = 0;
+  lastSentMousePositionY: number = 0;
+  
   constructor(props: IProps) {
     super(props);
     this.handleOnMouseDown = this.handleOnMouseDown.bind(this);
     this.handleOnMouseUp = this.handleOnMouseUp.bind(this);
+    this.handleOnMouseMove = this.handleOnMouseMove.bind(this);
     this.onCloseSlaveAppWindow = this.onCloseSlaveAppWindow.bind(this);
+    
     this.state = { 
       img: null,
       slaveKey: null,
@@ -56,6 +64,7 @@ export class Slave extends React.Component<IProps, IState> {
       document.addEventListener("keyup", this.handleOnKeyUp.bind(this));
 
       setInterval(() => this.updateImage(json["PathToImages"]), 50); // time in ms
+      setInterval(() => this.sendMouseMove(), 1000); // time in ms
     })
   }
 
@@ -74,6 +83,26 @@ export class Slave extends React.Component<IProps, IState> {
     })
   }
 
+  private handleOnMouseMove(e: any): void {
+    this.mousePositionX = e.clientX
+    this.mousePositionY = e.clientY
+  }
+
+  private sendMouseMove() {
+    if(this.mousePositionX != this.lastSentMousePositionX || this.mousePositionY != this.lastSentMousePositionY) {
+      this.lastSentMousePositionX = this.mousePositionX;
+      this.lastSentMousePositionY = this.mousePositionY;
+      ipcRenderer.send('call-backend-method', {
+        method: BackendMethods.MouseMove, 
+        argument: {
+          XinPercent: this.mousePositionX / window.innerWidth * 100, 
+          YinPercent: this.mousePositionY / window.innerHeight * 100, 
+          SlaveKey: this.state.slaveKey
+        }
+      });
+    }
+  }
+
   private handleOnMouseDown(e: any): void {
     this.handleOnMouse(true, e);
   }
@@ -87,6 +116,7 @@ export class Slave extends React.Component<IProps, IState> {
       method: isMouseDown ? BackendMethods.MouseDown : BackendMethods.MouseUp, 
       argument: {
         Button: this.GetButton(e.button),
+        Down: isMouseDown,
         XinPercent: e.clientX / window.innerWidth * 100, 
         YinPercent: e.clientY / window.innerHeight * 100, 
         SlaveKey: this.state.slaveKey
@@ -147,7 +177,7 @@ export class Slave extends React.Component<IProps, IState> {
         <div
             onMouseUp={this.handleOnMouseUp} 
             onMouseDown={this.handleOnMouseDown} 
-            onKeyDown={this.handleOnKeyDown}
+            onMouseMove={this.handleOnMouseMove}
             className="container-fluid m-0 p-0">
           <img draggable={false} src={this.state.img} />
         </div>
