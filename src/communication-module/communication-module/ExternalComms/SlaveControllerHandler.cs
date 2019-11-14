@@ -86,7 +86,7 @@ namespace Core.ExternalComms
             GeneralHandler.PollVariableFor10Seconds(ref _widthHeightTuple);
         }
 
-        internal string MouseAction(MouseMoveWrapper parameters, bool down)
+        internal string MouseAction(MouseMoveWrapper parameters)
         {
             var location = new RelativeScreenLocation()
             {
