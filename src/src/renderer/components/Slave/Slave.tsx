@@ -95,6 +95,7 @@ export class Slave extends React.Component<IProps, IState> {
   }
 
   private handleOnKeyDown(e: any): void {
+    console.log(e)
     this.handleOnKey(true, e.key)
   }
 
