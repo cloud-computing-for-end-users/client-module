@@ -23,6 +23,7 @@ export enum BackendMethods {
     SaveFilesAndTerminate = 'SaveFilesAndTerminate',
     // Slave
     GetImagesFromSlave = 'GetImagesFromSlave',
+    MouseMove = 'MouseMove',
     MouseDown = 'MouseDown',
     MouseUp = 'MouseUp',
     KeyDown = 'KeyDown',

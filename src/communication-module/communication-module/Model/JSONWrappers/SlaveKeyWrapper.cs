@@ -1,6 +1,6 @@
 ﻿namespace Core.ImageReceiver
 {
-    public class SlaveKeyWrapper
+    internal class SlaveKeyWrapper
     {
         public string SlaveKey { get; set; }
     }

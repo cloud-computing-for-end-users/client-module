@@ -141,30 +141,37 @@ namespace Core.ExternalComms
             });
         }
 
+        public string MouseMove(string parametersInJson)
+        {
+            var parameters = JsonConvert.DeserializeObject<MouseMoveWrapper>(parametersInJson);
+            Logger.Debug("MouseMove; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.SlaveKey);
+            return SlaveControllerHandler.MouseAction(parameters);
+        }
+
         public string MouseDown(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownWrapper>(parametersInJson);
             Logger.Debug("MouseDown; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.SlaveKey);
-            return SlaveControllerHandler.MouseAction(parameters, true);
+            return SlaveControllerHandler.MouseAction(parameters);
         }
 
         public string MouseUp(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownParamsWrapper>(parametersInJson);
+            var parameters = JsonConvert.DeserializeObject<MouseUpAndDownWrapper>(parametersInJson);
             Logger.Debug("MouseUp; Button: " + parameters.Button + "; XinPercent: " + parameters.XinPercent + "; YinPercent: " + parameters.YinPercent + "; Key: " + parameters.SlaveKey);
-            return SlaveControllerHandler.MouseAction(parameters, false);
+            return SlaveControllerHandler.MouseAction(parameters);
         }
 
         public string KeyDown(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownParamsWrapper>(parametersInJson);
+            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownWrapper>(parametersInJson);
             Logger.Debug("KeyDown; Key: " + parameters.Key + "; SlaveKey: " + parameters.SlaveKey);
             return SlaveControllerHandler.KeyAction(parameters, true);
         }
 
         public string KeyUp(string parametersInJson)
         {
-            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownParamsWrapper>(parametersInJson);
+            var parameters = JsonConvert.DeserializeObject<KeyUpAndDownWrapper>(parametersInJson);
             Logger.Debug("KeyUp; Key: " + parameters.Key + "; SlaveKey: " + parameters.SlaveKey);
             return SlaveControllerHandler.KeyAction(parameters, false);
         }
