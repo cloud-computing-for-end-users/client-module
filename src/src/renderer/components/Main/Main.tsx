@@ -15,6 +15,7 @@ interface IState {
   content: ContentType,
   loggedIn: boolean,
   loggedInAs: number,
+  loggedInAsEmail: string,
   fileListItems: any
 }
 
@@ -35,6 +36,7 @@ export class Main extends React.Component<IProps, IState> {
       content: ContentType.AppView, // default Apps tab
       loggedIn: false,
       loggedInAs: 0,
+      loggedInAsEmail: "",
       fileListItems: null
     };  
     this.getFileListItems();
@@ -70,8 +72,8 @@ export class Main extends React.Component<IProps, IState> {
     this.setState({content});
   }  
 
-  handleLoggedInChange(loggedIn: boolean, loggedInAs: number): void {
-    this.setState({loggedIn, loggedInAs});
+  handleLoggedInChange(loggedIn: boolean, loggedInAs: number, loggedInAsEmail: string): void {
+    this.setState({loggedIn, loggedInAs, loggedInAsEmail});
   }
 
   private GetAfterLoginView() : any {
@@ -81,7 +83,7 @@ export class Main extends React.Component<IProps, IState> {
       case ContentType.FileView: view = <FileView loggedInAs={this.state.loggedInAs} fileListItems={this.state.fileListItems} getFileListItems={this.getFileListItems} />; break;
     }
     return [
-      <Navigation key="Navigation" active={this.state.content} onViewChange={this.handleViewChange} onLoggedInChange={this.handleLoggedInChange} />,
+      <Navigation key="Navigation" email={this.state.loggedInAsEmail} active={this.state.content} onViewChange={this.handleViewChange} onLoggedInChange={this.handleLoggedInChange} />,
       <div key="MainView" className="container mx-3">
         {view}    
       </div>

@@ -12,7 +12,8 @@ interface IState { }
 interface IProps { 
   active: ContentType,
   onViewChange: any,
-  onLoggedInChange: any
+  onLoggedInChange: any,
+  email: string
 }
 
 export class Navigation extends React.Component<IProps, IState> {
@@ -39,7 +40,7 @@ export class Navigation extends React.Component<IProps, IState> {
             {FeatureFlags.ShowConnectionStatus && 
               <CGIConnectionStatus title={StatusTitle.ServerModule} />
             }
-            <NavigationSettings onLoggedInChange={this.props.onLoggedInChange} />
+            <NavigationSettings email={this.props.email} onLoggedInChange={this.props.onLoggedInChange} />
           </div>
         </nav>
       </div>

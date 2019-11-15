@@ -51,7 +51,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
         }
       });
       ipcRenderer.on('reply-backend-method-' + BackendMethods.DownloadFile, (event, arg) => {
-        console.log(arg + " - remove me (todo)");
         // todo check that arg is "Done (DownloadFile)" and show it in some way
       })
     } else {
@@ -112,7 +111,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
         }
       });
       ipcRenderer.on('reply-backend-method-' + BackendMethods.RenameFile, (event, arg) => {
-        console.log(arg + " - remove me (todo)");
         // todo check that arg is "Done (RenameFile)" and show it in some way
         this.props.getFileListItems();
       })
@@ -137,7 +135,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
           }
         });
         ipcRenderer.on('reply-backend-method-' + BackendMethods.TellSlaveToFetchFile, (event, arg) => {
-          console.log(arg + " - remove me (todo)");
           // todo check that arg is "Sent (TellSlaveToFetchFile)" and show it in some way
         })
       }
@@ -175,7 +172,6 @@ export class FileListButtons extends React.Component<IProps, IState> {
         }
       });
       ipcRenderer.on('reply-backend-method-' + BackendMethods.RemoveFile, (event, arg) => {
-        console.log(arg + " - remove me (todo)");
         // todo check that arg is "Done (RemoveFile)" and show it in some way
         this.props.getFileListItems();
       })

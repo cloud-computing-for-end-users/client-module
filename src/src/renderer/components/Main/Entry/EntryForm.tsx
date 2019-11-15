@@ -49,7 +49,7 @@ export class EntryForm extends React.Component<IProps, IState> {
     });
     ipcRenderer.on('reply-backend-method-' + this.GetBackendMethod(), (event, arg) => {
       if(arg > 0) {
-        this.props.onLoggedInChange(true, arg);
+        this.props.onLoggedInChange(true, arg, this.state.email);
       } else {
         switch(this.props.entryType) {
           case EntryType.Login: this.setState({errorMessage: "Either email or password is not correct"}); break;
