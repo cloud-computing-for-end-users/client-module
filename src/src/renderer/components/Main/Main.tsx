@@ -39,7 +39,6 @@ export class Main extends React.Component<IProps, IState> {
       loggedInAsEmail: "",
       fileListItems: null
     };  
-    this.getFileListItems();
   }
 
   disableDragging(): void {
@@ -54,18 +53,28 @@ export class Main extends React.Component<IProps, IState> {
   componentDidMount(): void {
     this.disableDragging();
     ipcRenderer.on('updateListOfFiles', (event, arg) => {
-      console.log('ipcRenderer - updateListOfFiles - todo - delete me')
       this.getFileListItems();
     })
   }
 
   getFileListItems() {    
-    ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: Utils.getLoggedInAs(this.state.loggedInAs)}});
-    ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
-      this.setState({
-        fileListItems: JSON.parse(arg)
-      });
-    })
+    let doLoad: boolean = false;
+    if(FeatureFlags.AllowLogin) {
+      if(this.state.loggedIn) {
+        doLoad = true;
+      }
+    } else {
+      doLoad = true;
+    }
+
+    if(doLoad) {
+      ipcRenderer.send('call-backend-method', {method: BackendMethods.GetListOfFiles, argument: {PrimaryKey: Utils.getLoggedInAs(this.state.loggedInAs)}});
+      ipcRenderer.on('reply-backend-method-' + BackendMethods.GetListOfFiles, (event, arg) => {
+        this.setState({
+          fileListItems: JSON.parse(arg)
+        });
+      })
+    }
   }
 
   handleViewChange(content: ContentType): void {
@@ -73,7 +82,7 @@ export class Main extends React.Component<IProps, IState> {
   }  
 
   handleLoggedInChange(loggedIn: boolean, loggedInAs: number, loggedInAsEmail: string): void {
-    this.setState({loggedIn, loggedInAs, loggedInAsEmail});
+    this.setState({loggedIn, loggedInAs, loggedInAsEmail, content: ContentType.AppView, fileListItems: null});
   }
 
   private GetAfterLoginView() : any {

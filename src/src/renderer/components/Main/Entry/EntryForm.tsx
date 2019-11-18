@@ -1,8 +1,8 @@
 import * as React from "react";
 import {EntryType} from "./Entry";
 import {BackendMethods} from "../../../renderer";
-const { ipcRenderer } = require('electron');
-    
+
+const { ipcRenderer } = require('electron');  
 
 interface IState { 
   email: string,

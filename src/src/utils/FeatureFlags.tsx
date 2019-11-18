@@ -4,7 +4,7 @@ interface FeatureFlags {
 }
 
 let FeatureFlags: FeatureFlags = {
-    AllowLogin: false,
+    AllowLogin: true,
     ShowConnectionStatus: true
 };
 
