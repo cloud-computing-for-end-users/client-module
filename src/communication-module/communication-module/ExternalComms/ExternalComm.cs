@@ -17,21 +17,19 @@ namespace Core.ExternalComms
             Logger.Info("Setting up external communication " + (localhost ? "on" : "NOT on") + " localhost");
             var routerInfo = new ConnectionInformation()
             {
-                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.212.47" }, // Kenneth
+                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.212.6" }, // Kenneth
                 Port = new Port() { ThePort = 5522 } // todo set port from constant or config
             };
 
             var selfConnInfo = new ConnectionInformation()
             {
-                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.212.47" }, // Me
+                IP = new IP() { TheIP = (localhost) ? "127.0.0.1" : "10.152.212.6" }, // Me
                 
                 //finding available port
 
                 
                 Port = new Port() { ThePort = GetAvailablePort() } // todo set port from constant or config
             };
-
-           
 
             Comm = new ClientModuleCommunication(new ModuleType() { TypeID = ModuleTypeConst.MODULE_TYPE_CLIENT }, selfConnInfo);
             
