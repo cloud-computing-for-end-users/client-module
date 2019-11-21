@@ -17,7 +17,7 @@ export class NavigationSettings extends React.Component<IProps, IState> {
   }
 
   handleOnClick(e: any) {
-    this.props.onLoggedInChange(false, 0);
+    this.props.onLoggedInChange(false, 0, "");
   }
 
   render(): React.ReactNode {

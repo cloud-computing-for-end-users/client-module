@@ -17,6 +17,12 @@ export class FileView extends React.Component<IProps, IState> {
     super(props);
   }
 
+  componentDidMount(): void {
+    if(this.props.fileListItems === null) {
+      this.props.getFileListItems();
+    }
+  }
+
   render(): React.ReactNode {
     var toRender;
     if(this.props.fileListItems === null) {
