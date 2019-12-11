@@ -70,7 +70,7 @@ export class WindowManager {
             width: width,
             height: height,
             frame: false,
-            resizable: true,
+            resizable: false,
             webPreferences: {
                 nodeIntegration: true
             } 
